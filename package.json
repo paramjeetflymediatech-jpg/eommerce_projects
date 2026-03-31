@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "postbuild": "next-sitemap",
-    "start": "next start"
+    "start": "next start",
+    "db:sync": "tsx --env-file=.env scripts/db-sync.ts",
+    "db:admin": "tsx --env-file=.env scripts/create-admin.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -34,6 +36,7 @@
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

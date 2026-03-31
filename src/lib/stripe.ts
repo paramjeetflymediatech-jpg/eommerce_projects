@@ -7,7 +7,7 @@ if (!key) {
 }
 
 const stripe = new Stripe(key ?? "sk_test_placeholder", {
-  apiVersion: "2025-01-27.acacia",
+  apiVersion: "2026-03-25.dahlia",
 });
 
 export default stripe;
