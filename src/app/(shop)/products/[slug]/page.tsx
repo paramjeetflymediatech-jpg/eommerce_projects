@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ProductJsonLd, BreadcrumbJsonLd } from "@/components/seo/JsonLd";
 import ProductCard from "@/components/products/ProductCard";
 import AddToCartSection from "./AddToCartSection";
-import { formatPrice, calculateDiscount } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 
 interface Props { params: { slug: string } }
 
@@ -22,16 +22,11 @@ type PageParams = Promise<{ slug: string }>;
 export async function generateMetadata(props: { params: PageParams }): Promise<Metadata> {
   const params = await props.params;
   const data = await getProduct(params.slug);
-
-  if (!data) return { title: "Product Not Found" };
+  if (!data) return { title: "Piece Not Found" };
   const { product } = data;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const ogImage = product.images?.[0] ? (product.images[0].startsWith("http") ? product.images[0] : `${appUrl}${product.images[0]}`) : undefined;
   return {
-    title: product.name,
+    title: `${product.name} — ShopNest`,
     description: product.shortDescription || product.description?.slice(0, 160),
-    openGraph: { title: product.name, description: product.shortDescription || product.description?.slice(0, 160), images: ogImage ? [{ url: ogImage }] : [], type: "website" },
-    twitter: { card: "summary_large_image", title: product.name },
   };
 }
 
@@ -39,147 +34,255 @@ export default async function ProductDetailPage(props: { params: PageParams }) {
   const params = await props.params;
   const data = await getProduct(params.slug);
   if (!data) notFound();
+  
   const { product, related } = data;
-  const discount = calculateDiscount(product.price, product.comparePrice);
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
   return (
-    <>
+    <div style={styles.outer}>
       <ProductJsonLd product={product} />
-      <BreadcrumbJsonLd items={[{ name: "Home", url: appUrl }, { name: "Products", url: `${appUrl}/products` }, ...(product.category ? [{ name: product.category.name, url: `${appUrl}/categories/${product.category.slug}` }] : []), { name: product.name, url: `${appUrl}/products/${product.slug}` }]} />
+      <BreadcrumbJsonLd items={[
+        { name: "Home", url: appUrl }, 
+        { name: "Collection", url: `${appUrl}/products` }, 
+        { name: product.name, url: `${appUrl}/products/${product.slug}` }
+      ]} />
 
-      <div className="container-app" style={{ padding: "40px 24px" }}>
-        {/* Breadcrumb */}
-        <nav style={{ display: "flex", gap: 8, marginBottom: 32, fontSize: "0.875rem", color: "var(--text-muted)", flexWrap: "wrap" }}>
-          <Link href="/" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Home</Link>
-          <span>/</span>
-          <Link href="/products" style={{ color: "var(--text-muted)", textDecoration: "none" }}>Products</Link>
-          {product.category && (<><span>/</span><Link href={`/categories/${product.category.slug}`} style={{ color: "var(--text-muted)", textDecoration: "none" }}>{product.category.name}</Link></>)}
-          <span>/</span>
-          <span style={{ color: "var(--text-primary)" }}>{product.name}</span>
+      <div style={styles.container}>
+        {/* Navigation / Breadcrumb */}
+        <nav style={styles.breadcrumb}>
+          <Link href="/products" style={styles.breadcrumbLink}>THE COLLECTION</Link>
+          <span style={styles.separator}>/</span>
+          <span style={styles.breadcrumbCurrent}>{product.name}</span>
         </nav>
 
-        {/* Product Detail */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, marginBottom: 80 }}>
-          {/* Images */}
-          <div>
-            <div style={{ position: "relative", aspectRatio: "1", overflow: "hidden", borderRadius: 20, background: "var(--bg-elevated)", border: "1px solid var(--border)" }}>
+        <div className="product-detail-grid" style={styles.mainGrid}>
+          {/* Left: Imagery */}
+          <div className="product-image-column" style={styles.imageColumn}>
+            <div style={styles.mainImageWrapper}>
               {product.images?.[0] ? (
-                <Image src={product.images[0]} alt={product.name} fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" priority />
+                <Image 
+                  src={product.images[0]} 
+                  alt={product.name} 
+                  fill 
+                  style={styles.image} 
+                  sizes="(max-width: 1000px) 100vw, 60vw" 
+                  priority 
+                />
               ) : (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", fontSize: "4rem" }}>📦</div>
+                <div style={styles.placeholder}>PIECE PREVIEW UNAVAILABLE</div>
               )}
-              {discount > 0 && <span className="badge badge-danger" style={{ position: "absolute", top: 20, left: 20, fontSize: "0.9rem", padding: "6px 14px" }}>-{discount}% OFF</span>}
             </div>
+            
             {product.images?.length > 1 && (
-              <div style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
-                {product.images.slice(0, 5).map((img: string, i: number) => (
-                  <div key={i} style={{ position: "relative", width: 72, height: 72, borderRadius: 12, overflow: "hidden", border: "2px solid var(--border)", cursor: "pointer" }}>
-                    <Image src={img} alt={`${product.name} ${i + 1}`} fill style={{ objectFit: "cover" }} sizes="72px" />
+              <div style={styles.thumbnailGrid}>
+                {product.images.map((img: string, i: number) => (
+                  <div key={i} style={styles.thumbnailWrapper}>
+                    <Image src={img} alt={`${product.name} view ${i}`} fill style={styles.image} sizes="150px" />
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          {/* Info */}
-          <div>
-            {product.category && (
-              <Link href={`/categories/${product.category.slug}`} style={{ textDecoration: "none" }}>
-                <span className="badge badge-primary" style={{ marginBottom: 16 }}>{product.category.name}</span>
-              </Link>
-            )}
-            <h1 style={{ fontSize: "2rem", fontWeight: 800, marginBottom: 16, lineHeight: 1.3 }}>{product.name}</h1>
-
-            {product.reviewCount > 0 && (
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-                <div className="stars" style={{ fontSize: "1rem" }}>{"★".repeat(Math.round(product.rating))}{"☆".repeat(5 - Math.round(product.rating))}</div>
-                <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>{product.rating.toFixed(1)} ({product.reviewCount} reviews)</span>
-              </div>
-            )}
-
-            {/* Price */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: 16, marginBottom: 24 }}>
-              <span className="price" style={{ fontSize: "2.2rem" }}>{formatPrice(product.price)}</span>
-              {product.comparePrice > product.price && (
-                <span className="price-compare" style={{ fontSize: "1.2rem" }}>{formatPrice(product.comparePrice)}</span>
-              )}
-              {discount > 0 && <span className="price-discount" style={{ fontSize: "1rem" }}>Save {discount}%</span>}
-            </div>
-
-            {/* Description */}
-            <p style={{ color: "var(--text-secondary)", lineHeight: 1.8, marginBottom: 32, fontSize: "1rem" }}>
-              {product.shortDescription || product.description?.slice(0, 200)}
-            </p>
-
-            {/* Stock */}
-            <div style={{ marginBottom: 24 }}>
-              {product.stock > 10 ? (
-                <span className="badge badge-success">✓ In Stock ({product.stock} available)</span>
-              ) : product.stock > 0 ? (
-                <span className="badge badge-warning">⚠ Only {product.stock} left!</span>
-              ) : (
-                <span className="badge badge-danger">✗ Out of Stock</span>
-              )}
-            </div>
-
-            {/* Add to Cart (Client Component) */}
-            <AddToCartSection product={product} />
-
-            {/* Tags */}
-            {product.tags?.length > 0 && (
-              <div style={{ marginTop: 32, display: "flex", gap: 8, flexWrap: "wrap" }}>
-                {product.tags.map((tag: string) => (
-                  <span key={tag} style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)", color: "var(--text-muted)", padding: "4px 12px", borderRadius: 99, fontSize: "0.8rem" }}>#{tag}</span>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Full Description */}
-        <div className="card" style={{ padding: 40, marginBottom: 64 }}>
-          <h2 style={{ fontSize: "1.5rem", marginBottom: 24 }}>Product Description</h2>
-          <div style={{ color: "var(--text-secondary)", lineHeight: 1.9 }} dangerouslySetInnerHTML={{ __html: product.description.replace(/\n/g, "<br/>") }} />
-        </div>
-
-        {/* Reviews */}
-        {product.reviews?.length > 0 && (
-          <div style={{ marginBottom: 64 }}>
-            <h2 style={{ fontSize: "1.8rem", marginBottom: 32 }}>Customer Reviews ({product.reviewCount})</h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              {product.reviews.map((review: { id: number; rating: number; title?: string; comment: string; createdAt: string; user: { name: string; avatar?: string } }) => (
-                <div key={review.id} className="card" style={{ padding: 24 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ width: 40, height: 40, borderRadius: "50%", background: "var(--gradient-primary)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "white" }}>{review.user.name[0]}</div>
-                      <div>
-                        <p style={{ fontWeight: 600, marginBottom: 2 }}>{review.user.name}</p>
-                        <div className="stars" style={{ fontSize: "0.85rem" }}>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</div>
-                      </div>
-                    </div>
-                    <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>{new Date(review.createdAt).toLocaleDateString()}</span>
-                  </div>
-                  {review.title && <h4 style={{ fontWeight: 600, marginBottom: 8 }}>{review.title}</h4>}
-                  <p style={{ color: "var(--text-secondary)", lineHeight: 1.7 }}>{review.comment}</p>
+          {/* Right: Details */}
+          <div className="product-details-column" style={styles.detailsColumn}>
+            <div className="product-sticky-details" style={styles.stickyDetails}>
+              <header style={styles.header}>
+                {product.category && (
+                  <span style={styles.categoryLabel}>{product.category.name}</span>
+                )}
+                <h1 style={styles.title}>{product.name}</h1>
+                <div style={styles.priceArea}>
+                  <span style={styles.price}>{formatPrice(product.price)}</span>
                 </div>
-              ))}
+              </header>
+
+              <div style={styles.descriptionArea}>
+                <p style={styles.shortDesc}>{product.shortDescription || "A testament to minimalist architectural design."}</p>
+              </div>
+
+              <div style={styles.actionArea}>
+                <AddToCartSection product={product} />
+              </div>
+
+              <div style={styles.stockStatus}>
+                <div style={{ ...styles.statusIndicator, background: product.stock > 0 ? "#000" : "#eee" }} />
+                <span style={styles.statusText}>
+                  {product.stock > 0 ? `In Stock — Available for Delivery` : "Temporarily Out of Stock"}
+                </span>
+              </div>
+
+              <div style={styles.accordion}>
+                <details style={styles.details} open>
+                  <summary style={styles.summary}>Product Description</summary>
+                  <div style={styles.fullDesc} dangerouslySetInnerHTML={{ __html: product.description.replace(/\n/g, "<br/>") }} />
+                </details>
+                <details style={styles.details}>
+                  <summary style={styles.summary}>Shipping & Authentication</summary>
+                  <p style={styles.detailsContent}>This piece is subject to professional handling and white-glove delivery within 14-21 days of purchase. Each architectural component is authenticated by ShopNest.</p>
+                </details>
+              </div>
             </div>
           </div>
-        )}
+        </div>
 
-        {/* Related */}
+        {/* Related Pieces */}
         {related?.length > 0 && (
-          <div>
-            <h2 style={{ fontSize: "1.8rem", marginBottom: 32 }}>Related Products</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 24 }}>
-              {related.map((p: { id: number; name: string; slug: string; price: number; comparePrice?: number; images: string[]; rating: number; reviewCount: number; stock: number }) => (
+          <section style={styles.relatedSection}>
+            <h2 style={styles.relatedHeading}>YOU MIGHT ALSO LIKE</h2>
+            <div className="products-grid-responsive" style={styles.productGrid}>
+              {related.map((p: any) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
-          </div>
+          </section>
         )}
       </div>
-    </>
+    </div>
   );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+  outer: { background: "#fff", minHeight: "100vh" },
+  container: {
+    maxWidth: "1600px",
+    margin: "0 auto",
+    padding: "clamp(40px, 6vw, 80px) clamp(20px, 4vw, 60px)",
+  },
+  breadcrumb: {
+    display: "flex",
+    gap: "12px",
+    alignItems: "center",
+    marginBottom: "60px",
+  },
+  breadcrumbLink: {
+    fontSize: "0.55rem",
+    fontWeight: 800,
+    textDecoration: "none",
+    color: "#ccc",
+    letterSpacing: "0.2em",
+  },
+  separator: { color: "#eee", fontSize: "0.7rem" },
+  breadcrumbCurrent: {
+    fontSize: "0.55rem",
+    fontWeight: 800,
+    color: "#000",
+    letterSpacing: "0.2em",
+  },
+  mainGrid: {
+    display: "grid",
+    gridTemplateColumns: "1.4fr 1fr",
+    gap: "clamp(40px, 8vw, 120px)",
+    alignItems: "start",
+  },
+  imageColumn: { display: "flex", flexDirection: "column", gap: "24px" },
+  mainImageWrapper: {
+    position: "relative",
+    aspectRatio: "4/5",
+    background: "#f9f9f9",
+    overflow: "hidden",
+  },
+  image: { objectFit: "cover" },
+  placeholder: {
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "0.6rem",
+    fontWeight: 800,
+    letterSpacing: "0.2em",
+    color: "#ccc",
+  },
+  thumbnailGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(5, 1fr)",
+    gap: "12px",
+  },
+  thumbnailWrapper: {
+    position: "relative",
+    aspectRatio: "1",
+    background: "#f9f9f9",
+    cursor: "pointer",
+    border: "1px solid #f0f0f0",
+  },
+  detailsColumn: { position: "relative" },
+  stickyDetails: { position: "sticky", top: "120px" },
+  header: { marginBottom: "40px" },
+  categoryLabel: {
+    fontSize: "0.6rem",
+    fontWeight: 800,
+    color: "#ccc",
+    textTransform: "uppercase",
+    letterSpacing: "0.2em",
+    display: "block",
+    marginBottom: "12px",
+  },
+  title: {
+    fontFamily: "var(--font-serif)",
+    fontSize: "clamp(2rem, 4vw, 3.5rem)",
+    fontWeight: 400,
+    textTransform: "uppercase",
+    lineHeight: 1.1,
+    marginBottom: "24px",
+    letterSpacing: "-0.01em",
+  },
+  priceArea: { borderBottom: "1px solid #f0f0f0", paddingBottom: "24px" },
+  price: { fontSize: "1.5rem", fontWeight: 700, letterSpacing: "0.05em" },
+  descriptionArea: { margin: "40px 0" },
+  shortDesc: {
+    fontSize: "1.1rem",
+    color: "#444",
+    lineHeight: 1.6,
+    borderLeft: "2px solid #000",
+    paddingLeft: "24px",
+    fontWeight: 300,
+  },
+  actionArea: { marginBottom: "40px" },
+  stockStatus: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    marginBottom: "60px",
+  },
+  statusIndicator: { width: "8px", height: "8px" },
+  statusText: { fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" },
+  accordion: { borderTop: "1px solid #f0f0f0" },
+  details: { borderBottom: "1px solid #f0f0f0" },
+  summary: {
+    listStyle: "none",
+    padding: "24px 0",
+    fontSize: "0.65rem",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.2em",
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  fullDesc: {
+    fontSize: "0.9rem",
+    lineHeight: 1.8,
+    color: "#666",
+    paddingBottom: "32px",
+  },
+  detailsContent: {
+    fontSize: "0.9rem",
+    lineHeight: 1.8,
+    color: "#666",
+    paddingBottom: "32px",
+  },
+  relatedSection: { marginTop: "160px", borderTop: "1px solid #f0f0f0", paddingTop: "80px" },
+  relatedHeading: {
+    fontFamily: "var(--font-serif)",
+    fontSize: "2rem",
+    fontWeight: 400,
+    textTransform: "uppercase",
+    marginBottom: "60px",
+    textAlign: "center",
+  },
+  productGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+    gap: "60px 30px",
+  },
+};

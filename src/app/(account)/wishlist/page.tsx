@@ -1,11 +1,24 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useWishlistStore } from "@/store/wishlistStore";
 import ProductCard from "@/components/products/ProductCard";
 import Link from "next/link";
-import type { Metadata } from "next";
 
 export default function WishlistPage() {
   const items = useWishlistStore((s) => s.items);
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div className="container-app" style={{ padding: "100px 24px", textAlign: "center" }}>
+        <h1 style={{ fontSize: "2rem", marginBottom: 20 }}>🤍 Loading Wishlist...</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="container-app" style={{ padding: "40px 24px" }}>

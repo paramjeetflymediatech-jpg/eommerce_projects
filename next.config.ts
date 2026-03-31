@@ -2,8 +2,15 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["localhost"],
     remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+      },
       {
         protocol: "http",
         hostname: "localhost",
@@ -12,9 +19,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    serverComponentsExternalPackages: ["sequelize", "mysql2"],
-  },
+  serverExternalPackages: ["sequelize", "mysql2"],
 };
+
 
 export default nextConfig;

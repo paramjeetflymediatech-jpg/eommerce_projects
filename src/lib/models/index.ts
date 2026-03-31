@@ -9,6 +9,7 @@ import Cart from "./Cart";
 import CartItem from "./CartItem";
 import Address from "./Address";
 import WishlistItem from "./WishlistItem";
+import Migration from "./Migration";
 
 // ── Associations ─────────────────────────────────────────────────────────────
 
@@ -65,28 +66,38 @@ WishlistItem.belongsTo(Product, { foreignKey: "productId", as: "product" });
 import mysql from "mysql2/promise";
 
 // ── Sync ─────────────────────────────────────────────────────────────────────
-export const syncDB = async () => {
-  try {
-    // 1. Create database if not exists using raw mysql2 connection
-    const connection = await mysql.createConnection({
-      host: process.env.DB_HOST || "localhost",
-      port: Number(process.env.DB_PORT) || 3306,
-      user: process.env.DB_USER || "root",
-      password: process.env.DB_PASSWORD || "root",
-    });
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || "ecommerce_db"}\`;`);
-    await connection.end();
+let dbReady = false;
+let syncPromise: Promise<void> | null = null;
 
-    // 2. Authenticate and sync tables
-    await sequelize.authenticate();
-    console.log("✅ MySQL connection established.");
-    await sequelize.sync({ alter: true });
-    console.log("✅ All tables synced.");
-  } catch (error) {
-    console.error("❌ DB sync error:", error);
-    throw error;
-  }
+export const syncDB = async () => {
+  if (syncPromise) return syncPromise;
+
+  syncPromise = (async () => {
+    try {
+      // Authenticate and sync tables — database must already exist
+      await sequelize.authenticate();
+      console.log("✅ MySQL connection established.");
+      await sequelize.sync({ alter: false });
+      console.log("✅ All tables synced.");
+      dbReady = true;
+    } catch (error) {
+      console.error("❌ DB sync error:", error);
+      syncPromise = null; // Reset on error to allow retry
+      throw error;
+    }
+  })();
+
+  return syncPromise;
 };
+
+/**
+ * Ensures the database is initialized and synced.
+ * Call this at the start of any API route.
+ */
+export async function ensureDB() {
+  if (dbReady) return;
+  await syncDB();
+}
 
 export {
   sequelize,
@@ -100,4 +111,6 @@ export {
   CartItem,
   Address,
   WishlistItem,
+  Migration,
 };
+

@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
@@ -6,7 +7,21 @@ import Link from "next/link";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, getTotal, clearCart } = useCartStore();
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const total = getTotal();
+
+  if (!mounted) {
+    return (
+      <div className="container-app" style={{ padding: "100px 24px", textAlign: "center" }}>
+        <h1 style={{ fontSize: "2.2rem", marginBottom: 20 }}>🛒 Loading your cart...</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="container-app" style={{ padding: "40px 24px" }}>

@@ -7,15 +7,69 @@ export const metadata: Metadata = {
   description: "Browse our full catalog of premium products. Filter by category, price, and rating.",
 };
 
-interface SearchParams { category?: string; sort?: string; page?: string; search?: string; minPrice?: string; maxPrice?: string; featured?: string; }
+interface SearchParams { 
+  category?: string; 
+  sort?: string; 
+  page?: string; 
+  search?: string; 
+  minPrice?: string; 
+  maxPrice?: string; 
+  featured?: string; 
+}
+
+function SidebarCategory({ cat, activeId, level = 0 }: { cat: any; activeId?: string; level?: number }) {
+  const isActive = activeId === String(cat.id);
+  
+  return (
+    <div style={{ marginLeft: level > 0 ? "16px" : 0, marginBottom: "8px" }}>
+      <Link 
+        href={`/products?category=${cat.id}`} 
+        style={{ 
+          ...styles.filterLink, 
+          fontWeight: isActive ? 700 : 400,
+          borderBottom: isActive ? "1px solid #000" : "1px solid transparent",
+          fontSize: level === 0 ? "0.8rem" : "0.7rem",
+          color: level > 0 && !isActive ? "#888" : "#000",
+          textTransform: level === 0 ? "uppercase" : "none" as const,
+          letterSpacing: level === 0 ? "0.15em" : "0.1em",
+          display: "flex",
+          alignItems: "center"
+        }}
+      >
+        {level > 0 && <span style={{ marginRight: "6px", opacity: 0.3 }}>—</span>}
+        {cat.name}
+      </Link>
+      
+      {cat.children && cat.children.length > 0 && (
+        <div style={{ marginTop: "4px" }}>
+          {cat.children.map((child: any) => (
+            <SidebarCategory key={child.id} cat={child} activeId={activeId} level={level + 1} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 async function getProducts(params: SearchParams) {
-  const query = new URLSearchParams({ page: params.page || "1", limit: "12", ...(params.category && { category: params.category }), ...(params.sort && { sort: params.sort }), ...(params.search && { search: params.search }), ...(params.minPrice && { minPrice: params.minPrice }), ...(params.maxPrice && { maxPrice: params.maxPrice }), ...(params.featured && { featured: params.featured }), }).toString();
+  const query = new URLSearchParams({ 
+    page: params.page || "1", 
+    limit: "12", 
+    ...(params.category && { category: params.category }), 
+    ...(params.sort && { sort: params.sort }), 
+    ...(params.search && { search: params.search }), 
+    ...(params.minPrice && { minPrice: params.minPrice }), 
+    ...(params.maxPrice && { maxPrice: params.maxPrice }), 
+    ...(params.featured && { featured: params.featured }), 
+  }).toString();
+  
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/products?${query}`, { next: { revalidate: 30 } });
     if (!res.ok) return { products: [], pagination: null };
     return res.json();
-  } catch { return { products: [], pagination: null }; }
+  } catch { 
+    return { products: [], pagination: null }; 
+  }
 }
 
 async function getCategories() {
@@ -23,94 +77,332 @@ async function getCategories() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/categories`, { next: { revalidate: 300 } });
     if (!res.ok) return { categories: [] };
     return res.json();
-  } catch { return { categories: [] }; }
+  } catch { 
+    return { categories: [] }; 
+  }
 }
 
 export default async function ProductsPage(props: { searchParams: Promise<SearchParams> }) {
   const searchParams = await props.searchParams;
-  const [{ products, pagination }, { categories }] = await Promise.all([getProducts(searchParams), getCategories()]);
+  const [{ products, pagination }, { categories }] = await Promise.all([
+    getProducts(searchParams), 
+    getCategories()
+  ]);
+  
   const page = parseInt(searchParams.page || "1");
-  const sortOptions = [{ value: "createdAt_desc", label: "Newest" }, { value: "price_asc", label: "Price: Low to High" }, { value: "price_desc", label: "Price: High to Low" }, { value: "rating_desc", label: "Highest Rated" }];
+  const sortOptions = [
+    { value: "createdAt_desc", label: "Newest" }, 
+    { value: "price_asc", label: "Price: Low to High" }, 
+    { value: "price_desc", label: "Price: High to Low" }, 
+    { value: "rating_desc", label: "Highest Rated" }
+  ];
 
   return (
-    <div className="container-app" style={{ padding: "40px 24px" }}>
-      {/* Page Header */}
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontSize: "2.2rem", marginBottom: 8 }}>{searchParams.search ? `Results for "${searchParams.search}"` : searchParams.featured === "true" ? "⭐ Featured Products" : "All Products"}</h1>
-        <p style={{ color: "var(--text-secondary)" }}>{pagination?.total || 0} products found</p>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 32 }}>
-        {/* Sidebar Filters */}
-        <aside>
-          <div className="card" style={{ padding: 24, position: "sticky", top: 88 }}>
-            <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: 20, padding: "0 0 12px", borderBottom: "1px solid var(--border)" }}>🔍 Filters</h2>
-
-            {/* Categories */}
-            <div style={{ marginBottom: 28 }}>
-              <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 14 }}>Category</h3>
-              <Link href="/products" style={{ display: "block", padding: "8px 12px", borderRadius: 8, textDecoration: "none", background: !searchParams.category ? "rgba(99,102,241,0.15)" : "transparent", color: !searchParams.category ? "var(--primary-light)" : "var(--text-secondary)", marginBottom: 4, fontSize: "0.9rem", fontWeight: !searchParams.category ? 600 : 400 }}>All Categories</Link>
-              {categories?.map((cat: { id: number; name: string; slug: string }) => (
-                <Link key={cat.id} href={`/products?category=${cat.id}`} style={{ display: "block", padding: "8px 12px", borderRadius: 8, textDecoration: "none", background: searchParams.category === String(cat.id) ? "rgba(99,102,241,0.15)" : "transparent", color: searchParams.category === String(cat.id) ? "var(--primary-light)" : "var(--text-secondary)", marginBottom: 4, fontSize: "0.9rem", fontWeight: searchParams.category === String(cat.id) ? 600 : 400 }}>{cat.name}</Link>
-              ))}
-            </div>
-
-            {/* Sort */}
-            <div style={{ marginBottom: 28 }}>
-              <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 14 }}>Sort By</h3>
-              {sortOptions.map(({ value, label }) => (
-                <Link key={value} href={`/products?${new URLSearchParams({ ...searchParams, sort: value }).toString()}`} style={{ display: "block", padding: "8px 12px", borderRadius: 8, textDecoration: "none", background: (searchParams.sort || "createdAt_desc") === value ? "rgba(99,102,241,0.15)" : "transparent", color: (searchParams.sort || "createdAt_desc") === value ? "var(--primary-light)" : "var(--text-secondary)", marginBottom: 4, fontSize: "0.9rem" }}>{label}</Link>
-              ))}
-            </div>
-
-            {/* Price Range */}
-            <div>
-              <h3 style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 14 }}>Price Range</h3>
-              <form action="/products" method="GET" style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <input name="minPrice" type="number" placeholder="Min" defaultValue={searchParams.minPrice} className="input" style={{ padding: "8px 10px", fontSize: "0.85rem" }} />
-                <span style={{ color: "var(--text-muted)" }}>–</span>
-                <input name="maxPrice" type="number" placeholder="Max" defaultValue={searchParams.maxPrice} className="input" style={{ padding: "8px 10px", fontSize: "0.85rem" }} />
-                <button type="submit" className="btn btn-primary btn-sm">Go</button>
-              </form>
-            </div>
+    <div style={styles.outer}>
+      <div style={styles.container}>
+        {/* Page Header */}
+        <header style={styles.header}>
+          <div style={styles.headerTitleArea}>
+            <h1 style={styles.title}>
+              {searchParams.search 
+                ? `Results for "${searchParams.search}"` 
+                : searchParams.featured === "true" 
+                  ? "Architectural Series" 
+                  : "The Collection"}
+            </h1>
+            <p style={styles.subtitle}>{pagination?.total || 0} PIECES AVAILABLE</p>
           </div>
-        </aside>
+        </header>
 
-        {/* Product Grid */}
-        <div>
-          {products?.length > 0 ? (
-            <>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 24 }}>
-                {products.map((p: { id: number; name: string; slug: string; price: number; comparePrice?: number; images: string[]; rating: number; reviewCount: number; stock: number; isFeatured?: boolean; category?: { name: string; slug: string } }) => (
-                  <ProductCard key={p.id} product={p} />
-                ))}
-              </div>
+        <div className="products-content-grid">
+          {/* Sidebar Filters */}
+          <aside className="products-sidebar">
+            <div className="products-sidebar-sticky">
+              <h2 style={styles.sidebarHeading}>Catalog Filters</h2>
 
-              {/* Pagination */}
-              {pagination && pagination.totalPages > 1 && (
-                <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 48 }}>
-                  {pagination.hasPrevPage && (
-                    <Link href={`/products?${new URLSearchParams({ ...searchParams, page: String(page - 1) }).toString()}`} className="btn btn-secondary btn-sm">← Prev</Link>
-                  )}
-                  {Array.from({ length: Math.min(pagination.totalPages, 5) }, (_, i) => i + 1).map((p) => (
-                    <Link key={p} href={`/products?${new URLSearchParams({ ...searchParams, page: String(p) }).toString()}`} className="btn btn-sm" style={{ background: page === p ? "var(--gradient-primary)" : "rgba(255,255,255,0.05)", color: page === p ? "white" : "var(--text-secondary)", border: "1px solid var(--border)" }}>{p}</Link>
+              <div className="products-filters-container">
+                {/* Categories */}
+                <div style={styles.filterSection}>
+                  <h3 style={styles.filterLabel}>Discipline</h3>
+                  <Link 
+                    href="/products" 
+                    style={{ 
+                      ...styles.filterLink, 
+                      fontWeight: !searchParams.category ? 700 : 400,
+                      borderBottom: !searchParams.category ? "1px solid #000" : "1px solid transparent",
+                      marginBottom: "16px"
+                    }}
+                  >
+                    ALL PIECES
+                  </Link>
+                  
+                  {categories?.map((cat: any) => (
+                    <SidebarCategory key={cat.id} cat={cat} activeId={searchParams.category} level={0} />
                   ))}
-                  {pagination.hasNextPage && (
-                    <Link href={`/products?${new URLSearchParams({ ...searchParams, page: String(page + 1) }).toString()}`} className="btn btn-secondary btn-sm">Next →</Link>
-                  )}
                 </div>
-              )}
-            </>
-          ) : (
-            <div style={{ textAlign: "center", padding: "80px 0", color: "var(--text-muted)" }}>
-              <div style={{ fontSize: "3rem", marginBottom: 16 }}>📦</div>
-              <h2 style={{ fontSize: "1.5rem", marginBottom: 8 }}>No products found</h2>
-              <p style={{ marginBottom: 24 }}>Try adjusting your filters</p>
-              <Link href="/products" className="btn btn-primary">Clear Filters</Link>
+
+                {/* Sort By */}
+                <div style={styles.filterSection}>
+                  <h3 style={styles.filterLabel}>Sort By</h3>
+                  {sortOptions.map(({ value, label }) => (
+                    <Link 
+                      key={value} 
+                      href={`/products?${new URLSearchParams({ ...searchParams, sort: value }).toString()}`} 
+                      style={{ 
+                        ...styles.filterLink, 
+                        fontWeight: (searchParams.sort || "createdAt_desc") === value ? 700 : 400,
+                        borderBottom: (searchParams.sort || "createdAt_desc") === value ? "1px solid #000" : "1px solid transparent"
+                      }}
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+
+                {/* Price Range */}
+                <div style={styles.filterSection}>
+                  <h3 style={styles.filterLabel}>Price Range</h3>
+                  <form action="/products" method="GET" style={styles.priceForm}>
+                    <div style={styles.priceInputGroup}>
+                      <input name="minPrice" type="number" placeholder="MIN" defaultValue={searchParams.minPrice} style={styles.priceInput} />
+                      <span style={styles.priceSeparator}>—</span>
+                      <input name="maxPrice" type="number" placeholder="MAX" defaultValue={searchParams.maxPrice} style={styles.priceInput} />
+                    </div>
+                    <button type="submit" style={styles.priceGo}>Apply</button>
+                  </form>
+                </div>
+              </div>
             </div>
-          )}
+          </aside>
+
+          {/* Product Grid */}
+          <div style={styles.mainContent}>
+            {products?.length > 0 ? (
+              <>
+                <div className="products-grid-responsive" style={styles.productGrid}>
+                  {products.map((p: any) => (
+                    <ProductCard key={p.id} product={p} />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {pagination && pagination.totalPages > 1 && (
+                  <div style={styles.pagination}>
+                    {pagination.hasPrevPage && (
+                      <Link 
+                        href={`/products?${new URLSearchParams({ ...searchParams, page: String(page - 1) }).toString()}`} 
+                        style={styles.pageBtn}
+                      >
+                        PREV
+                      </Link>
+                    )}
+                    {Array.from({ length: Math.min(pagination.totalPages, 5) }, (_, i) => i + 1).map((p) => (
+                      <Link 
+                        key={p} 
+                        href={`/products?${new URLSearchParams({ ...searchParams, page: String(p) }).toString()}`} 
+                        style={{ 
+                          ...styles.pageNumber, 
+                          color: page === p ? "#000" : "#ccc",
+                          textDecoration: page === p ? "underline" : "none" 
+                        }}
+                      >
+                        {p}
+                      </Link>
+                    ))}
+                    {pagination.hasNextPage && (
+                      <Link 
+                        href={`/products?${new URLSearchParams({ ...searchParams, page: String(page + 1) }).toString()}`} 
+                        style={styles.pageBtn}
+                      >
+                        NEXT
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div style={styles.empty}>
+                <h2 style={styles.emptyTitle}>NO PIECES FOUND</h2>
+                <p style={styles.emptyDesc}>Try adjusting your filters to reset the view.</p>
+                <Link href="/products" style={styles.clearBtn}>Clear All Filters</Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+  outer: {
+    background: "#fff",
+    minHeight: "100vh",
+  },
+  container: {
+    padding: "clamp(40px, 8vw, 100px) clamp(20px, 5vw, 60px)",
+    maxWidth: "1600px",
+    margin: "0 auto",
+  },
+  header: {
+    marginBottom: "80px",
+    borderBottom: "1px solid #f0f0f0",
+    paddingBottom: "40px",
+  },
+  headerTitleArea: {
+    maxWidth: "800px",
+  },
+  title: {
+    fontFamily: "var(--font-serif)",
+    fontSize: "clamp(2.5rem, 5vw, 4rem)",
+    fontWeight: 400,
+    color: "#000",
+    marginBottom: "16px",
+    letterSpacing: "-0.02em",
+    textTransform: "uppercase",
+  },
+  subtitle: {
+    fontSize: "0.6rem",
+    color: "#888",
+    fontWeight: 800,
+    letterSpacing: "0.4em",
+    textTransform: "uppercase",
+  },
+  contentGrid: {
+    display: "grid",
+    gridTemplateColumns: "clamp(200px, 20vw, 300px) 1fr",
+    gap: "clamp(40px, 8vw, 100px)",
+  },
+  sidebar: {
+    position: "relative",
+  },
+  sidebarSticky: {
+    position: "sticky",
+    top: "120px",
+  },
+  sidebarHeading: {
+    fontSize: "0.65rem",
+    fontWeight: 900,
+    color: "#ccc",
+    textTransform: "uppercase",
+    letterSpacing: "0.2em",
+    marginBottom: "40px",
+  },
+  filterSection: {
+    marginBottom: "48px",
+  },
+  filterLabel: {
+    fontSize: "0.55rem",
+    fontWeight: 800,
+    color: "#000",
+    textTransform: "uppercase",
+    letterSpacing: "0.2em",
+    marginBottom: "20px",
+    opacity: 0.3,
+  },
+  filterLink: {
+    display: "block",
+    padding: "8px 0",
+    textDecoration: "none",
+    color: "#000",
+    fontSize: "0.85rem",
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
+    marginBottom: "4px",
+    transition: "all 0.3s",
+    width: "fit-content",
+  },
+  priceForm: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+  },
+  priceInputGroup: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+  },
+  priceInput: {
+    width: "100%",
+    padding: "12px 0",
+    border: "none",
+    borderBottom: "1px solid #f0f0f0",
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    outline: "none",
+    background: "transparent",
+    letterSpacing: "0.1em",
+  },
+  priceSeparator: { color: "#eee", fontSize: "0.75rem" },
+  priceGo: {
+    background: "#000",
+    color: "#fff",
+    border: "none",
+    padding: "12px",
+    fontSize: "0.6rem",
+    fontWeight: 800,
+    letterSpacing: "0.2em",
+    textTransform: "uppercase",
+    cursor: "pointer",
+    width: "100%",
+  },
+  mainContent: {
+    flex: 1,
+  },
+  productGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(clamp(250px, 25vw, 350px), 1fr))",
+    gap: "80px 40px",
+  },
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "40px",
+    marginTop: "100px",
+    borderTop: "1px solid #f0f0f0",
+    paddingTop: "60px",
+  },
+  pageBtn: {
+    fontSize: "0.65rem",
+    fontWeight: 800,
+    letterSpacing: "0.3em",
+    textDecoration: "none",
+    color: "#000",
+  },
+  pageNumber: {
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    letterSpacing: "0.1em",
+  },
+  empty: {
+    textAlign: "center",
+    padding: "140px 0",
+  },
+  emptyTitle: {
+    fontFamily: "var(--font-serif)",
+    fontSize: "2rem",
+    fontWeight: 400,
+    color: "#000",
+    marginBottom: "16px",
+    letterSpacing: "0.1em",
+  },
+  emptyDesc: {
+    fontSize: "0.85rem",
+    color: "#888",
+    marginBottom: "40px",
+    letterSpacing: "0.05em",
+  },
+  clearBtn: {
+    display: "inline-block",
+    border: "1px solid #000",
+    padding: "18px 40px",
+    color: "#000",
+    textDecoration: "none",
+    fontSize: "0.65rem",
+    fontWeight: 700,
+    letterSpacing: "0.2em",
+    textTransform: "uppercase",
+    transition: "all 0.3s",
+  },
+};

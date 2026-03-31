@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useNotificationStore } from "./notificationStore";
 
 export interface CartProduct {
   id: number;
@@ -35,13 +36,20 @@ export const useCartStore = create<CartStore>()(
       isOpen: false,
 
       addItem: (product, quantity = 1) => {
+        const currentCount = get().getCount();
+        
+        if (currentCount + quantity > 2) {
+          useNotificationStore.getState().showNotification(`You can only have a maximum of 2 items in your cart to maintain exclusivity.`, "error");
+          return;
+        }
+
         set((state) => {
           const existing = state.items.find((i) => i.product.id === product.id);
           if (existing) {
             return {
               items: state.items.map((i) =>
                 i.product.id === product.id
-                  ? { ...i, quantity: Math.min(i.quantity + quantity, product.stock) }
+                  ? { ...i, quantity: i.quantity + quantity }
                   : i
               ),
             };
@@ -59,6 +67,17 @@ export const useCartStore = create<CartStore>()(
           get().removeItem(productId);
           return;
         }
+
+        const currentItems = get().items;
+        const otherItemsCount = currentItems
+          .filter(i => i.product.id !== productId)
+          .reduce((sum, i) => sum + i.quantity, 0);
+
+        if (otherItemsCount + quantity > 2) {
+          useNotificationStore.getState().showNotification("Exceeded maximum cart limit: 2 items per order.", "error");
+          return;
+        }
+
         set((state) => ({
           items: state.items.map((i) =>
             i.product.id === productId ? { ...i, quantity } : i

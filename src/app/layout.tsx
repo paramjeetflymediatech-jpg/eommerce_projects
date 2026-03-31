@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import CartDrawer from "@/components/cart/CartDrawer";
+import StorefrontLayout from "@/components/layout/StorefrontLayout";
 
 const appName = process.env.NEXT_PUBLIC_APP_NAME || "ShopNest";
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -42,12 +40,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning>
         <Providers>
-          <Header />
-          <main style={{ minHeight: "calc(100vh - 160px)" }}>{children}</main>
-          <Footer />
-          <CartDrawer />
+          <StorefrontLayout>{children}</StorefrontLayout>
         </Providers>
       </body>
     </html>

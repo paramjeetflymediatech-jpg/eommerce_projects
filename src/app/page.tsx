@@ -7,7 +7,7 @@ import { formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "ShopNest — Premium Online Store",
-  description: "Discover thousands of premium products at unbeatable prices. Fast shipping, easy returns, and exceptional quality.",
+  description: "Experience the French Art de Vivre with ShopNest's curated luxury furniture and decor collections.",
 };
 
 async function getFeaturedProducts() {
@@ -43,60 +43,84 @@ export default async function HomePage() {
   return (
     <>
       <OrganizationJsonLd />
-
-      {/* Hero */}
-      <section style={{ background: "var(--gradient-hero)", padding: "100px 0 80px", position: "relative", overflow: "hidden" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 30% 50%, rgba(99,102,241,0.15) 0%, transparent 70%)" }} />
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at 70% 50%, rgba(244,63,94,0.1) 0%, transparent 70%)" }} />
-        <div className="container-app" style={{ position: "relative", textAlign: "center" }}>
-          <div className="badge badge-primary" style={{ marginBottom: 24, fontSize: "0.85rem", padding: "6px 16px" }}>
-            ✨ New Arrivals Every Week
-          </div>
-          <h1 style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", fontWeight: 900, lineHeight: 1.1, marginBottom: 24, background: "linear-gradient(135deg, #fff 30%, var(--primary-light))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            Discover Premium<br />Products for Every Need
+      <section className="dvh-hero" style={{ position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
+        {/* Responsive Horizontal/Vertical Video Grid */}
+        <div className="hero-video-grid">
+          {[
+            "/12766274_2160_3840_30fps.mp4",
+            "/14807010_3840_2160_25fps.mp4",
+            "/15483565_2160_3840_60fps.mp4"
+          ].map((src, i) => (
+            <div key={i} style={{ flex: 1, height: "100%", position: "relative" }}>
+              <video 
+                autoPlay 
+                muted 
+                loop 
+                playsInline 
+                className="video-background"
+                style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.5 }}
+              >
+                <source src={src} type="video/mp4" />
+              </video>
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7))" }} />
+            </div>
+          ))}
+        </div>
+        
+        <div className="container-app" style={{ position: "relative", textAlign: "center", color: "#fff", zIndex: 2, padding: "0 20px" }}>
+          <h1 className="animate-fade" style={{ 
+            fontSize: "clamp(2rem, 10vw, 5rem)",
+            marginBottom: 24, 
+            textTransform: "uppercase",
+            fontWeight: 500,
+            letterSpacing: "-0.02em"
+          }}>
+            The French Art de Vivre
           </h1>
-          <p style={{ fontSize: "1.2rem", color: "var(--text-secondary)", maxWidth: 560, margin: "0 auto 40px", lineHeight: 1.7 }}>
-            Shop thousands of curated products with fast shipping, easy returns, and unbeatable prices.
+          <p className="animate-fade" style={{ 
+            fontSize: "clamp(0.75rem, 2.5vw, 1rem)", 
+            letterSpacing: "0.3em", 
+            textTransform: "uppercase", 
+            marginBottom: 48, 
+            fontWeight: 300, 
+            opacity: 0.8 
+          }}>
+            Iconic Designs. Exceptional Craftsmanship. Since 1960.
           </p>
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/products" className="btn btn-primary btn-lg">
-              Shop Now →
+          <div className="animate-fade" style={{ animationDelay: "0.3s" }}>
+            <Link href="/products" className="btn btn-primary" style={{ 
+              padding: "clamp(12px, 2vw, 20px) clamp(30px, 5vw, 60px)", 
+              background: "#fff", 
+              color: "#000",
+              fontSize: "clamp(0.6rem, 1.5vw, 0.75rem)",
+              letterSpacing: "0.2em"
+            }}>
+              Explore Collections
             </Link>
-            <Link href="/categories" className="btn btn-secondary btn-lg">
-              Browse Categories
-            </Link>
-          </div>
-
-          {/* Stats */}
-          <div style={{ display: "flex", gap: 48, justifyContent: "center", marginTop: 64, flexWrap: "wrap" }}>
-            {[["50K+", "Products"], ["99K+", "Happy Customers"], ["4.9★", "Average Rating"], ["24h", "Fast Shipping"]].map(([val, label]) => (
-              <div key={label} style={{ textAlign: "center" }}>
-                <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--primary-light)" }}>{val}</div>
-                <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: 4 }}>{label}</div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Featured Categories Grid - Responsive Luxury */}
       {categories.length > 0 && (
-        <section className="section">
+        <section className="section-padding" style={{ background: "#ffffff" }}>
           <div className="container-app">
-            <div style={{ textAlign: "center", marginBottom: 48 }}>
-              <h2 style={{ fontSize: "2.5rem", marginBottom: 12 }}>Shop by Category</h2>
-              <p style={{ color: "var(--text-secondary)" }}>Find exactly what you're looking for</p>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 20 }}>
-              {categories.slice(0, 8).map((cat: { id: number; name: string; slug: string; image?: string }) => (
-                <Link key={cat.id} href={`/categories/${cat.slug}`} style={{ textDecoration: "none" }}>
-                  <div className="card" style={{ padding: 24, textAlign: "center" }}>
-                    <div style={{ fontSize: "2.5rem", marginBottom: 12 }}>
-                      {cat.image ? (
-                        <Image src={cat.image} alt={cat.name} width={60} height={60} style={{ borderRadius: 12, objectFit: "cover" }} />
-                      ) : "🛍️"}
+            <div className="grid-luxury">
+              {categories.slice(0, 4).map((cat: any, index: number) => (
+                <Link key={cat.id} href={`/categories/${cat.slug}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(400px, 60vh, 700px)", overflow: "hidden", textDecoration: "none" }}>
+                  <Image 
+                    src={cat.image || `https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80`} 
+                    alt={cat.name} 
+                    fill 
+                    className="hover-zoom"
+                    style={{ objectFit: "cover" }}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.15)", display: "flex", alignItems: "flex-end", padding: "clamp(24px, 5vw, 64px)" }}>
+                    <div style={{ color: "#fff" }}>
+                      <h3 style={{ marginBottom: 12, textTransform: "uppercase" }}>{cat.name}</h3>
+                      <p className="text-tracked" style={{ fontSize: "0.7rem", fontWeight: 700 }}>Discovery the Selection</p>
                     </div>
-                    <h3 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text-primary)" }}>{cat.name}</h3>
                   </div>
                 </Link>
               ))}
@@ -105,60 +129,47 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Featured Products */}
-      {featured.length > 0 && (
-        <section className="section" style={{ background: "var(--bg-card)" }}>
-          <div className="container-app">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
-              <div>
-                <h2 style={{ fontSize: "2rem", marginBottom: 8 }}>⭐ Featured Products</h2>
-                <p style={{ color: "var(--text-secondary)" }}>Handpicked products just for you</p>
-              </div>
-              <Link href="/products?featured=true" className="btn btn-secondary btn-sm">View All →</Link>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 24 }}>
-              {featured.map((p: { id: number; name: string; slug: string; price: number; comparePrice?: number; images: string[]; rating: number; reviewCount: number; stock: number; isFeatured?: boolean; category?: { name: string; slug: string } }) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Promo Banner */}
-      <section className="section">
+      {/* Brand Story: Art de Vivre */}
+      <section className="section-padding" style={{ background: "#fcfcfc" }}>
         <div className="container-app">
-          <div style={{
-            background: "var(--gradient-primary)", borderRadius: 24, padding: "64px 48px",
-            display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 32,
-            position: "relative", overflow: "hidden",
-          }}>
-            <div style={{ position: "absolute", right: -40, top: -40, width: 300, height: 300, borderRadius: "50%", background: "rgba(255,255,255,0.05)" }} />
-            <div>
-              <p className="badge" style={{ background: "rgba(255,255,255,0.2)", color: "white", marginBottom: 16 }}>🔥 Limited Time</p>
-              <h2 style={{ fontSize: "2.5rem", color: "white", marginBottom: 12 }}>Up to 50% Off</h2>
-              <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "1.1rem" }}>On selected products this week only</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "clamp(40px, 8vw, 120px)", alignItems: "center" }}>
+            <div style={{ position: "relative", height: "clamp(400px, 70vh, 800px)", animation: "fadeIn 1.5s ease" }}>
+              <Image 
+                src="https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&q=80" 
+                alt="Luxury Living" 
+                fill 
+                style={{ objectFit: "cover" }} 
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
             </div>
-            <Link href="/products?sale=true" className="btn" style={{ background: "white", color: "var(--primary-dark)", padding: "16px 36px", borderRadius: 14, fontWeight: 700, fontSize: "1rem" }}>
-              Shop Sale →
-            </Link>
+            <div style={{ padding: "0 20px" }}>
+              <p className="text-tracked" style={{ fontSize: "0.8rem", color: "#888", marginBottom: 24, fontWeight: 600 }}>Heritage & Craft</p>
+              <h2 style={{ marginBottom: 32, lineHeight: 1.1 }}>Sophistication In Every Detail.</h2>
+              <p style={{ fontSize: "1.1rem", color: "#555", lineHeight: 1.8, marginBottom: 48, fontWeight: 300 }}>
+                For over sixty years, ShopNest has been the standard-bearer of French luxury. Each piece is a masterclass in architectural balance, blending timeless aesthetics with the functional needs of the modern home.
+              </p>
+              <Link href="/about" className="btn btn-secondary">
+                Our Story
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* New Arrivals */}
-      {newArrivals.length > 0 && (
-        <section className="section" style={{ paddingTop: 0 }}>
+      {/* Featured Gallery */}
+      {featured.length > 0 && (
+        <section className="section-padding" style={{ background: "#ffffff", borderTop: "1px solid #eee" }}>
           <div className="container-app">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 40 }}>
-              <div>
-                <h2 style={{ fontSize: "2rem", marginBottom: 8 }}>🆕 New Arrivals</h2>
-                <p style={{ color: "var(--text-secondary)" }}>Fresh products added this week</p>
-              </div>
-              <Link href="/products?sort=createdAt_desc" className="btn btn-secondary btn-sm">View All →</Link>
+            <div style={{ textAlign: "center", marginBottom: 80 }}>
+              <h2 style={{ marginBottom: 16 }}>Curated Essentials</h2>
+              <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", fontWeight: 700 }}>Exclusive Design Selections</p>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 24 }}>
-              {newArrivals.map((p: { id: number; name: string; slug: string; price: number; comparePrice?: number; images: string[]; rating: number; reviewCount: number; stock: number; isFeatured?: boolean; category?: { name: string; slug: string } }) => (
+            <div style={{ 
+              display: "grid", 
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", 
+              gap: "clamp(24px, 4vw, 48px)" 
+            }}>
+              {featured.slice(0, 3).map((p: any) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
@@ -166,22 +177,112 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Features */}
-      <section className="section" style={{ background: "var(--bg-card)" }}>
+      {/* New Arrivals - Seasonal Drop */}
+      {newArrivals.length > 0 && (
+        <section style={{ padding: "clamp(60px, 10vw, 120px) 0", background: "#ffffff", borderTop: "1px solid #eee" }}>
+          <div className="container-app">
+            <div style={{ textAlign: "center", marginBottom: "clamp(40px, 8vw, 80px)" }}>
+              <h2 style={{ fontFamily: "Lora, serif", marginBottom: 16 }}>Seasonal Arrivals</h2>
+              <div style={{ width: 60, height: 1, background: "#000", margin: "0 auto" }} />
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: "clamp(24px, 4vw, 48px)" }}>
+              {newArrivals.slice(0, 4).map((p: any) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Services/Features - Minimalist */}
+      <section style={{ padding: "clamp(60px, 8vw, 100px) 0", background: "#000", color: "#fff" }}>
         <div className="container-app">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 32 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: "clamp(32px, 5vw, 64px)" }}>
             {[
-              { icon: "🚚", title: "Free Shipping", desc: "On all orders over $50" },
-              { icon: "🔄", title: "Easy Returns", desc: "30-day hassle-free returns" },
-              { icon: "🔒", title: "Secure Payment", desc: "256-bit SSL encryption" },
-              { icon: "💬", title: "24/7 Support", desc: "Always here to help you" },
-            ].map(({ icon, title, desc }) => (
-              <div key={title} style={{ textAlign: "center", padding: 32 }}>
-                <div style={{ fontSize: "2.5rem", marginBottom: 16 }}>{icon}</div>
-                <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: 8, color: "var(--text-primary)" }}>{title}</h3>
-                <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>{desc}</p>
+              { title: "Complimentary Delivery", desc: "Expert handling for your items" },
+              { title: "Personalised Service", desc: "Dedicated advisors at your choice" },
+              { title: "Secure Transactions", desc: "Certified payment security" },
+              { title: "Worldwide Network", desc: "Present in over 50 countries" },
+            ].map(({ title, desc }) => (
+              <div key={title} style={{ textAlign: "center" }}>
+                <h3 style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 12 }}>{title}</h3>
+                <p style={{ fontSize: "0.85rem", color: "#888", fontWeight: 300 }}>{desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Signature Collections Gallery */}
+      <section className="section-padding" style={{ background: "#ffffff" }}>
+        <div className="container-app">
+          <div style={{ textAlign: "left", marginBottom: 64 }}>
+            <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", marginBottom: 16 }}>Collections</p>
+            <h2>Signature Aesthetics.</h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: 16 }}>
+            <div style={{ position: "relative", height: 500 }}>
+              <Image src="https://images.pexels.com/photos/1571469/pexels-photo-1571469.jpeg" alt="Living Room" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" />
+              <div style={{ position: "absolute", bottom: 40, left: 40, color: "#fff" }}>
+                <p className="text-tracked" style={{ fontSize: "0.7rem", fontWeight: 700 }}>01 / THE LIVING SPACE</p>
+              </div>
+            </div>
+            <div style={{ position: "relative", height: 500 }}>
+              <Image src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80" alt="Dining Room" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" />
+              <div style={{ position: "absolute", bottom: 40, left: 40, color: "#fff" }}>
+                <p className="text-tracked" style={{ fontSize: "0.7rem", fontWeight: 700 }}>02 / THE DINING ROOM</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Press Marquee */}
+      <section style={{ padding: "80px 0", borderTop: "1px solid #eee", borderBottom: "1px solid #eee", background: "#fafafa" }}>
+        <div className="container-app">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", opacity: 1, flexWrap: "wrap", gap: 64 }}>
+            {["VOGUE", "ARCHITECTURAL DIGEST", "ELLE DECOR", "THE NEW YORK TIMES", "WALLPAPER*"].map((brand) => (
+              <span key={brand} style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.4em", color: "#000" }}>{brand}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Designers Section */}
+      <section className="section-padding" style={{ background: "#000", color: "#fff" }}>
+        <div className="container-app">
+          <div style={{ textAlign: "center", marginBottom: 80 }}>
+            <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", marginBottom: 16 }}>The Collaborators</p>
+            <h2 style={{ color: "#fff" }}>Visionary Designers</h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: "clamp(32px, 5vw, 64px)" }}>
+            {[
+              { name: "Sacha Lakic", role: "Speed & Fluidity", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80" },
+              { name: "Kenzo Takada", role: "Floral Fusion", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80" },
+              { name: "Marcel Wanders", role: "Modern Baroque", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" },
+            ].map((designer) => (
+              <div key={designer.name} style={{ textAlign: "center" }}>
+                <div className="grayscale-hover-container" style={{ position: "relative", width: "100%", aspectRatio: "4/5", marginBottom: 24, overflow: "hidden" }}>
+                  <Image src={designer.img} alt={designer.name} fill className="grayscale-hover" style={{ objectFit: "cover" }} sizes="(max-width: 768px) 50vw, 33vw" />
+                </div>
+                <h4 style={{ color: "#fff", fontSize: "1.2rem", marginBottom: 8 }}>{designer.name}</h4>
+                <p className="text-tracked" style={{ fontSize: "0.65rem", color: "#888" }}>{designer.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="section-padding" style={{ background: "#ffffff", borderBottom: "1px solid #eee" }}>
+        <div className="container-app" style={{ textAlign: "center", maxWidth: 640 }}>
+          <h2 style={{ marginBottom: 24 }}>The Inner Circle</h2>
+          <p style={{ color: "#666", marginBottom: 48, fontWeight: 300 }}>
+            Join our exclusive community to receive invitations to private previews and the latest news from the world of ShopNest.
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderBottom: "1px solid #000" }}>
+            <input type="email" placeholder="YOUR EMAIL ADDRESS" style={{ flex: "1 1 200px", border: "none", padding: "16px 0", fontSize: "0.75rem", letterSpacing: "0.1em", outline: "none", textTransform: "uppercase", minWidth: 0 }} />
+            <button className="btn btn-ghost" style={{ padding: "16px 0 16px 24px", fontSize: "0.7rem", flexShrink: 0 }}>SUBSCRIBE</button>
           </div>
         </div>
       </section>

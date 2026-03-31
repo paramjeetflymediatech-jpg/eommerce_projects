@@ -10,10 +10,15 @@ async function ensureDB() {
   if (!dbReady) { await syncDB(); dbReady = true; }
 }
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await ensureDB();
+  const { id } = await params;
+  const isNumeric = !isNaN(Number(id));
   const product = await Product.findOne({
-    where: { id: params.id, isActive: true },
+    where: { 
+      [isNumeric ? "id" : "slug"]: id,
+      isActive: true 
+    },
     include: [
       { model: Category, as: "category", attributes: ["id", "name", "slug"] },
       {
@@ -41,12 +46,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return apiResponse({ product, related });
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await ensureDB();
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") return apiError("Unauthorized", 401);
 
-  const product = await Product.findByPk(params.id);
+  const product = await Product.findByPk(id);
   if (!product) return apiError("Product not found", 404);
 
   const body = await req.json();
@@ -54,12 +60,13 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   return apiResponse(product);
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   await ensureDB();
+  const { id } = await params;
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") return apiError("Unauthorized", 401);
 
-  const product = await Product.findByPk(params.id);
+  const product = await Product.findByPk(id);
   if (!product) return apiError("Product not found", 404);
 
   await product.update({ isActive: false }); // soft delete

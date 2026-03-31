@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
-import { formatPrice, calculateDiscount } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils";
 
 interface Product {
   id: number;
@@ -20,24 +21,13 @@ interface Product {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
-  const addItem = useCartStore((s) => s.addItem);
-  const openCart = useCartStore((s) => s.openCart);
   const toggleItem = useWishlistStore((s) => s.toggleItem);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted(product.id));
-  const discount = calculateDiscount(product.price, product.comparePrice || 0);
+  const [mounted, setMounted] = useState(false);
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      images: product.images,
-      slug: product.slug,
-      stock: product.stock,
-    });
-    openCart();
-  };
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -53,85 +43,164 @@ export default function ProductCard({ product }: { product: Product }) {
   const imageUrl = product.images?.[0] || "/placeholder-product.jpg";
 
   return (
-    <Link href={`/products/${product.slug}`} style={{ textDecoration: "none" }}>
-      <div className="card" style={{ overflow: "hidden", position: "relative" }}>
-        {/* Image */}
-        <div style={{ position: "relative", aspectRatio: "1", overflow: "hidden", background: "var(--bg-elevated)" }}>
-          <Image
-            src={imageUrl}
-            alt={product.name}
-            fill
-            style={{ objectFit: "cover", transition: "transform 0.4s ease" }}
-            sizes="(max-width: 768px) 100vw, 33vw"
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-          />
-          {/* Badges */}
-          <div style={{ position: "absolute", top: 12, left: 12, display: "flex", flexDirection: "column", gap: 6 }}>
-            {product.isFeatured && <span className="badge badge-primary">⭐ Featured</span>}
-            {discount > 0 && <span className="badge badge-danger">-{discount}%</span>}
-            {product.stock === 0 && <span className="badge" style={{ background: "rgba(0,0,0,0.7)", color: "var(--text-muted)" }}>Out of Stock</span>}
-          </div>
-          {/* Wishlist */}
-          <button
-            onClick={handleWishlist}
-            style={{
-              position: "absolute", top: 12, right: 12,
-              width: 36, height: 36, borderRadius: "50%",
-              background: isWishlisted ? "var(--secondary)" : "rgba(0,0,0,0.5)",
-              border: "none", cursor: "pointer", fontSize: "1rem",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "all 0.2s ease",
-              backdropFilter: "blur(8px)",
-            }}
-          >
-            {isWishlisted ? "❤️" : "🤍"}
-          </button>
+    <Link href={`/products/${product.slug}`} style={styles.card}>
+      {/* Image Container */}
+      <div style={styles.imageWrapper} className="hover-parent">
+        <Image
+          src={imageUrl}
+          alt={product.name}
+          fill
+          style={styles.image}
+          className="hover-image"
+          sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+        />
+        
+        {/* Hover Overlay */}
+        <div style={styles.overlay} className="hover-overlay">
+          <span style={styles.viewText}>View Product</span>
         </div>
 
-        {/* Content */}
-        <div style={{ padding: "16px" }}>
+        {/* Wishlist Toggle */}
+        <button onClick={handleWishlist} style={styles.wishlistBtn}>
+          {mounted ? (isWishlisted ? "●" : "○") : "○"}
+        </button>
+
+        {/* Featured Tag */}
+        {product.isFeatured && (
+          <div style={styles.featuredTag}>Selected</div>
+        )}
+      </div>
+
+      {/* Product Information */}
+      <div style={styles.content}>
+        <div style={styles.categoryArea}>
           {product.category && (
-            <p style={{ fontSize: "0.75rem", color: "var(--primary-light)", fontWeight: 600, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-              {product.category.name}
-            </p>
+            <span style={styles.category}>{product.category.name}</span>
           )}
-          <h3 style={{ fontSize: "0.95rem", fontWeight: 600, color: "var(--text-primary)", marginBottom: 8, lineHeight: 1.4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-            {product.name}
-          </h3>
-
-          {/* Rating */}
-          {product.reviewCount > 0 && (
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12 }}>
-              <div className="stars" style={{ fontSize: "0.8rem" }}>
-                {"★".repeat(Math.round(product.rating))}{"☆".repeat(5 - Math.round(product.rating))}
-              </div>
-              <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>({product.reviewCount})</span>
-            </div>
+        </div>
+        
+        <h3 style={styles.name}>{product.name}</h3>
+        
+        <div style={styles.priceRow}>
+          <span style={styles.price}>{formatPrice(product.price)}</span>
+          {product.comparePrice && product.comparePrice > product.price && (
+            <span style={styles.comparePrice}>{formatPrice(product.comparePrice)}</span>
           )}
-
-          {/* Price + Cart */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12 }}>
-            <div>
-              <span className="price" style={{ fontSize: "1.1rem" }}>{formatPrice(product.price)}</span>
-              {product.comparePrice && product.comparePrice > product.price && (
-                <span className="price-compare" style={{ marginLeft: 8, fontSize: "0.85rem" }}>
-                  {formatPrice(product.comparePrice)}
-                </span>
-              )}
-            </div>
-
-            <button
-              onClick={handleAddToCart}
-              disabled={product.stock === 0}
-              className="btn btn-primary btn-sm"
-              style={{ minWidth: 44, padding: "8px 12px" }}
-            >
-              {product.stock === 0 ? "—" : "🛒"}
-            </button>
-          </div>
         </div>
       </div>
+
+      <style>{`
+        .hover-parent:hover .hover-image {
+          transform: scale(1.05);
+        }
+        .hover-parent:hover .hover-overlay {
+          opacity: 1;
+        }
+        .hover-image {
+          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+      `}</style>
     </Link>
   );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+  card: {
+    display: "block",
+    textDecoration: "none",
+    color: "#000",
+    position: "relative",
+  },
+  imageWrapper: {
+    position: "relative",
+    aspectRatio: "11/14",
+    background: "#f9f9f9",
+    overflow: "hidden",
+    marginBottom: "24px",
+  },
+  image: {
+    objectFit: "cover",
+  },
+  overlay: {
+    position: "absolute",
+    inset: 0,
+    background: "rgba(0,0,0,0.03)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    opacity: 0,
+    transition: "opacity 0.4s ease",
+  },
+  viewText: {
+    fontSize: "0.6rem",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.2em",
+    color: "#000",
+    background: "#fff",
+    padding: "12px 24px",
+    border: "1px solid #000",
+  },
+  wishlistBtn: {
+    position: "absolute",
+    top: "20px",
+    right: "20px",
+    background: "none",
+    border: "none",
+    padding: 0,
+    cursor: "pointer",
+    fontSize: "14px",
+    color: "#000",
+    zIndex: 10,
+    transition: "transform 0.3s ease",
+  },
+  featuredTag: {
+    position: "absolute",
+    top: "0",
+    left: "0",
+    background: "#000",
+    color: "#fff",
+    padding: "6px 12px",
+    fontSize: "0.55rem",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.2em",
+  },
+  content: {
+    padding: "0 4px",
+  },
+  categoryArea: {
+    marginBottom: "8px",
+    height: "12px",
+  },
+  category: {
+    fontSize: "0.6rem",
+    color: "#ccc",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.15em",
+  },
+  name: {
+    fontSize: "0.95rem",
+    fontWeight: 500,
+    letterSpacing: "0.02em",
+    lineHeight: 1.4,
+    marginBottom: "10px",
+    textTransform: "uppercase",
+  },
+  priceRow: {
+    display: "flex",
+    alignItems: "baseline",
+    gap: "12px",
+  },
+  price: {
+    fontSize: "0.9rem",
+    fontWeight: 800,
+    letterSpacing: "0.05em",
+  },
+  comparePrice: {
+    fontSize: "0.8rem",
+    color: "#ccc",
+    textDecoration: "line-through",
+  },
+};

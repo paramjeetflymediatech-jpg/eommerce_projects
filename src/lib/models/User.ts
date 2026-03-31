@@ -8,19 +8,31 @@ export interface UserAttributes {
   passwordHash: string;
   role: "USER" | "ADMIN";
   avatar?: string;
+  isVerified: boolean;
+  otp?: string | null;
+  otpExpiry?: Date | null;
+  token?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, "id" | "role" | "avatar"> {}
+interface UserCreationAttributes
+  extends Optional<UserAttributes, "id" | "role" | "avatar" | "isVerified" | "otp" | "otpExpiry" | "token"> {}
 
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+class User
+  extends Model<UserAttributes, UserCreationAttributes>
+  implements UserAttributes
+{
   declare id: number;
   declare name: string;
   declare email: string;
   declare passwordHash: string;
   declare role: "USER" | "ADMIN";
   declare avatar: string;
+  declare isVerified: boolean;
+  declare otp: string | null;
+  declare otpExpiry: Date | null;
+  declare token: string | null;
   declare createdAt: Date;
   declare updatedAt: Date;
 }
@@ -33,6 +45,10 @@ User.init(
     passwordHash: { type: DataTypes.STRING(255), allowNull: false },
     role: { type: DataTypes.ENUM("USER", "ADMIN"), defaultValue: "USER" },
     avatar: { type: DataTypes.STRING(500), allowNull: true },
+    isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
+    otp: { type: DataTypes.STRING(6), allowNull: true },
+    otpExpiry: { type: DataTypes.DATE, allowNull: true },
+    token: { type: DataTypes.TEXT, allowNull: true },
   },
   { sequelize, modelName: "User", tableName: "users" }
 );
