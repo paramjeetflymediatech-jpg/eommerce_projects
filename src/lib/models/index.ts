@@ -77,7 +77,7 @@ export const syncDB = async () => {
       // Authenticate and sync tables — database must already exist
       await sequelize.authenticate();
       console.log("✅ MySQL connection established.");
-      await sequelize.sync({ alter: false });
+      await sequelize.sync({ alter: true });
       console.log("✅ All tables synced.");
       dbReady = true;
     } catch (error) {

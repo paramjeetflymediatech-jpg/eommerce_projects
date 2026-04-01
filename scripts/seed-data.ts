@@ -12,7 +12,7 @@ const seedCategories = [
     name: "Bedroom",
     slug: "bedroom",
     description: "Comfortable beds and storage for your bedroom",
-    image: "https://images.unsplash.com/photo-1505693314120-0d4438678210?auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80",
   },
   {
     name: "Dining",
@@ -64,7 +64,7 @@ const seedProducts = [
     description: "A statement bed frame upholstered in soft charcoal velvet with a tufted headboard.",
     shortDescription: "King size velvet bed with headboard",
     stock: 8,
-    images: ["https://images.unsplash.com/photo-1505693314120-0d4438678210?auto=format&fit=crop&q=80"],
+    images: ["https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80"],
     isFeatured: true,
   },
   {
@@ -118,12 +118,15 @@ async function seed() {
 
     console.log("📂 Seeding categories...");
     for (const catData of seedCategories) {
-      const [category] = await Category.findOrCreate({
+      const [category, created] = await Category.findOrCreate({
         where: { slug: catData.slug },
         defaults: catData,
       });
+      if (!created) {
+        await category.update(catData);
+      }
       categoryMap[catData.slug] = category.id;
-      console.log(`✅ Category: ${catData.name}`);
+      console.log(`✅ Category: ${catData.name}${created ? "" : " (Updated)"}`);
     }
 
     console.log("🛒 Seeding products...");
@@ -135,7 +138,7 @@ async function seed() {
       }
 
       const { categorySlug, ...productAttributes } = prodData;
-      
+
       const [product, created] = await Product.findOrCreate({
         where: { slug: prodData.slug },
         defaults: {
@@ -150,7 +153,8 @@ async function seed() {
       if (created) {
         console.log(`✅ Product: ${prodData.name}`);
       } else {
-        console.log(`ℹ️ Product already exists: ${prodData.name}`);
+        await product.update({ ...productAttributes, categoryId });
+        console.log(`ℹ️ Product updated: ${prodData.name}`);
       }
     }
 

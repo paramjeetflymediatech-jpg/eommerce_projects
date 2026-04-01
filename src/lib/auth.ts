@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { User } from "./models";
 import * as jose from "jose";
@@ -19,7 +20,7 @@ export const authOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         const user = await User.findOne({ where: { email: credentials.email } });
-        if (!user) return null;
+        if (!user || !user.passwordHash) return null;
 
         // Block Admin accounts from the default customer storefront login 
         // unless they are explicitly using the admin login portal
@@ -44,8 +45,45 @@ export const authOptions = {
         };
       },
     }),
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
   ],
   callbacks: {
+    async signIn({ user, account, profile }: any) {
+      if (account.provider === "google") {
+        try {
+          const [dbUser, created] = await User.findOrCreate({
+            where: { email: user.email },
+            defaults: {
+              name: user.name,
+              email: user.email,
+              avatar: user.image,
+              googleId: account.providerAccountId,
+              isVerified: true, // Google accounts are pre-verified
+              role: "USER"
+            }
+          });
+
+          if (!created && !dbUser.googleId) {
+            await dbUser.update({ googleId: account.providerAccountId, isVerified: true });
+          }
+
+          user.id = String(dbUser.id);
+          user.role = dbUser.role;
+          user.avatar = dbUser.avatar;
+          return true;
+        } catch (e: any) {
+          console.error("❌ GOOGLE_SIGNIN_ERROR:", e.message || e);
+          if (e.name === 'SequelizeUniqueConstraintError') {
+             console.error("  🔍 Resource conflict (likely email/googleId already exists):", e.fields);
+          }
+          return false;
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token.id = user.id;
@@ -56,13 +94,13 @@ export const authOptions = {
         try {
           const dbUser = await User.findByPk(user.id);
           if (dbUser) {
-             const jwtToken = await new jose.SignJWT({ id: user.id, email: user.email, role: user.role })
-               .setProtectedHeader({ alg: "HS256" })
-               .setIssuedAt()
-               .setExpirationTime("30d")
-               .sign(JWT_SECRET);
-             
-             await dbUser.update({ token: jwtToken });
+            const jwtToken = await new jose.SignJWT({ id: user.id, email: user.email, role: user.role })
+              .setProtectedHeader({ alg: "HS256" })
+              .setIssuedAt()
+              .setExpirationTime("30d")
+              .sign(JWT_SECRET);
+
+            await dbUser.update({ token: jwtToken });
           }
         } catch (e) {
           console.error("Failed to save JWT to DB:", e);
@@ -99,6 +137,7 @@ export const authOptions = {
     strategy: "jwt" as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
+  debug: true,
   secret: process.env.NEXTAUTH_SECRET,
 };
 

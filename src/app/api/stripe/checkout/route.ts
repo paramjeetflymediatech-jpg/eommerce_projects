@@ -13,7 +13,10 @@ async function ensureDB() {
 export async function POST(req: NextRequest) {
   await ensureDB();
   const session = await getServerSession(authOptions);
-  if (!session) return apiError("Unauthorized", 401);
+  if (!session) {
+    console.warn("⚠️ [STRIPE_CHECKOUT] Unauthorized access attempt (no session found)");
+    return apiError("Unauthorized", 401);
+  }
 
   const body = await req.json();
   const { items, shippingAddress } = body;

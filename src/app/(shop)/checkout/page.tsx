@@ -7,7 +7,7 @@ import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 
 export default function CheckoutPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const { items, getTotal, clearCart } = useCartStore();
   const [mounted, setMounted] = useState(false);
@@ -23,6 +23,12 @@ export default function CheckoutPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (mounted && status === "unauthenticated") {
+      router.push(`/login?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
+    }
+  }, [mounted, status, router]);
 
   useEffect(() => {
     if (session?.user) {

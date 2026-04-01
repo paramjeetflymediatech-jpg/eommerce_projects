@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import GoogleButton from "@/components/auth/GoogleButton";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -168,6 +169,14 @@ export default function RegisterPage() {
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
+
+        <div style={styles.divider}>
+          <span style={styles.dividerLine} />
+          <span style={styles.dividerText}>or</span>
+          <span style={styles.dividerLine} />
+        </div>
+
+        <GoogleButton text="Sign up with Google" />
 
         <p style={styles.footer}>
           Already have an account?{" "}
@@ -347,6 +356,23 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: "pointer",
     fontSize: "1rem",
     padding: 0,
+  },
+  divider: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    margin: "28px 0 20px",
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    background: "#eee",
+  },
+  dividerText: {
+    fontSize: "0.75rem",
+    color: "#aaa",
+    textTransform: "uppercase",
+    letterSpacing: "0.1em",
   },
 };
 
