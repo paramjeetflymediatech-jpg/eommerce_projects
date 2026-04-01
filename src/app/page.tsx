@@ -51,7 +51,7 @@ export default async function HomePage() {
             "/14807010_3840_2160_25fps.mp4",
             "/15483565_2160_3840_60fps.mp4"
           ].map((src, i) => (
-            <div key={i} style={{ flex: 1, height: "100%", position: "relative" }}>
+            <div key={i} className="hero-video-item">
               <video 
                 autoPlay 
                 muted 
@@ -67,35 +67,36 @@ export default async function HomePage() {
           ))}
         </div>
         
-        <div className="container-app" style={{ position: "relative", textAlign: "center", color: "#fff", zIndex: 2, padding: "0 20px" }}>
+        <div className="container-app" style={{ position: "relative", textAlign: "center", color: "#fff", zIndex: 2, padding: "0 24px" }}>
           <h1 className="animate-fade" style={{ 
-            fontSize: "clamp(2rem, 10vw, 5rem)",
+            fontSize: "clamp(2.5rem, 12vw, 6rem)",
             marginBottom: 24, 
             textTransform: "uppercase",
             fontWeight: 500,
-            letterSpacing: "-0.02em"
+            letterSpacing: "-0.03em",
+            lineHeight: 0.95
           }}>
-            The French Art de Vivre
+            The French <br className="show-mobile" /> Art de Vivre
           </h1>
           <p className="animate-fade" style={{ 
-            fontSize: "clamp(0.75rem, 2.5vw, 1rem)", 
-            letterSpacing: "0.3em", 
+            fontSize: "clamp(0.65rem, 2.5vw, 0.85rem)", 
+            letterSpacing: "0.4em", 
             textTransform: "uppercase", 
             marginBottom: 48, 
-            fontWeight: 300, 
+            fontWeight: 400, 
             opacity: 0.8 
           }}>
             Iconic Designs. Exceptional Craftsmanship. Since 1960.
           </p>
-          <div className="animate-fade" style={{ animationDelay: "0.3s" }}>
+          <div className="animate-fade" style={{ animationDelay: "0.4s" }}>
             <Link href="/products" className="btn btn-primary" style={{ 
-              padding: "clamp(12px, 2vw, 20px) clamp(30px, 5vw, 60px)", 
+              padding: "20px 56px", 
               background: "#fff", 
               color: "#000",
-              fontSize: "clamp(0.6rem, 1.5vw, 0.75rem)",
-              letterSpacing: "0.2em"
+              fontSize: "0.7rem",
+              letterSpacing: "0.25em"
             }}>
-              Explore Collections
+              SHOP COLLECTIONS
             </Link>
           </div>
         </div>
@@ -107,19 +108,19 @@ export default async function HomePage() {
           <div className="container-app">
             <div className="grid-luxury">
               {categories.slice(0, 4).map((cat: any, index: number) => (
-                <Link key={cat.id} href={`/categories/${cat.slug}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(400px, 60vh, 700px)", overflow: "hidden", textDecoration: "none" }}>
+                <Link key={cat.id} href={`/categories/${cat.slug}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(450px, 70vh, 750px)", overflow: "hidden", textDecoration: "none" }}>
                   <Image 
                     src={cat.image || `https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80`} 
                     alt={cat.name} 
                     fill 
                     className="hover-zoom"
                     style={{ objectFit: "cover" }}
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
                   />
-                  <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.15)", display: "flex", alignItems: "flex-end", padding: "clamp(24px, 5vw, 64px)" }}>
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", display: "flex", alignItems: "flex-end", padding: "clamp(32px, 6vw, 80px)" }}>
                     <div style={{ color: "#fff" }}>
-                      <h3 style={{ marginBottom: 12, textTransform: "uppercase" }}>{cat.name}</h3>
-                      <p className="text-tracked" style={{ fontSize: "0.7rem", fontWeight: 700 }}>Discovery the Selection</p>
+                      <p className="text-tracked" style={{ fontSize: "0.6rem", fontWeight: 700, marginBottom: 8, opacity: 0.7 }}>Discovery</p>
+                      <h3 style={{ fontSize: "1.8rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>{cat.name}</h3>
                     </div>
                   </div>
                 </Link>
@@ -130,26 +131,26 @@ export default async function HomePage() {
       )}
 
       {/* Brand Story: Art de Vivre */}
-      <section className="section-padding" style={{ background: "#fcfcfc" }}>
+      <section className="section-padding" style={{ background: "#f9f9f9" }}>
         <div className="container-app">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "clamp(40px, 8vw, 120px)", alignItems: "center" }}>
-            <div style={{ position: "relative", height: "clamp(400px, 70vh, 800px)", animation: "fadeIn 1.5s ease" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 400px), 1fr))", gap: "clamp(48px, 10vw, 140px)", alignItems: "center" }}>
+            <div style={{ position: "relative", height: "clamp(450px, 75vh, 850px)", animation: "fadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1)" }}>
               <Image 
                 src="https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?auto=format&fit=crop&q=80" 
                 alt="Luxury Living" 
                 fill 
                 style={{ objectFit: "cover" }} 
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
-            <div style={{ padding: "0 20px" }}>
-              <p className="text-tracked" style={{ fontSize: "0.8rem", color: "#888", marginBottom: 24, fontWeight: 600 }}>Heritage & Craft</p>
-              <h2 style={{ marginBottom: 32, lineHeight: 1.1 }}>Sophistication In Every Detail.</h2>
-              <p style={{ fontSize: "1.1rem", color: "#555", lineHeight: 1.8, marginBottom: 48, fontWeight: 300 }}>
+            <div style={{ padding: "0 4px" }}>
+              <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", marginBottom: 24, fontWeight: 700 }}>Heritage & Craft</p>
+              <h2 style={{ marginBottom: 32, lineHeight: 1, fontSize: "clamp(2.4rem, 6vw, 4.2rem)" }}>Sophistication In Every Detail.</h2>
+              <p style={{ fontSize: "1.1rem", color: "#444", lineHeight: 1.8, marginBottom: 48, fontWeight: 300, maxWidth: "540px" }}>
                 For over sixty years, ShopNest has been the standard-bearer of French luxury. Each piece is a masterclass in architectural balance, blending timeless aesthetics with the functional needs of the modern home.
               </p>
-              <Link href="/about" className="btn btn-secondary">
-                Our Story
+              <Link href="/about" className="btn btn-secondary" style={{ padding: "18px 48px" }}>
+                OUR STORY
               </Link>
             </div>
           </div>
@@ -158,16 +159,16 @@ export default async function HomePage() {
 
       {/* Featured Gallery */}
       {featured.length > 0 && (
-        <section className="section-padding" style={{ background: "#ffffff", borderTop: "1px solid #eee" }}>
+        <section className="section-padding" style={{ background: "#ffffff" }}>
           <div className="container-app">
-            <div style={{ textAlign: "center", marginBottom: 80 }}>
+            <div style={{ textAlign: "center", marginBottom: "clamp(64px, 10vw, 100px)" }}>
               <h2 style={{ marginBottom: 16 }}>Curated Essentials</h2>
-              <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", fontWeight: 700 }}>Exclusive Design Selections</p>
+              <p className="text-tracked" style={{ fontSize: "0.7rem", color: "#888", fontWeight: 700, opacity: 0.6 }}>Exclusive Design Selections</p>
             </div>
             <div style={{ 
               display: "grid", 
               gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", 
-              gap: "clamp(24px, 4vw, 48px)" 
+              gap: "clamp(32px, 5vw, 64px)" 
             }}>
               {featured.slice(0, 3).map((p: any) => (
                 <ProductCard key={p.id} product={p} />
@@ -195,9 +196,9 @@ export default async function HomePage() {
       )}
 
       {/* Services/Features - Minimalist */}
-      <section style={{ padding: "clamp(60px, 8vw, 100px) 0", background: "#000", color: "#fff" }}>
+      <section style={{ padding: "clamp(80px, 12vw, 140px) 0", background: "#000", color: "#fff" }}>
         <div className="container-app">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(180px, 100%), 1fr))", gap: "clamp(32px, 5vw, 64px)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "clamp(48px, 6vw, 80px)" }}>
             {[
               { title: "Complimentary Delivery", desc: "Expert handling for your items" },
               { title: "Personalised Service", desc: "Dedicated advisors at your choice" },
@@ -205,8 +206,8 @@ export default async function HomePage() {
               { title: "Worldwide Network", desc: "Present in over 50 countries" },
             ].map(({ title, desc }) => (
               <div key={title} style={{ textAlign: "center" }}>
-                <h3 style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 12 }}>{title}</h3>
-                <p style={{ fontSize: "0.85rem", color: "#888", fontWeight: 300 }}>{desc}</p>
+                <h3 style={{ fontSize: "0.7rem", fontWeight: 800, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: 16, color: "#fff" }}>{title}</h3>
+                <p style={{ fontSize: "0.85rem", color: "#999", fontWeight: 400, maxWidth: "240px", margin: "0 auto" }}>{desc}</p>
               </div>
             ))}
           </div>

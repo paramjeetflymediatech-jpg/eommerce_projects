@@ -22,10 +22,10 @@ export default function Header() {
   }, [mobileOpen]);
 
   const navLinks = [
-    { label: "COLLECTION", href: "/products" },
-    { label: "DESIGNERS", href: "/products" },
+    { label: "SHOP ALL", href: "/products" },
     { label: "STORY", href: "/about" },
     { label: "STORES", href: "/" },
+    { label: "ACCOUNT", href: "/account" },
   ];
 
   return (
@@ -48,21 +48,33 @@ export default function Header() {
       >
         <div className="header-container">
           {/* LEFT - MENU */}
-          <div style={{ minWidth: 60 }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
             <button
               onClick={() => setMobileOpen(true)}
               style={{
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                fontSize: "0.65rem",
-                fontWeight: 700,
-                letterSpacing: "0.2em",
-                color: "#000",
-                whiteSpace: "nowrap",
+                padding: "8px 0",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
             >
-              MENU
+              <div style={{ width: 18, display: "flex", flexDirection: "column", gap: 3 }}>
+                <span style={{ height: 1.5, background: "#000", width: "100%" }} />
+                <span style={{ height: 1.5, background: "#000", width: "100%" }} />
+              </div>
+              <span style={{ 
+                fontSize: "0.65rem", 
+                fontWeight: 700, 
+                letterSpacing: "0.2em", 
+                color: "#000",
+                display: "inline-block",
+                marginTop: 1
+              }}>
+                MENU
+              </span>
             </button>
           </div>
 
@@ -72,10 +84,10 @@ export default function Header() {
               <span
                 style={{
                   fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(1rem, 4vw, 1.3rem)",
+                  fontSize: "clamp(1rem, 4vw, 1.25rem)",
                   fontWeight: 500,
                   color: "#000",
-                  letterSpacing: "0.12em",
+                  letterSpacing: "0.15em",
                   textTransform: "uppercase",
                 }}
               >
@@ -85,7 +97,7 @@ export default function Header() {
           </div>
 
           {/* RIGHT - BAG */}
-          <div style={{ minWidth: 60, textAlign: "right" }}>
+          <div style={{ textAlign: "right" }}>
             <button
               onClick={() => {
                 setMobileOpen(false);
@@ -99,10 +111,12 @@ export default function Header() {
                 fontSize: "0.65rem",
                 fontWeight: 700,
                 letterSpacing: "0.15em",
-                whiteSpace: "nowrap",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4
               }}
             >
-              BAG ({mounted ? cartCount : 0})
+              BAG <span style={{ opacity: 0.5 }}>({mounted ? cartCount : 0})</span>
             </button>
           </div>
         </div>
@@ -118,7 +132,8 @@ export default function Header() {
           background: "rgba(0,0,0,0.4)",
           opacity: mobileOpen ? 1 : 0,
           pointerEvents: mobileOpen ? "auto" : "none",
-          transition: "opacity 0.3s ease",
+          transition: "opacity 0.4s ease",
+          backdropFilter: "blur(2px)",
         }}
       />
 
@@ -129,14 +144,15 @@ export default function Header() {
           top: 0,
           left: 0,
           bottom: 0,
-          width: "85vw",
-          maxWidth: "320px",
+          width: "100%",
+          maxWidth: "360px",
           background: "#fff",
           zIndex: 1100,
           transform: mobileOpen ? "translateX(0)" : "translateX(-100%)",
-          transition: "transform 0.4s ease",
+          transition: "transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
           display: "flex",
           flexDirection: "column",
+          boxShadow: "20px 0 50px rgba(0,0,0,0.1)",
         }}
       >
         {/* DRAWER HEADER */}
@@ -144,11 +160,19 @@ export default function Header() {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            padding: "20px",
-            borderBottom: "1px solid #eee",
+            alignItems: "center",
+            padding: "24px 32px",
+            borderBottom: "1px solid #f5f5f5",
           }}
         >
-          <span style={{ fontWeight: 600 }}>ShopNest</span>
+          <span style={{ 
+            fontSize: "0.75rem", 
+            fontWeight: 700, 
+            letterSpacing: "0.2em",
+            textTransform: "uppercase" 
+          }}>
+            ShopNest
+          </span>
           <button
             onClick={() => setMobileOpen(false)}
             style={{
@@ -156,6 +180,8 @@ export default function Header() {
               border: "none",
               fontSize: "1.2rem",
               cursor: "pointer",
+              padding: "4px",
+              opacity: 0.5
             }}
           >
             ✕
@@ -163,57 +189,92 @@ export default function Header() {
         </div>
 
         {/* NAV */}
-        <div style={{ padding: "20px", flex: 1 }}>
-          {navLinks.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              onClick={() => setMobileOpen(false)}
-              style={{
-                display: "block",
-                marginBottom: "20px",
-                fontSize: "1.2rem",
-                color: "#000",
-                textDecoration: "none",
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
-
-          <hr style={{ margin: "20px 0" }} />
-
-          {session ? (
-            <>
+        <div style={{ padding: "40px 32px", flex: 1, display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            {navLinks.map((item) => (
               <Link
-                href="/account"
-                style={{ display: "block", marginBottom: "10px" }}
-              >
-                {session.user?.name}
-              </Link>
-              <button
-                onClick={() => signOut()}
+                key={item.label}
+                href={item.href}
+                onClick={() => setMobileOpen(false)}
                 style={{
-                  background: "none",
-                  border: "none",
-                  cursor: "pointer",
+                  fontSize: "1.1rem",
+                  fontWeight: 400,
                   color: "#000",
+                  textDecoration: "none",
+                  letterSpacing: "-0.01em"
                 }}
               >
-                Logout
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                style={{ display: "block", marginBottom: "10px" }}
-              >
-                SIGN IN
+                {item.label}
               </Link>
-              <Link href="/register">CREATE ACCOUNT</Link>
-            </>
-          )}
+            ))}
+          </div>
+
+          <div style={{ marginTop: "auto", borderTop: "1px solid #f5f5f5", paddingTop: "32px" }}>
+            {session ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <p style={{ fontSize: "0.85rem", color: "#888", margin: 0 }}>
+                  Logged in as <span style={{ color: "#000", fontWeight: 600 }}>{session.user?.name}</span>
+                </p>
+                <div style={{ display: "flex", gap: "24px" }}>
+                  <Link
+                    href="/account"
+                    onClick={() => setMobileOpen(false)}
+                    style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textDecoration: "none", color: "#000" }}
+                  >
+                    MY ACCOUNT
+                  </Link>
+                  <button
+                    onClick={() => signOut()}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "#888",
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.1em",
+                      padding: 0
+                    }}
+                  >
+                    LOGOUT
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  style={{ 
+                    fontSize: "0.75rem", 
+                    fontWeight: 700, 
+                    letterSpacing: "0.15em", 
+                    textDecoration: "none", 
+                    color: "#000",
+                    background: "#f5f5f5",
+                    padding: "16px",
+                    textAlign: "center"
+                  }}
+                >
+                  SIGN IN
+                </Link>
+                <Link 
+                  href="/register" 
+                  onClick={() => setMobileOpen(false)}
+                  style={{ 
+                    fontSize: "0.75rem", 
+                    fontWeight: 700, 
+                    letterSpacing: "0.15em", 
+                    textDecoration: "none", 
+                    color: "#888",
+                    textAlign: "center"
+                  }}
+                >
+                  CREATE ACCOUNT
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -221,17 +282,17 @@ export default function Header() {
       <style jsx>{`
         .header-container {
           display: grid;
-          grid-template-columns: auto 1fr auto;
+          grid-template-columns: 80px 1fr 80px;
           align-items: center;
           width: 100%;
-          padding: 12px 16px; /* mobile */
-          gap: 8px;
+          padding: 0 16px;
+          height: 100%;
         }
 
         @media (min-width: 1024px) {
           .header-container {
-            padding-left: 80px;
-            padding-right: 80px;
+            grid-template-columns: 1fr auto 1fr;
+            padding: 0 40px;
           }
         }
       `}</style>

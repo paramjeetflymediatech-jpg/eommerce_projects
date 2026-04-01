@@ -6,35 +6,59 @@ export default function Footer() {
   return (
     <footer style={{
       background: "#ffffff",
-      borderTop: "1px solid #eee",
-      marginTop: 120,
-      padding: "100px 0 60px",
+      borderTop: "1px solid #f5f5f5",
+      marginTop: "clamp(80px, 12vw, 140px)",
+      padding: "clamp(60px, 10vw, 120px) 0 clamp(40px, 6vw, 80px)",
     }}>
       <div className="container-app">
-        <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr", gap: 80, marginBottom: 80 }}>
+        <div className="footer-grid" style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))", 
+          gap: "clamp(48px, 6vw, 80px)", 
+          marginBottom: "clamp(64px, 8vw, 100px)" 
+        }}>
           {/* Brand */}
-          <div>
+          <div style={{ maxWidth: "320px" }}>
             <div style={{ marginBottom: 32 }}>
-              <span style={{ fontFamily: "Lora, serif", fontSize: "1.5rem", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              <span style={{ 
+                fontFamily: "var(--font-serif)", 
+                fontSize: "1.4rem", 
+                fontWeight: 500, 
+                textTransform: "uppercase", 
+                letterSpacing: "0.15em" 
+              }}>
                 ShopNest
               </span>
             </div>
-            <p style={{ color: "#888", lineHeight: 1.8, fontSize: "0.9rem", maxWidth: 300, fontWeight: 300 }}>
+            <p style={{ color: "#777", lineHeight: 1.8, fontSize: "0.95rem", fontWeight: 300 }}>
               The French Art de Vivre. Discover iconic furniture and interior designs curated for the modern legacy.
             </p>
           </div>
 
           {/* Navigation Columns */}
           {[
-            { title: "Collections", links: [{ label: "All Products", href: "/products" }, { label: "New Arrivals", href: "/products" }, { label: "Featured", href: "/products" }, { label: "Sale", href: "/products" }] },
+            { title: "Collections", links: [{ label: "All Items", href: "/products" }, { label: "New Arrivals", href: "/products" }, { label: "Featured", href: "/products" }, { label: "Sale", href: "/products" }] },
             { title: "The Brand", links: [{ label: "Our Story", href: "/about" }, { label: "Designers", href: "/products" }, { label: "Showrooms", href: "/" }, { label: "Contact", href: "/" }] },
             { title: "Services", links: [{ label: "Delivery", href: "/" }, { label: "Returns", href: "/" }, { label: "Warranty", href: "/" }, { label: "FAQ", href: "/" }] },
           ].map((col) => (
             <div key={col.title}>
-              <h4 style={{ fontSize: "0.7rem", fontWeight: 700, marginBottom: 32, color: "#000", letterSpacing: "0.2em", textTransform: "uppercase" }}>{col.title}</h4>
-              <nav style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <h4 style={{ 
+                fontSize: "0.65rem", 
+                fontWeight: 800, 
+                marginBottom: 24, 
+                color: "#000", 
+                letterSpacing: "0.25em", 
+                textTransform: "uppercase" 
+              }}>{col.title}</h4>
+              <nav style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 {col.links.map((link) => (
-                  <Link key={link.label} href={link.href} style={{ color: "#666", textDecoration: "none", fontSize: "0.85rem", fontWeight: 400 }}>
+                  <Link key={link.label} href={link.href} style={{ 
+                    color: "#666", 
+                    textDecoration: "none", 
+                    fontSize: "0.85rem", 
+                    fontWeight: 400,
+                    transition: "color 0.3s ease"
+                  }}>
                     {link.label}
                   </Link>
                 ))}
@@ -43,13 +67,28 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="footer-bottom" style={{ borderTop: "1px solid #eee", paddingTop: 40, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <p style={{ color: "#aaa", fontSize: "0.75rem", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+        <div className="footer-bottom" style={{ 
+          borderTop: "1px solid #f5f5f5", 
+          paddingTop: 40, 
+          display: "flex", 
+          justifyContent: "space-between", 
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 24
+        }}>
+          <p style={{ color: "#999", fontSize: "0.7rem", letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 500 }}>
             © {year} SHOPNEST PARIS. ALL RIGHTS RESERVED.
           </p>
-          <div style={{ display: "flex", gap: 32 }}>
+          <div style={{ display: "flex", gap: "clamp(24px, 4vw, 40px)", flexWrap: "wrap" }}>
             {["INSTAGRAM", "PINTEREST", "LINKEDIN"].map((s) => (
-              <a key={s} href="#" style={{ color: "#000", textDecoration: "none", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.15em" }}>{s}</a>
+              <a key={s} href="#" style={{ 
+                color: "#000", 
+                textDecoration: "none", 
+                fontSize: "0.65rem", 
+                fontWeight: 800, 
+                letterSpacing: "0.2em",
+                transition: "opacity 0.3s ease"
+              }}>{s}</a>
             ))}
           </div>
         </div>
