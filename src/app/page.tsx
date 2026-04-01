@@ -49,7 +49,7 @@ export default async function HomePage() {
           {[
             "/12766274_2160_3840_30fps.mp4",
             "/14807010_3840_2160_25fps.mp4",
-            "/15483565_2160_3840_60fps.mp4"
+            "/15483565_2160_3840_60fps.mp4",
           ].map((src, i) => (
             <div key={i} className="hero-video-item">
               <video 
