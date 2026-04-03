@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Admin Dashboard | ShopNest" };
+export const dynamic = "force-dynamic";
 
 async function getStats() {
   try {

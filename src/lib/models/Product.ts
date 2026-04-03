@@ -61,7 +61,7 @@ Product.init(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     name: { type: DataTypes.STRING(200), allowNull: false },
-    slug: { type: DataTypes.STRING(220), allowNull: false, unique: true },
+    slug: { type: DataTypes.STRING(220), allowNull: false, unique: "products_slug_unique" },
     description: { type: DataTypes.TEXT, allowNull: false },
     shortDescription: { type: DataTypes.STRING(500), allowNull: true },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: false },

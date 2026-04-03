@@ -25,7 +25,7 @@ class Migration
 Migration.init(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    name: { type: DataTypes.STRING(255), allowNull: false, unique: true },
+    name: { type: DataTypes.STRING(255), allowNull: false, unique: "migrations_name_unique" },
     appliedAt: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   },
   { sequelize, modelName: "Migration", tableName: "migrations", timestamps: false }

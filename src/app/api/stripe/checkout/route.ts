@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import stripe from "@/lib/stripe";
-import { syncDB, Product, Order, OrderItem } from "@/lib/models";
+import { syncDB, Product, Order, OrderItem, ProductVariant } from "@/lib/models";
 import { apiResponse, apiError } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -31,19 +31,26 @@ export async function POST(req: NextRequest) {
     const product = await Product.findByPk(item.productId);
     if (!product) return apiError(`Product ${item.productId} not found`);
 
-    const itemTotal = Number(product.price) * item.quantity;
+    let variant = null;
+    if (item.variantId) {
+      variant = await ProductVariant.findByPk(item.variantId);
+      if (!variant) return apiError(`Variant ${item.variantId} not found`);
+    }
+
+    const price = variant?.price ?? product.price;
+    const itemTotal = Number(price) * item.quantity;
     orderTotal += itemTotal;
 
     lineItems.push({
       price_data: {
         currency: "usd",
         product_data: {
-          name: product.name,
+          name: `${product.name}${variant ? ` - ${variant.size}${variant.color ? ` (${variant.color})` : ""}` : ""}`,
           images: product.images?.slice(0, 1).map((img: string) =>
             img.startsWith("http") ? img : `${process.env.NEXT_PUBLIC_APP_URL}${img}`
           ) || [],
         },
-        unit_amount: Math.round(Number(product.price) * 100),
+        unit_amount: Math.round(Number(price) * 100),
       },
       quantity: item.quantity,
     });
@@ -77,13 +84,21 @@ export async function POST(req: NextRequest) {
     for (const item of items) {
       const product = await Product.findByPk(item.productId);
       if (product) {
+        let variant = null;
+        if (item.variantId) {
+          variant = await ProductVariant.findByPk(item.variantId);
+        }
+        
         await OrderItem.create({
           orderId: order.id,
           productId: item.productId,
           quantity: item.quantity,
-          priceAtPurchase: Number(product.price),
+          priceAtPurchase: Number(variant?.price ?? product.price),
           productName: product.name,
           productImage: product.images?.[0] || undefined,
+          variantId: item.variantId || null,
+          variantSize: variant?.size || null,
+          variantColor: variant?.color || null,
         });
       }
     }

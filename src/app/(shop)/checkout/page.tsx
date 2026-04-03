@@ -61,7 +61,11 @@ export default function CheckoutPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: items.map((i) => ({ productId: i.product.id, quantity: i.quantity })),
+          items: items.map((i) => ({ 
+            productId: i.product.id, 
+            variantId: i.variant?.id,
+            quantity: i.quantity 
+          })),
           shippingAddress: { ...form },
         }),
       });
@@ -126,8 +130,15 @@ export default function CheckoutPage() {
                         <img src={item.product.images?.[0] || ""} alt="" style={styles.cartImg} />
                         <div style={{ flex: 1 }}>
                           <h4 style={{ fontSize: "0.9rem", fontWeight: 700, margin: "0 0 6px" }}>{item.product.name}</h4>
-                          <p style={{ fontSize: "0.8rem", color: "#888" }}>Quantity: {item.quantity}</p>
-                          <span style={{ fontSize: "1rem", fontWeight: 800 }}>{formatPrice(item.product.price)}</span>
+                          {item.variant && (
+                            <p style={{ fontSize: "0.75rem", color: "#666", marginBottom: 4 }}>
+                              Size: <span style={{ fontWeight: 700, color: "#000" }}>{item.variant.size}</span>
+                            </p>
+                          )}
+                          <p style={{ fontSize: "0.80rem", color: "#888" }}>Quantity: {item.quantity}</p>
+                          <span style={{ fontSize: "1rem", fontWeight: 800 }}>
+                            {formatPrice(item.variant?.price ?? item.product.price)}
+                          </span>
                         </div>
                       </div>
                     ))}

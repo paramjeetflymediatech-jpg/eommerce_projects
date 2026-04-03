@@ -11,17 +11,25 @@ export interface CartProduct {
   stock: number;
 }
 
+export interface CartVariant {
+  id: number;
+  size: string;
+  color?: string | null;
+  price?: number | null;
+}
+
 export interface CartItem {
   product: CartProduct;
+  variant?: CartVariant;
   quantity: number;
 }
 
 interface CartStore {
   items: CartItem[];
   isOpen: boolean;
-  addItem: (product: CartProduct, quantity?: number) => void;
-  removeItem: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+  addItem: (product: CartProduct, quantity?: number, variant?: CartVariant) => void;
+  removeItem: (productId: number, variantId?: number) => void;
+  updateQuantity: (productId: number, variantId: number | undefined, quantity: number) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
@@ -35,52 +43,53 @@ export const useCartStore = create<CartStore>()(
       items: [],
       isOpen: false,
 
-      addItem: (product, quantity = 1) => {
-        const currentCount = get().getCount();
-        
-        if (currentCount + quantity > 2) {
-          useNotificationStore.getState().showNotification(`You can only have a maximum of 2 items in your cart to maintain exclusivity.`, "error");
-          return;
-        }
-
+      addItem: (product, quantity = 1, variant) => {
         set((state) => {
-          const existing = state.items.find((i) => i.product.id === product.id);
+          const existing = state.items.find((i) => 
+            i.product.id === product.id && i.variant?.id === variant?.id
+          );
+          
+          const currentItemQuantity = existing ? existing.quantity : 0;
+          if (currentItemQuantity + quantity > 10) {
+            useNotificationStore.getState().showNotification(`You can only purchase a maximum of 10 units of this product.`, "error");
+            return state;
+          }
+
           if (existing) {
             return {
               items: state.items.map((i) =>
-                i.product.id === product.id
+                (i.product.id === product.id && i.variant?.id === variant?.id)
                   ? { ...i, quantity: i.quantity + quantity }
                   : i
               ),
             };
           }
-          return { items: [...state.items, { product, quantity }] };
+          return { items: [...state.items, { product, quantity, variant }] };
         });
       },
 
-      removeItem: (productId) => {
-        set((state) => ({ items: state.items.filter((i) => i.product.id !== productId) }));
+      removeItem: (productId, variantId) => {
+        set((state) => ({ 
+          items: state.items.filter((i) => 
+            !(i.product.id === productId && i.variant?.id === variantId)
+          ) 
+        }));
       },
 
-      updateQuantity: (productId, quantity) => {
+      updateQuantity: (productId, variantId, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(productId);
+          get().removeItem(productId, variantId);
           return;
         }
 
-        const currentItems = get().items;
-        const otherItemsCount = currentItems
-          .filter(i => i.product.id !== productId)
-          .reduce((sum, i) => sum + i.quantity, 0);
-
-        if (otherItemsCount + quantity > 2) {
-          useNotificationStore.getState().showNotification("Exceeded maximum cart limit: 2 items per order.", "error");
+        if (quantity > 10) {
+          useNotificationStore.getState().showNotification("You can only purchase a maximum of 10 units of this product.", "error");
           return;
         }
 
         set((state) => ({
           items: state.items.map((i) =>
-            i.product.id === productId ? { ...i, quantity } : i
+            (i.product.id === productId && i.variant?.id === variantId) ? { ...i, quantity } : i
           ),
         }));
       },
@@ -88,7 +97,11 @@ export const useCartStore = create<CartStore>()(
       clearCart: () => set({ items: [] }),
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
-      getTotal: () => get().items.reduce((sum, i) => sum + i.product.price * i.quantity, 0),
+      getTotal: () => get().items.reduce((sum, i) => { 
+        const variantPrice = i.variant?.price;
+        const price = (variantPrice !== null && variantPrice !== undefined) ? Number(variantPrice) : i.product.price;
+        return sum + price * i.quantity; 
+      }, 0),
       getCount: () => get().items.reduce((sum, i) => sum + i.quantity, 0),
     }),
     { name: "shopnest-cart" }

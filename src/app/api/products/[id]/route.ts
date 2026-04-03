@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { syncDB, Product, Category, Review, User } from "@/lib/models";
+import { syncDB, Product, Category, Review, User, ProductVariant } from "@/lib/models";
 import { apiResponse, apiError } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -27,6 +27,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         limit: 10,
         order: [["createdAt", "DESC"]],
       },
+      { model: ProductVariant, as: "variants" },
     ],
   });
 

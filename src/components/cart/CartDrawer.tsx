@@ -71,8 +71,8 @@ export default function CartDrawer() {
           ) : (
             <>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {items.map((item) => (
-                  <div key={item.product.id} style={styles.cartItem}>
+                {items.map((item, idx) => (
+                  <div key={`${item.product.id}-${item.variant?.id || idx}`} style={styles.cartItem}>
                     <div style={styles.imgWrapper}>
                       {item.product.images?.[0] && <Image src={item.product.images[0]} alt="" fill style={{ objectFit: "cover" }} sizes="80px" />}
                     </div>
@@ -80,14 +80,22 @@ export default function CartDrawer() {
                       <Link href={`/products/${item.product.slug}`} onClick={closeCart} style={{ textDecoration: "none" }}>
                         <h4 style={styles.itemName}>{item.product.name}</h4>
                       </Link>
-                      <p style={{ color: "#000", fontWeight: 700, fontSize: "0.95rem", marginBottom: 12 }}>{formatPrice(item.product.price)}</p>
+                      {item.variant && (
+                        <p style={{ fontSize: "0.7rem", color: "#666", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                          Size: <span style={{ fontWeight: 800, color: "#000" }}>{item.variant.size}</span>
+                          {item.variant.color && ` / Color: ${item.variant.color}`}
+                        </p>
+                      )}
+                      <p style={{ color: "#000", fontWeight: 700, fontSize: "0.95rem", marginBottom: 12 }}>
+                        {formatPrice(item.variant?.price ?? item.product.price)}
+                      </p>
                       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                         <div style={styles.qtyControl}>
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} style={styles.qtyBtn}>−</button>
+                          <button onClick={() => updateQuantity(item.product.id, item.variant?.id, item.quantity - 1)} style={styles.qtyBtn}>−</button>
                           <span style={{ fontSize: "0.8rem", fontWeight: 700 }}>{item.quantity}</span>
-                          <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} style={styles.qtyBtn}>+</button>
+                          <button onClick={() => updateQuantity(item.product.id, item.variant?.id, item.quantity + 1)} style={styles.qtyBtn}>+</button>
                         </div>
-                        <button onClick={() => removeItem(item.product.id)} style={styles.removeBtn}>REMOVE</button>
+                        <button onClick={() => removeItem(item.product.id, item.variant?.id)} style={styles.removeBtn}>REMOVE</button>
                       </div>
                     </div>
                   </div>

@@ -1,0 +1,484 @@
+/* Product Detail Page Styles */
+
+.outer {
+  background: var(--background, #fff);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: clamp(60px, 10vw, 120px) 0;
+  width: 92%;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: clamp(40px, 6vw, 80px);
+  flex-wrap: wrap;
+}
+
+.breadcrumbLink {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-decoration: none;
+  color: var(--text-muted, #ccc);
+  letter-spacing: 0.2em;
+}
+
+.separator {
+  color: var(--border-subtle, #eee);
+  font-size: 0.7rem;
+}
+
+.breadcrumbCurrent {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--text-primary, #000);
+  letter-spacing: 0.2em;
+}
+
+/* Main Grid Layout */
+.mainGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: clamp(48px, 8vw, 120px);
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+    gap: 60px;
+  }
+}
+
+.detailsColumn {
+  position: relative;
+}
+
+.stickyDetails {
+  position: sticky;
+  top: 120px;
+}
+
+@media (max-width: 1100px) {
+  .stickyDetails {
+    position: static;
+  }
+}
+
+/* Header & Typography */
+.header {
+  margin-bottom: 40px;
+}
+
+.categoryLabel {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: var(--text-muted, #ccc);
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 32px;
+  letter-spacing: -0.03em;
+}
+
+.priceArea {
+  border-bottom: 1px solid var(--border-subtle, #f5f5f5);
+  padding-bottom: 32px;
+  margin-bottom: 32px;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary, #000);
+  letter-spacing: -0.02em;
+}
+
+.oldPrice {
+  font-size: 1.1rem;
+  color: var(--text-muted, #999);
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
+/* Description Sections */
+.descriptionArea {
+  margin: 48px 0;
+}
+
+.shortDesc {
+  font-size: 1.15rem;
+  color: var(--text-secondary, #444);
+  line-height: 1.7;
+  border-left: 2px solid var(--accent, #000);
+  padding-left: 28px;
+  font-weight: 300;
+  max-width: 480px;
+}
+
+.accordion {
+  border-top: 1px solid var(--border-subtle, #f5f5f5);
+}
+
+.details {
+  border-bottom: 1px solid var(--border-subtle, #f5f5f5);
+}
+
+.summary {
+  list-style: none;
+  padding: 24px 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.summary::after {
+  content: '+';
+  font-weight: 400;
+}
+
+.details[open] .summary::after {
+  content: '−';
+}
+
+.fullDesc, .detailsContent {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  color: var(--text-secondary, #666);
+  padding-bottom: 40px;
+  font-weight: 300;
+}
+
+/* Cart Section Styles */
+.actionArea {
+  margin-bottom: 48px;
+}
+
+.variantsSection {
+  margin-bottom: 32px;
+}
+
+.variantLabel {
+  font-size: 0.6rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-muted, #888);
+  margin-bottom: 12px;
+  display: block;
+}
+
+.variantGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.colorBtn, .sizeBtn {
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid var(--border, #eee);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.sizeBtn {
+  min-width: 60px;
+  height: 44px;
+}
+
+.activeBtn {
+  background: var(--accent, #000);
+  color: var(--accent-foreground, #fff);
+  border-color: var(--accent, #000);
+}
+
+.disabledBtn {
+  color: var(--text-muted, #ccc);
+  text-decoration: line-through;
+  cursor: not-allowed;
+  border-color: var(--border-subtle, #f5f5f5);
+}
+
+.quantityGroup {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.qBox {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border, #eee);
+  height: 48px;
+}
+
+.qBtn {
+  width: 48px;
+  height: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.qBtn:disabled {
+  color: var(--text-muted, #ccc);
+  cursor: not-allowed;
+}
+
+.qVal {
+  min-width: 40px;
+  text-align: center;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.mainActions {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .mainActions {
+    flex-direction: column;
+  }
+}
+
+.atcBtn {
+  flex: 1;
+  height: 56px;
+  background: var(--accent, #000);
+  color: var(--accent-foreground, #fff);
+  border: none;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+}
+
+.atcBtn:disabled {
+  background: var(--bg-muted, #eee);
+  color: var(--text-muted, #aaa);
+  cursor: not-allowed;
+}
+
+.wishBtn {
+  width: 56px;
+  height: 56px;
+  background: #fff;
+  border: 1px solid var(--accent, #000);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .wishBtn {
+    width: 100%;
+  }
+}
+
+/* Gallery Styles */
+.imageColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.galleryWrapper {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  background: #fdfdfd;
+  scrollbar-width: none;
+  cursor: zoom-in;
+  border-radius: 12px;
+}
+
+.galleryItem {
+  flex: 0 0 100%;
+  position: relative;
+  aspect-ratio: 3/4;
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+
+.thumbnailGrid {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.thumb {
+  position: relative;
+  width: 70px;
+  height: 90px;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+
+.thumbActive {
+  border-color: var(--accent, #000);
+}
+
+/* Related Section */
+.relatedSection {
+  margin-top: clamp(120px, 15vw, 200px);
+  border-top: 1px solid var(--border-subtle, #f5f5f5);
+  padding-top: 100px;
+}
+
+.relatedHeading {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  margin-bottom: 80px;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+
+/* Gallery Nav & Pagination */
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #000;
+}
+
+.paginationDots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  z-index: 10;
+}
+
+.dot {
+  height: 6px;
+  border-radius: 10px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Lightbox Modal */
+.lightboxOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightboxContent {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightboxImageWrapper {
+  position: relative;
+  width: 90%;
+  height: 90%;
+}
+
+.closeButton {
+  position: absolute;
+  top: 30;
+  right: 30;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 10001;
+}
+
+.lightboxNav {
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10001;
+  color: #000;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.lightboxCounter {
+  position: absolute;
+  bottom: 30;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: clamp(64px, 8vw, 100px) clamp(24px, 4vw, 48px);
+}
+
+@media (max-width: 768px) {
+  .productGrid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
+    gap: 40px 16px;
+  }
+}

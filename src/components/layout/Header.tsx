@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import Image from "next/image";
 
 export default function Header() {
   const { data: session } = useSession();
@@ -25,7 +26,7 @@ export default function Header() {
     { label: "SHOP ALL", href: "/products" },
     { label: "STORY", href: "/about" },
     { label: "STORES", href: "/" },
-    { label: "ACCOUNT", href: "/account" },
+    { label: "ACCOUNT", href: session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account" },
   ];
 
   return (
@@ -79,20 +80,16 @@ export default function Header() {
           </div>
 
           {/* CENTER - LOGO */}
-          <div style={{ textAlign: "center" }}>
-            <Link href="/" style={{ textDecoration: "none" }}>
-              <span
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "clamp(1rem, 4vw, 1.25rem)",
-                  fontWeight: 500,
-                  color: "#000",
-                  letterSpacing: "0.15em",
-                  textTransform: "uppercase",
-                }}
-              >
-                ShopNest
-              </span>
+          <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
+            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
+              <Image 
+                src="/logo.png" 
+                alt="ShopNest" 
+                width={200} 
+                height={60} 
+                priority 
+                style={{ height: "auto", width: "auto", maxHeight: "50px" }}
+              />
             </Link>
           </div>
 
@@ -217,11 +214,11 @@ export default function Header() {
                 </p>
                 <div style={{ display: "flex", gap: "24px" }}>
                   <Link
-                    href="/account"
+                    href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account"}
                     onClick={() => setMobileOpen(false)}
                     style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textDecoration: "none", color: "#000" }}
                   >
-                    MY ACCOUNT
+                    {session?.user?.role === "ADMIN" ? "ADMIN PORTAL" : "MY ACCOUNT"}
                   </Link>
                   <button
                     onClick={() => signOut()}

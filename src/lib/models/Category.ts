@@ -33,7 +33,7 @@ Category.init(
   {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
     name: { type: DataTypes.STRING(100), allowNull: false },
-    slug: { type: DataTypes.STRING(120), allowNull: false, unique: true },
+    slug: { type: DataTypes.STRING(120), allowNull: false, unique: "categories_slug_unique" },
     description: { type: DataTypes.TEXT, allowNull: true },
     image: { type: DataTypes.STRING(500), allowNull: true },
     parentId: {

@@ -10,6 +10,7 @@ import CartItem from "./CartItem";
 import Address from "./Address";
 import WishlistItem from "./WishlistItem";
 import Migration from "./Migration";
+import ProductVariant from "./ProductVariant";
 
 // ── Associations ─────────────────────────────────────────────────────────────
 
@@ -32,6 +33,10 @@ OrderItem.belongsTo(Order, { foreignKey: "orderId", as: "order" });
 // Product <-> OrderItem
 Product.hasMany(OrderItem, { foreignKey: "productId" });
 OrderItem.belongsTo(Product, { foreignKey: "productId", as: "product" });
+
+// Product <-> ProductVariant
+Product.hasMany(ProductVariant, { foreignKey: "productId", as: "variants", onDelete: "CASCADE" });
+ProductVariant.belongsTo(Product, { foreignKey: "productId", as: "product" });
 
 // User <-> Review
 User.hasMany(Review, { foreignKey: "userId", as: "reviews" });
@@ -75,13 +80,17 @@ export const syncDB = async () => {
   syncPromise = (async () => {
     try {
       // Authenticate and sync tables — database must already exist
+      console.log("🔄 Initializing database connection...");
       await sequelize.authenticate();
       console.log("✅ MySQL connection established.");
+      
+      console.log("🔄 Syncing database schema (alter: true)...");
       await sequelize.sync({ alter: true });
-      console.log("✅ All tables synced.");
+      console.log("✅ All tables synced successfully.");
+      
       dbReady = true;
     } catch (error) {
-      console.error("❌ DB sync error:", error);
+      console.error("❌ DB sync error details:", error);
       syncPromise = null; // Reset on error to allow retry
       throw error;
     }
@@ -112,5 +121,6 @@ export {
   Address,
   WishlistItem,
   Migration,
+  ProductVariant,
 };
 

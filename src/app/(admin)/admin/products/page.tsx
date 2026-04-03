@@ -5,15 +5,18 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface Category { id: number; name: string; parentId: number | null; }
+interface Variant { id?: number; size: string; color?: string; price?: string; stock: string; sku?: string; images?: string[]; }
 interface Product {
   id: number; name: string; slug: string; price: number;
   comparePrice?: number; stock: number; isFeatured: boolean;
   images: string[]; category?: { name: string };
+  variants?: Variant[];
 }
 
 const emptyForm = {
   name: "", slug: "", description: "", price: "", comparePrice: "",
-  stock: "", categoryId: "", imageUrl: "", isFeatured: false,
+  stock: "", categoryId: "", imageUrls: ["", "", "", "", "", ""], isFeatured: false,
+  variants: [] as Variant[],
 };
 
 export default function AdminProductsPage() {
@@ -82,6 +85,9 @@ export default function AdminProductsPage() {
       setSubCategoryId("");
     }
 
+    const images = Array.isArray(p.images) ? p.images : [];
+    const imageUrls = [...images, ...Array(6).fill("")].slice(0, 6);
+
     setForm({ 
       name: p.name, 
       slug: p.slug, 
@@ -90,8 +96,14 @@ export default function AdminProductsPage() {
       comparePrice: p.comparePrice ? String(p.comparePrice) : "", 
       stock: String(p.stock), 
       categoryId: String(p.categoryId), 
-      imageUrl: p.images?.[0] || "", 
-      isFeatured: p.isFeatured 
+      imageUrls: imageUrls, 
+      isFeatured: p.isFeatured,
+      variants: p.variants ? p.variants.map((v: any) => ({ 
+        ...v, 
+        stock: String(v.stock), 
+        price: v.price ? String(v.price) : "", 
+        images: Array.isArray(v.images) ? v.images : [] 
+      })) : []
     });
     setEditId(p.id); setShowForm(true); setMsg({ text: "", type: "" });
   };
@@ -108,8 +120,9 @@ export default function AdminProductsPage() {
       comparePrice: form.comparePrice || undefined, 
       stock: form.stock || "0", 
       categoryId: finalCategoryId, 
-      images: form.imageUrl ? [form.imageUrl] : [], 
-      isFeatured: form.isFeatured 
+      images: form.imageUrls.filter(u => u.trim() !== ""), 
+      isFeatured: form.isFeatured,
+      variants: form.variants.map(v => ({ ...v, price: v.price || undefined }))
     };
     try {
       const res = await fetch(editId ? `/api/admin/products/${editId}` : "/api/admin/products", { 
@@ -148,6 +161,32 @@ export default function AdminProductsPage() {
         
       return { ...prev, name: newName, slug: newSlug };
     });
+  };
+
+  const handleFileUpload = async (index: number, file: File) => {
+    const formData = new FormData();
+    formData.append("files", file);
+    formData.append("folder", "products");
+
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (res.ok && data.urls?.[0]) {
+        const newUrls = [...form.imageUrls];
+        newUrls[index] = data.urls[0];
+        setForm({ ...form, imageUrls: newUrls });
+      } else {
+        setMsg({ text: data.error || "Upload failed.", type: "error" });
+      }
+    } catch (e) {
+      setMsg({ text: "Upload error occurred.", type: "error" });
+    }
+  };
+
+  const updateImageUrl = (index: number, url: string) => {
+    const newUrls = [...form.imageUrls];
+    newUrls[index] = url;
+    setForm({ ...form, imageUrls: newUrls });
   };
 
   if (status === "loading") return <div style={s.center}>Loading...</div>;
@@ -297,15 +336,169 @@ export default function AdminProductsPage() {
               <label style={s.lbl}>Description</label>
               <textarea style={{ ...s.inp, minHeight: 80, resize: "vertical" }} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Product description..." />
             </div>
-            <div style={s.formField}>
-              <label style={s.lbl}>Image URL</label>
-              <input style={s.inp} value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://..." />
-              {form.imageUrl && <img src={form.imageUrl} alt="preview" style={{ width: 80, height: 80, objectFit: "cover", marginTop: 8, border: "1px solid #eee" }} />}
+            <div style={{ marginBottom: 24 }}>
+              <label style={s.lbl}>Product Images (Max 6)</label>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 16, marginTop: 8 }}>
+                {form.imageUrls.map((url, idx) => (
+                  <div key={idx} style={{ border: "1px solid #eee", padding: 12, background: "#fcfcfc", position: "relative" }}>
+                    <div style={{ fontSize: "0.6rem", fontWeight: 700, marginBottom: 8, color: "#999" }}>IMAGE {idx + 1}</div>
+                    
+                    <div style={{ height: 100, background: "#f0f0f0", marginBottom: 12, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden", border: "1px solid #eee" }}>
+                      {url ? (
+                        <>
+                          <img src={url} alt={`preview ${idx}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          <button 
+                            onClick={() => updateImageUrl(idx, "")}
+                            style={{ position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.5)", color: "#fff", border: "none", width: 24, height: 24, cursor: "pointer", fontSize: "0.8rem", borderRadius: "50%" }}
+                          >✕</button>
+                        </>
+                      ) : (
+                        <span style={{ fontSize: "0.65rem", color: "#ccc" }}>EMPTY SLOT</span>
+                      )}
+                    </div>
+
+                    <input 
+                      style={{ ...s.inp, fontSize: "0.75rem", marginBottom: 8 }} 
+                      value={url} 
+                      onChange={e => updateImageUrl(idx, e.target.value)} 
+                      placeholder="Image URL" 
+                    />
+
+                    <div style={{ position: "relative" }}>
+                      <button style={{ ...s.editBtn, width: "100%", fontSize: "0.7rem", padding: "8px" }}>UPLOAD LOCAL</button>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={e => e.target.files?.[0] && handleFileUpload(idx, e.target.files[0])}
+                        style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer" }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
+
             <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", marginBottom: 20, fontSize: "0.875rem" }}>
               <input type="checkbox" checked={form.isFeatured} onChange={e => setForm({ ...form, isFeatured: e.target.checked })} />
               Mark as Featured Product
             </label>
+
+            <div style={{ marginBottom: 24, borderTop: "1px solid #eee", paddingTop: 20 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+                <h3 style={{ fontSize: "0.9rem", fontWeight: 700, margin: 0, textTransform: "uppercase", letterSpacing: "0.05em", color: "#666" }}>Product Variants (Sizes/Colors)</h3>
+                <button 
+                  type="button"
+                  onClick={() => setForm({ ...form, variants: [...form.variants, { size: "", stock: "0", color: "", sku: "" }] })}
+                  style={{ ...s.editBtn, background: "#f9f9f7" }}
+                >
+                  + Add Variant
+                </button>
+              </div>
+              
+              {form.variants.length === 0 ? (
+                <p style={{ fontSize: "0.8rem", color: "#999", fontStyle: "italic" }}>No variants added. Product will be sold as a single item.</p>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {form.variants.map((v, idx) => (
+                    <div key={idx} style={{ background: "#fcfcfc", padding: 16, border: "1px solid #f0f0f0" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr auto", gap: 8, alignItems: "end", marginBottom: 12 }}>
+                        <div>
+                          <label style={s.lbl}>Size</label>
+                          <input style={s.inp} value={v.size ?? ""} onChange={e => {
+                            const newVariants = [...form.variants];
+                            newVariants[idx].size = e.target.value;
+                            setForm({ ...form, variants: newVariants });
+                          }} placeholder="e.g. XL, 32, 10" />
+                        </div>
+                        <div>
+                          <label style={s.lbl}>Color</label>
+                          <input style={s.inp} value={v.color ?? ""} onChange={e => {
+                            const newVariants = [...form.variants];
+                            newVariants[idx].color = e.target.value;
+                            setForm({ ...form, variants: newVariants });
+                          }} placeholder="e.g. Black" />
+                        </div>
+                        <div>
+                          <label style={s.lbl}>Stock</label>
+                          <input style={s.inp} type="number" value={v.stock ?? ""} onChange={e => {
+                            const newVariants = [...form.variants];
+                            newVariants[idx].stock = e.target.value;
+                            setForm({ ...form, variants: newVariants });
+                          }} placeholder="0" />
+                        </div>
+                        <div>
+                          <label style={s.lbl}>Price (Opt)</label>
+                          <input style={s.inp} type="number" value={v.price ?? ""} onChange={e => {
+                            const newVariants = [...form.variants];
+                            newVariants[idx].price = e.target.value;
+                            setForm({ ...form, variants: newVariants });
+                          }} placeholder="Override" />
+                        </div>
+                        <button 
+                          type="button"
+                          onClick={() => {
+                            const newVariants = form.variants.filter((_, i) => i !== idx);
+                            setForm({ ...form, variants: newVariants });
+                          }}
+                          style={{ ...s.deleteBtn, padding: "8px", border: "none", color: "#999" }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                      
+                      {/* Variant Images */}
+                      <div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                          <label style={s.lbl}>Variant Images (Filtered by Color)</label>
+                          <button 
+                            type="button"
+                            onClick={() => {
+                              const newVariants = [...form.variants];
+                              newVariants[idx].images = [...(newVariants[idx].images || []), ""];
+                              setForm({ ...form, variants: newVariants });
+                            }}
+                            style={{ fontSize: "0.6rem", padding: "2px 8px", background: "#f0f0f0", border: "1px solid #ddd", cursor: "pointer" }}
+                          >
+                            + Add Image
+                          </button>
+                        </div>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                          {(v.images || []).map((imgUrl, imgIdx) => (
+                            <div key={imgIdx} style={{ position: "relative", width: 80 }}>
+                              <div style={{ height: 60, background: "#eee", marginBottom: 4, position: "relative", overflow: "hidden" }}>
+                                {imgUrl ? <img src={imgUrl} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#ccc", fontSize: "0.5rem" }}>No Img</div>}
+                                <button 
+                                  type="button"
+                                  onClick={() => {
+                                    const newVariants = [...form.variants];
+                                    newVariants[idx].images = newVariants[idx].images?.filter((_, i) => i !== imgIdx);
+                                    setForm({ ...form, variants: newVariants });
+                                  }}
+                                  style={{ position: "absolute", top: 2, right: 2, background: "rgba(0,0,0,0.5)", color: "#fff", border: "none", width: 16, height: 16, borderRadius: "50%", cursor: "pointer", fontSize: "0.6rem" }}
+                                >✕</button>
+                              </div>
+                              <input 
+                                style={{ ...s.inp, fontSize: "0.6rem", padding: "4px" }} 
+                                value={imgUrl} 
+                                onChange={e => {
+                                  const newVariants = [...form.variants];
+                                  const newImgs = [...(newVariants[idx].images || [])];
+                                  newImgs[imgIdx] = e.target.value;
+                                  newVariants[idx].images = newImgs;
+                                  setForm({ ...form, variants: newVariants });
+                                }}
+                                placeholder="URL"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
               <button onClick={() => setShowForm(false)} style={s.cancelBtn}>Cancel</button>
               <button onClick={handleSave} disabled={saving} style={{ ...s.saveBtn, opacity: saving ? 0.7 : 1 }}>{saving ? "Saving..." : editId ? "Update Product" : "Create Product"}</button>

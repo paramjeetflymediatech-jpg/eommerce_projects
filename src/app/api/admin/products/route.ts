@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { ensureDB, Product, Category } from "@/lib/models";
+import { ensureDB, Product, Category, ProductVariant, sequelize } from "@/lib/models";
 import { apiResponse, apiError, getPaginationMeta, slugify } from "@/lib/utils";
 
 async function requireAdmin(req: NextRequest) {
@@ -26,7 +26,10 @@ export async function GET(req: NextRequest) {
   const { count, rows } = await Product.findAndCountAll({
     limit,
     offset,
-    include: [{ model: Category, as: "category", attributes: ["id", "name"] }],
+    include: [
+      { model: Category, as: "category", attributes: ["id", "name"] },
+      { model: ProductVariant, as: "variants" }
+    ],
     order: [["createdAt", "DESC"]],
   });
 
@@ -43,7 +46,7 @@ export async function POST(req: NextRequest) {
   if (!session) return apiError("Unauthorized", 401);
 
   const body = await req.json();
-  const { name, description, price, comparePrice, stock, categoryId, images, isFeatured, slug } = body;
+  const { name, description, price, comparePrice, stock, categoryId, images, isFeatured, slug, variants } = body;
 
   if (!name || !price || !categoryId) {
     return apiError("name, price, and categoryId are required");
@@ -54,19 +57,41 @@ export async function POST(req: NextRequest) {
   const existing = await Product.findOne({ where: { slug: generatedSlug } });
   if (existing) return apiError("A product with this slug already exists");
 
-  const product = await Product.create({
-    name,
-    slug: generatedSlug,
-    description: description || "",
-    price: parseFloat(price),
-    comparePrice: comparePrice ? parseFloat(comparePrice) : undefined,
-    stock: parseInt(stock) || 0,
-    categoryId: parseInt(categoryId),
-    images: images || [],
-    isFeatured: isFeatured || false,
-    rating: 0,
-    reviewCount: 0,
-  });
+  const transaction = await sequelize.transaction();
 
-  return apiResponse({ product }, 201);
+  try {
+    const product = await Product.create({
+      name,
+      slug: generatedSlug,
+      description: description || "",
+      price: parseFloat(price),
+      comparePrice: comparePrice ? parseFloat(comparePrice) : undefined,
+      stock: parseInt(stock) || 0,
+      categoryId: parseInt(categoryId),
+      images: images || [],
+      isFeatured: isFeatured || false,
+      rating: 0,
+      reviewCount: 0,
+    }, { transaction });
+
+    if (variants && Array.isArray(variants)) {
+      for (const v of variants) {
+        await ProductVariant.create({
+          productId: product.id,
+          size: v.size,
+          color: v.color || null,
+          price: v.price ? parseFloat(v.price) : null,
+          stock: parseInt(v.stock) || 0,
+          sku: v.sku || null,
+        }, { transaction });
+      }
+    }
+
+    await transaction.commit();
+    return apiResponse({ product }, 201);
+  } catch (error) {
+    await transaction.rollback();
+    console.error("Product creation error:", error);
+    return apiError("Failed to create product and variants");
+  }
 }

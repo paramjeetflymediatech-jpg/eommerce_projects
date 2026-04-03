@@ -56,12 +56,12 @@ export default function CartPage() {
                   <p style={{ color: "var(--primary-light)", fontWeight: 700, fontSize: "1.1rem", marginBottom: 16 }}>{formatPrice(item.product.price)}</p>
                   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 0, background: "var(--bg-elevated)", border: "1px solid var(--border)", borderRadius: 10, overflow: "hidden" }}>
-                      <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} style={{ background: "none", border: "none", color: "var(--text-primary)", cursor: "pointer", padding: "8px 14px", fontWeight: 700 }}>−</button>
+                      <button onClick={() => updateQuantity(item.product.id, item.variant?.id, item.quantity - 1)} style={{ background: "none", border: "none", color: "var(--text-primary)", cursor: "pointer", padding: "8px 14px", fontWeight: 700 }}>−</button>
                       <span style={{ minWidth: 36, textAlign: "center", fontWeight: 600 }}>{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.product.id, item.quantity + 1)} style={{ background: "none", border: "none", color: "var(--text-primary)", cursor: "pointer", padding: "8px 14px", fontWeight: 700 }}>+</button>
+                      <button onClick={() => updateQuantity(item.product.id, item.variant?.id, item.quantity + 1)} style={{ background: "none", border: "none", color: "var(--text-primary)", cursor: "pointer", padding: "8px 14px", fontWeight: 700 }}>+</button>
                     </div>
                     <span style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>= {formatPrice(item.product.price * item.quantity)}</span>
-                    <button onClick={() => removeItem(item.product.id)} className="btn btn-ghost btn-sm" style={{ marginLeft: "auto", color: "var(--error)" }}>Remove</button>
+                    <button onClick={() => removeItem(item.product.id, item.variant?.id)} className="btn btn-ghost btn-sm" style={{ marginLeft: "auto", color: "var(--error)" }}>Remove</button>
                   </div>
                 </div>
               </div>

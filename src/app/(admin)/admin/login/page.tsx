@@ -7,6 +7,7 @@ import Link from "next/link";
 export default function AdminLoginPage() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +50,7 @@ export default function AdminLoginPage() {
 
   return (
     <div style={styles.page}>
-      <div style={styles.loginContainer}>
+      <div style={styles.loginContainer} className="login-container">
         {/* Visual Side (Left) */}
         <div style={styles.visualSide} className="desktop-only">
           <div style={styles.visualContent}>
@@ -63,7 +64,7 @@ export default function AdminLoginPage() {
         </div>
 
         {/* Form Side (Right) */}
-        <div style={styles.formSide}>
+        <div style={styles.formSide} className="form-side">
           <div style={styles.formContainer}>
             <div style={styles.header}>
               <h1 style={styles.title}>Admin Login</h1>
@@ -87,15 +88,28 @@ export default function AdminLoginPage() {
               </div>
               <div style={styles.field}>
                 <label style={styles.label}>Security Key</label>
-                <input
-                  id="admin-password"
-                  required
-                  type="password"
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  style={styles.input}
-                />
+                <div style={{ position: "relative" }}>
+                  <input
+                    id="admin-password"
+                    required
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    style={{ ...styles.input, paddingRight: "40px" }}
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={styles.toggleBtn}
+                  >
+                    {showPassword ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    )}
+                  </button>
+                </div>
               </div>
               <button
                 id="admin-login-submit"
@@ -120,6 +134,17 @@ export default function AdminLoginPage() {
       <style>{`
         @media (max-width: 900px) {
           .desktop-only { display: none !important; }
+          .login-container { 
+            margin: 0 !important; 
+            max-width: 100% !important; 
+            height: 100vh !important; 
+            min-height: auto !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+          }
+          .form-side {
+            padding: 40px 24px !important;
+          }
         }
       `}</style>
     </div>
@@ -291,5 +316,20 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
     letterSpacing: "0.1em",
     textTransform: "uppercase",
+  },
+  toggleBtn: {
+    position: "absolute",
+    right: "0",
+    top: "50%",
+    transform: "translateY(-50%)",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: "8px",
+    color: "#ccc",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "color 0.2s",
   },
 };

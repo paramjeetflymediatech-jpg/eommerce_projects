@@ -73,6 +73,7 @@ export const authOptions = {
           user.id = String(dbUser.id);
           user.role = dbUser.role;
           user.avatar = dbUser.avatar;
+          
           return true;
         } catch (e: any) {
           console.error("❌ GOOGLE_SIGNIN_ERROR:", e.message || e);
@@ -82,6 +83,7 @@ export const authOptions = {
           return false;
         }
       }
+      
       return true;
     },
     async jwt({ token, user }: { token: any; user: any }) {

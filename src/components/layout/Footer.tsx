@@ -1,15 +1,19 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer style={{
-      background: "#ffffff",
-      borderTop: "1px solid #f5f5f5",
-      marginTop: "clamp(80px, 12vw, 140px)",
-      padding: "clamp(60px, 10vw, 120px) 0 clamp(40px, 6vw, 80px)",
-    }}>
+    <footer 
+      suppressHydrationWarning
+      style={{
+        background: "#ffffff",
+        borderTop: "1px solid #f5f5f5",
+        marginTop: "clamp(80px, 12vw, 140px)",
+        padding: "clamp(60px, 10vw, 120px) 0 clamp(40px, 6vw, 80px)",
+      }}
+    >
       <div className="container-app">
         <div className="footer-grid" style={{ 
           display: "grid", 
@@ -20,15 +24,15 @@ export default function Footer() {
           {/* Brand */}
           <div style={{ maxWidth: "320px" }}>
             <div style={{ marginBottom: 32 }}>
-              <span style={{ 
-                fontFamily: "var(--font-serif)", 
-                fontSize: "1.4rem", 
-                fontWeight: 500, 
-                textTransform: "uppercase", 
-                letterSpacing: "0.15em" 
-              }}>
-                ShopNest
-              </span>
+              <Link href="/" style={{ textDecoration: "none" }}>
+                <Image 
+                  src="/logo.png" 
+                  alt="ShopNest" 
+                  width={200} 
+                  height={60} 
+                  style={{ height: "auto", width: "auto", maxHeight: "50px" }}
+                />
+              </Link>
             </div>
             <p style={{ color: "#777", lineHeight: 1.8, fontSize: "0.95rem", fontWeight: 300 }}>
               The French Art de Vivre. Discover iconic furniture and interior designs curated for the modern legacy.
