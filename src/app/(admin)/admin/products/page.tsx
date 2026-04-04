@@ -15,7 +15,7 @@ interface Product {
 
 const emptyForm = {
   name: "", slug: "", description: "", price: "", comparePrice: "",
-  stock: "", categoryId: "", imageUrls: ["", "", "", "", "", ""], isFeatured: false,
+  stock: "", categoryId: "", imageUrls: ["", "", "", "", "", "", "", "", "", ""], isFeatured: false,
   variants: [] as Variant[],
 };
 
@@ -86,7 +86,7 @@ export default function AdminProductsPage() {
     }
 
     const images = Array.isArray(p.images) ? p.images : [];
-    const imageUrls = [...images, ...Array(6).fill("")].slice(0, 6);
+    const imageUrls = [...images, ...Array(10).fill("")].slice(0, 10);
 
     setForm({ 
       name: p.name, 
@@ -349,7 +349,7 @@ export default function AdminProductsPage() {
               <textarea style={{ ...s.inp, minHeight: 80, resize: "vertical" }} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Product description..." />
             </div>
             <div style={{ marginBottom: 24 }}>
-              <label style={s.lbl}>Product Images (Max 6)</label>
+              <label style={s.lbl}>Product Images (Max 10)</label>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 16, marginTop: 8 }}>
                 {form.imageUrls.map((url, idx) => (
                   <div key={idx} style={{ border: "1px solid #eee", padding: 12, background: "#fcfcfc", position: "relative" }}>
