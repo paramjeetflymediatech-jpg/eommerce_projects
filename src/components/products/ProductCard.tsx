@@ -50,6 +50,7 @@ export default function ProductCard({ product }: { product: Product }) {
           src={imageUrl}
           alt={product.name}
           fill
+          unoptimized={true}
           style={styles.image}
           className="hover-image"
           sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"

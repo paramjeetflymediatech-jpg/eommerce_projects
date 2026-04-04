@@ -81,9 +81,11 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
                   src={img} 
                   alt={`${productName} view ${i + 1}`} 
                   fill 
+                  unoptimized={true}
                   style={{ objectFit: "cover" }} 
                   sizes="(max-width: 1000px) 100vw, 60vw" 
-                  priority={i === 0} 
+                  priority={i === 0}
+                  onError={(e) => console.error(`[GALLERY] Failed to load image: ${img}`)}
                 />
               </div>
             ))
@@ -146,7 +148,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
               }}
               onClick={() => scrollToImage(i)}
             >
-              <Image src={img} alt={`${productName} thumbnail ${i}`} fill style={{ objectFit: "cover" }} sizes="100px" />
+              <Image src={img} alt={`${productName} thumbnail ${i}`} fill unoptimized={true} style={{ objectFit: "cover" }} sizes="100px" />
             </div>
           ))}
         </div>
@@ -167,6 +169,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
                 src={images[activeImageIndex]} 
                 alt={`${productName} fullscreen`}
                 fill
+                unoptimized={true}
                 style={{ objectFit: "contain" }}
                 sizes="100vw"
               />

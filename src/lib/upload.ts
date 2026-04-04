@@ -37,6 +37,9 @@ export async function saveFile(
   const buffer = Buffer.from(await file.arrayBuffer());
   fs.writeFileSync(destPath, buffer);
 
+  console.log(`[UPLOAD] File saved to: ${destPath}`);
+  console.log(`[UPLOAD] Public URL: /uploads/${folder}/${filename}`);
+
   return `/uploads/${folder}/${filename}`;
 }
 
