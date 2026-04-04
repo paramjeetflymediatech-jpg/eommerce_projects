@@ -4,9 +4,10 @@ import fs from "fs";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { path: string[] } }
+  { params }: { params: Promise<{ path: string[] }> }
 ) {
-  const filePath = path.join(process.cwd(), "public", "uploads", ...params.path);
+  const { path: filePath } = await params;
+  const fullPath = path.join(process.cwd(), "public", "uploads", ...filePath);
 
   // Security: prevent directory traversal
   const uploadsDir = path.join(process.cwd(), "public", "uploads");
