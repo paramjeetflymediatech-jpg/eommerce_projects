@@ -81,6 +81,7 @@ export async function POST(req: NextRequest) {
           size: v.size,
           color: v.color || null,
           price: v.price ? parseFloat(v.price) : null,
+          comparePrice: v.comparePrice ? parseFloat(v.comparePrice) : null,
           stock: parseInt(v.stock) || 0,
           sku: v.sku || null,
         }, { transaction });

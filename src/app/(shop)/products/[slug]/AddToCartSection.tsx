@@ -11,6 +11,7 @@ interface Variant {
   size: string;
   color?: string | null;
   price?: number | null;
+  comparePrice?: number | null;
   stock: number;
 }
 
@@ -18,6 +19,7 @@ interface Product {
   id: number;
   name: string;
   price: number;
+  comparePrice?: number;
   images: string[];
   slug: string;
   stock: number;
@@ -108,6 +110,9 @@ export default function AddToCartSection({
   };
 
   const displayPrice = selectedVariant?.price ?? product.price;
+  const displayComparePrice = selectedVariant ? 
+    (selectedVariant.comparePrice || product.comparePrice) : 
+    product.comparePrice;
   const displayStock = selectedVariant ? selectedVariant.stock : product.stock;
 
   return (
@@ -118,9 +123,9 @@ export default function AddToCartSection({
           <span className={s.price}>
             {formatPrice(displayPrice)}
           </span>
-          {product.price > displayPrice && (
+          {displayComparePrice && displayComparePrice > displayPrice && (
             <span className={s.oldPrice}>
-              {formatPrice(product.price)}
+              {formatPrice(displayComparePrice)}
             </span>
           )}
         </div>

@@ -7,6 +7,7 @@ export interface ProductVariantAttributes {
   size: string; // S, M, L, XL, 7, 8, 9, 28, 30, 32, etc.
   color?: string | null;
   price?: number | null; // Optional: price override for this variant
+  comparePrice?: number | null; // Optional: original/compare price for this variant
   stock: number;
   sku?: string | null;
   images?: string[] | null;
@@ -15,7 +16,7 @@ export interface ProductVariantAttributes {
 }
 
 interface ProductVariantCreationAttributes
-  extends Optional<ProductVariantAttributes, "id" | "color" | "price" | "sku"> {}
+  extends Optional<ProductVariantAttributes, "id" | "color" | "price" | "comparePrice" | "sku"> {}
 
 class ProductVariant
   extends Model<ProductVariantAttributes, ProductVariantCreationAttributes>
@@ -26,6 +27,7 @@ class ProductVariant
   declare size: string;
   declare color: string | null;
   declare price: number | null;
+  declare comparePrice: number | null;
   declare stock: number;
   declare sku: string | null;
   declare images: string[] | null;
@@ -44,6 +46,7 @@ ProductVariant.init(
     size: { type: DataTypes.STRING(50), allowNull: false },
     color: { type: DataTypes.STRING(50), allowNull: true },
     price: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
+    comparePrice: { type: DataTypes.DECIMAL(10, 2), allowNull: true },
     stock: { type: DataTypes.INTEGER, defaultValue: 0 },
     sku: { type: DataTypes.STRING(100), allowNull: true },
     images: { type: DataTypes.JSON, allowNull: true, defaultValue: [] },

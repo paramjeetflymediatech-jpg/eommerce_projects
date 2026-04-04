@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface Category { id: number; name: string; parentId: number | null; }
-interface Variant { id?: number; size: string; color?: string; price?: string; stock: string; sku?: string; images?: string[]; }
+interface Variant { id?: number; size: string; color?: string; price?: string; comparePrice?: string; stock: string; sku?: string; images?: string[]; }
 interface Product {
   id: number; name: string; slug: string; price: number;
   comparePrice?: number; stock: number; isFeatured: boolean;
@@ -102,6 +102,7 @@ export default function AdminProductsPage() {
         ...v, 
         stock: String(v.stock), 
         price: v.price ? String(v.price) : "", 
+        comparePrice: v.comparePrice ? String(v.comparePrice) : "",
         images: Array.isArray(v.images) ? v.images : [] 
       })) : []
     });
@@ -122,7 +123,11 @@ export default function AdminProductsPage() {
       categoryId: finalCategoryId, 
       images: form.imageUrls.filter(u => u.trim() !== ""), 
       isFeatured: form.isFeatured,
-      variants: form.variants.map(v => ({ ...v, price: v.price || undefined }))
+      variants: form.variants.map(v => ({ 
+        ...v, 
+        price: v.price || undefined,
+        comparePrice: v.comparePrice || undefined
+      }))
     };
     try {
       const res = await fetch(editId ? `/api/admin/products/${editId}` : "/api/admin/products", { 
@@ -215,7 +220,7 @@ export default function AdminProductsPage() {
           <div style={s.tableWrap} className="admin-table-wrap">
             <table style={s.table}>
               <thead>
-                <tr>{["Image","Name","Category","Price","Stock","Featured","Actions"].map(h => <th key={h} style={s.th}>{h}</th>)}</tr>
+                <tr>{["Image","Name","Category","Price","Compare","Stock","Featured","Actions"].map(h => <th key={h} style={s.th}>{h}</th>)}</tr>
               </thead>
               <tbody>
                 {products.map(p => (
@@ -231,6 +236,13 @@ export default function AdminProductsPage() {
                     </td>
                     <td style={s.td}><span style={s.badge}>{p.category?.name || "—"}</span></td>
                     <td style={s.td}>${Number(p.price).toFixed(2)}</td>
+                    <td style={s.td}>
+                      {p.comparePrice ? (
+                        <span style={{ color: "#999", textDecoration: "line-through", fontSize: "0.8rem" }}>
+                          ${Number(p.comparePrice).toFixed(2)}
+                        </span>
+                      ) : <span style={{ color: "#eee" }}>—</span>}
+                    </td>
                     <td style={s.td}>
                       <span style={{ ...s.stockBadge, background: p.stock > 0 ? "#F0FDF4" : "#FFF5F5", color: p.stock > 0 ? "#15803D" : "#DC2626" }}>
                         {p.stock}
@@ -388,7 +400,7 @@ export default function AdminProductsPage() {
                 <h3 style={{ fontSize: "0.9rem", fontWeight: 700, margin: 0, textTransform: "uppercase", letterSpacing: "0.05em", color: "#666" }}>Product Variants (Sizes/Colors)</h3>
                 <button 
                   type="button"
-                  onClick={() => setForm({ ...form, variants: [...form.variants, { size: "", stock: "0", color: "", sku: "" }] })}
+                  onClick={() => setForm({ ...form, variants: [...form.variants, { size: "", stock: "0", color: "", sku: "", price: "", comparePrice: "" }] })}
                   style={{ ...s.editBtn, background: "#f9f9f7" }}
                 >
                   + Add Variant
@@ -434,13 +446,21 @@ export default function AdminProductsPage() {
                             setForm({ ...form, variants: newVariants });
                           }} placeholder="Override" />
                         </div>
+                        <div>
+                          <label style={s.lbl}>Compare (Opt)</label>
+                          <input style={s.inp} type="number" value={v.comparePrice ?? ""} onChange={e => {
+                            const newVariants = [...form.variants];
+                            newVariants[idx].comparePrice = e.target.value;
+                            setForm({ ...form, variants: newVariants });
+                          }} placeholder="Original" />
+                        </div>
                         <button 
                           type="button"
                           onClick={() => {
                             const newVariants = form.variants.filter((_, i) => i !== idx);
                             setForm({ ...form, variants: newVariants });
                           }}
-                          style={{ ...s.deleteBtn, padding: "8px", border: "none", color: "#999" }}
+                          style={{ ...s.deleteBtn, padding: "8px", border: "none", color: "#999", marginBottom: "4px" }}
                         >
                           ✕
                         </button>
