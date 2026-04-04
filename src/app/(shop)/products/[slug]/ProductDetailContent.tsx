@@ -65,9 +65,9 @@ export default function ProductDetailContent({ product }: { product: Product }) 
             <h1 className={s.title}>{product.name}</h1>
           </header>
 
-          <div className={s.descriptionArea}>
+          {/* <div className={s.descriptionArea}>
             <p className={s.shortDesc}>{product.shortDescription || "A testament to minimalist architectural design."}</p>
-          </div>
+          </div> */}
 
           <div className={s.actionArea}>
             <AddToCartSection 
