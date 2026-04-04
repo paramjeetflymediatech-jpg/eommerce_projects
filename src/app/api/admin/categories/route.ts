@@ -5,6 +5,7 @@ import { ensureDB, Category, Product } from "@/lib/models";
 import { apiResponse, apiError } from "@/lib/utils";
 import slugify from "slugify";
 import { Op } from "sequelize";
+import { revalidatePath } from "next/cache";
 
 async function requireAdmin(req: NextRequest) {
   const session = await getServerSession(authOptions as any);
@@ -77,6 +78,7 @@ export async function POST(req: NextRequest) {
       image
     });
 
+    revalidatePath("/", "layout");
     return apiResponse({ category }, 201);
   } catch (error) {
     console.error("Create category error:", error);
@@ -111,6 +113,7 @@ export async function PATCH(req: NextRequest) {
     if (image !== undefined) category.image = image;
 
     await category.save();
+    revalidatePath("/", "layout");
     return apiResponse({ category });
   } catch (error) {
     console.error("Update category error:", error);
@@ -146,6 +149,7 @@ export async function DELETE(req: NextRequest) {
     }
 
     await category.destroy();
+    revalidatePath("/", "layout");
     return apiResponse({ message: "Category deleted successfully" });
   } catch (error) {
     return apiError("Failed to delete category. It might be linked to products.");

@@ -335,13 +335,48 @@ export default function AdminCategoriesPage() {
             </div>
 
             <div style={styles.formGroup}>
-              <label style={styles.lbl}>Image URL</label>
-              <input
-                style={styles.inp}
-                placeholder="https://..."
-                value={form.image}
-                onChange={e => setForm({ ...form, image: e.target.value })}
-              />
+              <label style={styles.lbl}>Image (URL or Local Upload)</label>
+              <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+                <input
+                  style={{ ...styles.inp, flex: 1, minWidth: "200px" }}
+                  placeholder="https://... or upload local file ->"
+                  value={form.image}
+                  onChange={e => setForm({ ...form, image: e.target.value })}
+                />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setSaving(true);
+                    const formData = new FormData();
+                    formData.append("folder", "categories");
+                    formData.append("files", file);
+                    try {
+                      const res = await fetch("/api/upload", { method: "POST", body: formData });
+                      const data = await res.json();
+                      if (res.ok && data.urls?.length) {
+                        setForm(f => ({ ...f, image: data.urls[0] }));
+                        Swal.fire({ title: "UPLOADED", text: "Image uploaded successfully", icon: "success", toast: true, position: "top-end", timer: 3000, showConfirmButton: false });
+                      } else {
+                        Swal.fire({ title: "ERROR", text: data.error || "Upload failed", icon: "error", confirmButtonColor: "#000" });
+                      }
+                    } catch (err) {
+                      Swal.fire({ title: "ERROR", text: "Network failure", icon: "error", confirmButtonColor: "#000" });
+                    } finally {
+                      setSaving(false);
+                      e.target.value = '';
+                    }
+                  }}
+                  style={{ fontSize: "0.75rem", background: "#f0f0f0", padding: "8px", borderRadius: "4px", cursor: "pointer" }}
+                />
+              </div>
+              {form.image && (
+                <div style={{ marginTop: "16px" }}>
+                  <img src={form.image} alt="Preview" style={{ maxHeight: "80px", borderRadius: "4px", border: "1px solid #eee", objectFit: "cover" }} />
+                </div>
+              )}
             </div>
 
             <button
