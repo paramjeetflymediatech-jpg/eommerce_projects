@@ -343,7 +343,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   productGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 320px), 1fr))",
+    gridTemplateColumns: "repeat(4, 1fr)",
     gap: "clamp(64px, 6vw, 100px) clamp(24px, 4vw, 48px)",
   },
   pagination: {

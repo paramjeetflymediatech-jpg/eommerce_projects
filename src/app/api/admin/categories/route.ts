@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { ensureDB, Category } from "@/lib/models";
+import { ensureDB, Category, Product } from "@/lib/models";
 import { apiResponse, apiError } from "@/lib/utils";
 import slugify from "slugify";
 import { Op } from "sequelize";
@@ -137,6 +137,12 @@ export async function DELETE(req: NextRequest) {
     const childrenCount = await Category.count({ where: { parentId: id } });
     if (childrenCount > 0) {
       return apiError("Cannot delete category with subcategories. Delete children first.");
+    }
+
+    // Check if it has associated products
+    const productsCount = await Product.count({ where: { categoryId: id } });
+    if (productsCount > 0) {
+      return apiError(`Cannot delete category because it is linked to ${productsCount} product(s). Please remove or reassign these products first.`);
     }
 
     await category.destroy();

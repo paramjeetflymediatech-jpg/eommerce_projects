@@ -46,6 +46,22 @@ export default async function HomePage() {
       <style dangerouslySetInnerHTML={{
         __html: `
         body { background-color: #000 !important; }
+        @media (max-width: 1024px) {
+          .hero-video-grid {
+            display: block !important;
+          }
+          .hero-video-item.hero-side-image {
+            display: none !important;
+          }
+          .hero-video-item.hero-center-image {
+            height: 100vh !important;
+            width: 100% !important;
+            border: none !important;
+          }
+          .hero-video-item.hero-center-image img {
+            opacity: 0.95 !important;
+          }
+        }
       `}} />
       <section className="dvh-hero animate-fade" style={{ position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
 
@@ -55,19 +71,22 @@ export default async function HomePage() {
             "/2.png",
             "/3.png",
           ].map((src, i) => (
-            <div key={i} className="hero-video-item relative" style={{
-              flex: "1 1 33.3333%",
-              height: "100%",
-              overflow: "hidden",
-              background: "#000",
-              zIndex: 1
-            }}>
+            <div key={i} 
+              className={`hero-video-item relative ${i !== 1 ? 'hero-side-image' : 'hero-center-image'}`} 
+              style={{
+                flexBasis: i === 1 ? "100%" : "33.3333%",
+                height: "100%",
+                overflow: "hidden",
+                background: "#000",
+                zIndex: 1
+              }}
+            >
 
               {/* Image */}
               <img
                 src={src}
                 alt={`hero-${i}`}
-                className="w-full h-full object-cover opacity-50"
+                className={`w-full h-full object-cover transition-opacity duration-700 ${i === 1 ? 'opacity-95 md:opacity-50' : 'opacity-50'}`}
                 style={{
                   width: "110%",
                   height: "100%",

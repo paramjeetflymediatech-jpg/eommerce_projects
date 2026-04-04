@@ -30,7 +30,7 @@ export default function AdminCategoriesPage() {
   const fetchCategories = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/categories?page=${page}&limit=10`);
+      const res = await fetch(`/api/admin/categories?page=${page}&limit=10`, { cache: 'no-store' });
       const data = await res.json();
       if (res.ok) {
         setCategories(data.categories || []);
@@ -47,7 +47,7 @@ export default function AdminCategoriesPage() {
 
   const fetchAllForDropdown = async () => {
     try {
-      const res = await fetch("/api/admin/categories?all=true");
+      const res = await fetch("/api/admin/categories?all=true", { cache: 'no-store' });
       const data = await res.json();
       if (res.ok) setAllCategories(data.categories || []);
     } catch (err) { console.error("Dropdown fetch error", err); }
@@ -81,7 +81,8 @@ export default function AdminCategoriesPage() {
         setShowForm(false);
         setEditId(null);
         setForm({ name: "", description: "", parentId: "", image: "" });
-        fetchCategories();
+        fetchCategories(currentPage);
+        fetchAllForDropdown();
         Swal.fire({
           title: "SUCCESS",
           text: `Category ${editId ? "updated" : "defined"} successfully.`,
@@ -120,7 +121,8 @@ export default function AdminCategoriesPage() {
     try {
       const res = await fetch(`/api/admin/categories?id=${id}`, { method: "DELETE" });
       if (res.ok) {
-        fetchCategories();
+        fetchCategories(currentPage);
+        fetchAllForDropdown();
         Swal.fire({ title: "DELETED", icon: "success", confirmButtonColor: "#000" });
       } else {
         const data = await res.json();
@@ -140,7 +142,7 @@ export default function AdminCategoriesPage() {
       }));
   };
 
-  const categoryTree = buildTree(categories);
+  const categoryTree = buildTree(allCategories);
 
   return (
     <div style={styles.container}>
