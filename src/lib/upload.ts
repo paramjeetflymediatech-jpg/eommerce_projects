@@ -59,14 +59,16 @@ export async function saveFile(
   }
 
   console.log(`[UPLOAD] File saved to: ${destPath}`);
-  console.log(`[UPLOAD] Public URL: /uploads/${folder}/${filename}`);
+  console.log(`[UPLOAD] Public URL: /api/uploads/${folder}/${filename}`);
 
-  return `/uploads/${folder}/${filename}`;
+  return `/api/uploads/${folder}/${filename}`;
 }
 
 export function deleteFile(publicPath: string): void {
   try {
-    const fullPath = path.join(process.cwd(), "public", publicPath);
+    // Strip /api prefix if present (new URL format is /api/uploads/...)
+    const relativePath = publicPath.replace(/^\/api/, "");
+    const fullPath = path.join(process.cwd(), "public", relativePath);
     if (fs.existsSync(fullPath)) {
       fs.unlinkSync(fullPath);
     }
