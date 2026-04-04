@@ -1,22 +1,31 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { useCartStore } from "@/store/cartStore";
-import { useWishlistStore } from "@/store/wishlistStore";
 import Image from "next/image";
 
 export default function Header() {
+  const pathname = usePathname();
   const { data: session } = useSession();
-  const cartCount = useCartStore((s) => s.getCount());
-  const openCart = useCartStore((s) => s.openCart);
+  const cartCount = useCartStore((s: any) => s.getCount());
+  const openCart = useCartStore((s: any) => s.openCart);
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  const isHome = pathname === "/";
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -29,8 +38,19 @@ export default function Header() {
     { label: "ACCOUNT", href: session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account" },
   ];
 
+  const headerBg = isHome && !scrolled ? "transparent" : "#fff";
+  const headerBorder = isHome && !scrolled ? "none" : "1px solid #e0e0e0";
+  const textColor = isHome && !scrolled ? "#fff" : "#000";
+
   return (
     <>
+      <style jsx global>{`
+        :root {
+          --nav-text: ${textColor};
+          --nav-bg: ${headerBg};
+        }
+      `}</style>
+      
       {/* HEADER */}
       <header
         style={{
@@ -39,12 +59,13 @@ export default function Header() {
           left: 0,
           right: 0,
           zIndex: 100,
-          background: "#fff",
-          borderBottom: "1px solid #e0e0e0",
+          background: "var(--nav-bg)",
+          borderBottom: headerBorder,
           height: 64,
-          color: "#000",
+          color: "var(--nav-text)",
           display: "flex",
           alignItems: "center",
+          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
         <div className="header-container">
@@ -63,16 +84,17 @@ export default function Header() {
               }}
             >
               <div style={{ width: 18, display: "flex", flexDirection: "column", gap: 3 }}>
-                <span style={{ height: 1.5, background: "#000", width: "100%" }} />
-                <span style={{ height: 1.5, background: "#000", width: "100%" }} />
+                <span style={{ height: 1.5, background: "var(--nav-text)", width: "100%", transition: "background 0.4s" }} />
+                <span style={{ height: 1.5, background: "var(--nav-text)", width: "100%", transition: "background 0.4s" }} />
               </div>
-              <span style={{ 
-                fontSize: "0.65rem", 
-                fontWeight: 700, 
-                letterSpacing: "0.2em", 
-                color: "#000",
+              <span style={{
+                fontSize: "0.65rem",
+                fontWeight: 700,
+                letterSpacing: "0.2em",
+                color: "var(--nav-text)",
                 display: "inline-block",
-                marginTop: 1
+                marginTop: 1,
+                transition: "color 0.4s"
               }}>
                 MENU
               </span>
@@ -82,12 +104,12 @@ export default function Header() {
           {/* CENTER - LOGO */}
           <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
             <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
-              <Image 
-                src="/logo.png" 
-                alt="ShopNest" 
-                width={200} 
-                height={60} 
-                priority 
+              <Image
+                src="/logo.png"
+                alt="ShopNest"
+                width={200}
+                height={60}
+                priority
                 style={{ height: "auto", width: "auto", maxHeight: "50px" }}
               />
             </Link>
@@ -104,13 +126,14 @@ export default function Header() {
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                color: "#000",
+                color: "var(--nav-text)",
                 fontSize: "0.65rem",
                 fontWeight: 700,
                 letterSpacing: "0.15em",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 4
+                gap: 4,
+                transition: "color 0.4s"
               }}
             >
               BAG <span style={{ opacity: 0.5 }}>({mounted ? cartCount : 0})</span>
@@ -162,11 +185,11 @@ export default function Header() {
             borderBottom: "1px solid #f5f5f5",
           }}
         >
-          <span style={{ 
-            fontSize: "0.75rem", 
-            fontWeight: 700, 
+          <span style={{
+            fontSize: "0.75rem",
+            fontWeight: 700,
             letterSpacing: "0.2em",
-            textTransform: "uppercase" 
+            textTransform: "uppercase"
           }}>
             ShopNest
           </span>
@@ -242,11 +265,11 @@ export default function Header() {
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  style={{ 
-                    fontSize: "0.75rem", 
-                    fontWeight: 700, 
-                    letterSpacing: "0.15em", 
-                    textDecoration: "none", 
+                  style={{
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.15em",
+                    textDecoration: "none",
                     color: "#000",
                     background: "#f5f5f5",
                     padding: "16px",
@@ -255,14 +278,14 @@ export default function Header() {
                 >
                   SIGN IN
                 </Link>
-                <Link 
-                  href="/register" 
+                <Link
+                  href="/register"
                   onClick={() => setMobileOpen(false)}
-                  style={{ 
-                    fontSize: "0.75rem", 
-                    fontWeight: 700, 
-                    letterSpacing: "0.15em", 
-                    textDecoration: "none", 
+                  style={{
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.15em",
+                    textDecoration: "none",
                     color: "#888",
                     textAlign: "center"
                   }}

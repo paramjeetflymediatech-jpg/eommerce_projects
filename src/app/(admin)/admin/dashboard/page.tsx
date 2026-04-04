@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = { title: "Admin Dashboard | ShopNest" };
 export const dynamic = "force-dynamic";
@@ -39,57 +40,106 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div>
-      <div style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: "clamp(1.2rem,4vw,1.5rem)", fontWeight: 700, margin: 0 }}>Overview</h2>
-        <p style={{ color: "#666", fontSize: "clamp(0.75rem,2vw,0.875rem)", marginTop: 4 }}>Welcome back to your store management.</p>
+    <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+      {/* Header Bar */}
+      <div style={{ 
+        marginBottom: 40, 
+        padding: "32px 0",
+        borderBottom: "1px solid #eee",
+        display: "flex",
+        flexDirection: "column",
+        gap: 8
+      }}>
+        <h2 style={{ 
+          fontSize: "clamp(1.5rem, 5vw, 2.2rem)", 
+          fontWeight: 500, 
+          margin: 0,
+          fontFamily: "var(--font-serif)",
+          letterSpacing: "-0.02em",
+          color: "#111"
+        }}>
+          Overview
+        </h2>
+        <p style={{ 
+          color: "#666", 
+          fontSize: "0.9rem", 
+          margin: 0,
+          opacity: 0.8
+        }}>
+          Manage your store's performance and inventory from a single dashboard.
+        </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="admin-stats-grid">
+      <div className="admin-stats-grid" style={{ marginBottom: 48 }}>
         {stats.map(({ icon, label, value }) => (
           <div key={label} style={s.statCard}>
-            <div style={s.statIcon}>{icon}</div>
             <div style={s.statContent}>
               <p style={s.statLabel}>{label}</p>
-              <p style={s.statValue}>{value}</p>
+              <h3 style={s.statValue}>{value}</h3>
             </div>
+            <div style={s.statIcon}>{icon}</div>
           </div>
         ))}
       </div>
 
-      {/* Quick Actions */}
+      {/* Tools Section */}
+      <div style={{ marginBottom: 24 }}>
+        <h3 style={{ 
+          fontSize: "1rem", 
+          fontWeight: 600, 
+          textTransform: "uppercase", 
+          letterSpacing: "0.1em",
+          color: "#888",
+          marginBottom: 24
+        }}>
+          Quick Management
+        </h3>
+      </div>
+
       <div className="admin-tools-grid">
         <div style={s.toolCard}>
-          <h3 style={s.toolTitle}>Inventory Management</h3>
-          <p style={s.toolDesc}>Add new items or update your existing product catalog with ease.</p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <a href="/admin/products" style={s.toolBtn}>View Products</a>
-            <a href="/admin/products" style={{ ...s.toolBtn, background: "#f0f0f0", color: "#000", border: "1px solid #ddd" }}>Add New</a>
+          <div style={s.toolHeader}>
+            <span style={s.toolBadge}>Inventory</span>
+            <h3 style={s.toolTitle}>Products</h3>
+          </div>
+          <p style={s.toolDesc}>Complete oversight of your digital showroom. Add, edit, or curate your collection.</p>
+          <div style={{ display: "flex", gap: 12, marginTop: "auto" }}>
+            <Link href="/admin/products" style={s.toolBtn}>View All</Link>
+            <Link href="/admin/products" style={s.toolBtnSecondary}>Add New</Link>
           </div>
         </div>
 
         <div style={s.toolCard}>
-          <h3 style={s.toolTitle}>Orders & Fulfilment</h3>
-          <p style={s.toolDesc}>Track customer purchases and manage the status of shipments.</p>
-          <div style={{ display: "flex", gap: 12 }}>
-            <a href="/admin/orders" style={s.toolBtn}>Manage Orders</a>
+          <div style={s.toolHeader}>
+            <span style={s.toolBadge}>Sales</span>
+            <h3 style={s.toolTitle}>Orders</h3>
+          </div>
+          <p style={s.toolDesc}>Track customer acquisitions and manage fulfillment statuses in real-time.</p>
+          <div style={{ display: "flex", gap: 12, marginTop: "auto" }}>
+            <Link href="/admin/orders" style={s.toolBtn}>Manage Orders</Link>
           </div>
         </div>
 
         <div style={s.toolCard}>
-          <h3 style={s.toolTitle}>Customer Accounts</h3>
-          <p style={s.toolDesc}>Oversee user registrations, verify identities, and manage access roles.</p>
-          <div style={{ display: "flex", gap: 12 }}>
-            <a href="/admin/users" style={s.toolBtn}>User Management</a>
+          <div style={s.toolHeader}>
+            <span style={s.toolBadge}>CRM</span>
+            <h3 style={s.toolTitle}>Customers</h3>
+          </div>
+          <p style={s.toolDesc}>Insights into your client base. Manage registrations and account security.</p>
+          <div style={{ display: "flex", gap: 12, marginTop: "auto" }}>
+            <Link href="/admin/users" style={s.toolBtn}>User Records</Link>
           </div>
         </div>
 
         <div style={s.toolCard}>
-          <h3 style={s.toolTitle}>Inventory Taxonomy</h3>
-          <p style={s.toolDesc}>Define hierarchical categories and subcategories to structure your catalog.</p>
-          <div style={{ display: "flex", gap: 12 }}>
-            <a href="/admin/categories" style={s.toolBtn}>Classification</a>
+          <div style={s.toolHeader}>
+            <span style={s.toolBadge}>Structure</span>
+            <h3 style={s.toolTitle}>Taxonomy</h3>
+          </div>
+          <p style={s.toolDesc}>Organize your catalog into elegant hierarchies and categories.</p>
+          <div style={{ display: "flex", gap: 12, marginTop: "auto" }}>
+            <Link href="/admin/categories" style={s.toolBtn}>Classify</Link>
           </div>
         </div>
       </div>
@@ -100,44 +150,99 @@ export default async function AdminDashboard() {
 const s: Record<string, React.CSSProperties> = {
   statCard: {
     background: "#fff",
-    border: "1px solid #eee",
-    padding: "24px",
+    border: "1px solid #f0f0f0",
+    padding: "32px",
     display: "flex",
-    alignItems: "center",
-    gap: 20,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.02)",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+    position: "relative",
+    transition: "transform 0.2s, box-shadow 0.2s",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
   },
   statIcon: {
-    width: 56,
-    height: 56,
-    background: "#f9f9f7",
-    color: "#000",
+    padding: "12px",
+    background: "#f9f9f9",
+    borderRadius: "12px",
+    fontSize: "1.2rem",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "1.5rem",
-    borderRadius: 0,
+    opacity: 0.8
   },
-  statContent: { display: "flex", flexDirection: "column" },
-  statLabel: { fontSize: "0.75rem", color: "#888", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 4px 0" },
-  statValue: { fontSize: "1.75rem", fontWeight: 700, color: "#000", margin: 0 },
+  statContent: { display: "flex", flexDirection: "column", gap: 4 },
+  statLabel: { 
+    fontSize: "0.75rem", 
+    color: "#999", 
+    fontWeight: 600, 
+    textTransform: "uppercase", 
+    letterSpacing: "0.1em", 
+    margin: 0 
+  },
+  statValue: { 
+    fontSize: "2.2rem", 
+    fontWeight: 400, 
+    color: "#000", 
+    margin: 0,
+    fontFamily: "var(--font-serif)"
+  },
   toolCard: {
     background: "#fff",
-    border: "1px solid #eee",
-    padding: "32px",
+    border: "1px solid #f0f0f0",
+    padding: "40px",
     display: "flex",
     flexDirection: "column",
-    gap: 12,
+    gap: 16,
+    height: "100%",
+    minHeight: 280,
+    boxShadow: "0 4px 20px rgba(0,0,0,0.02)",
   },
-  toolTitle: { fontSize: "1.1rem", fontWeight: 700, margin: 0 },
-  toolDesc: { fontSize: "0.9rem", color: "#666", lineHeight: 1.6, margin: "0 0 12px 0" },
+  toolHeader: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    marginBottom: 8
+  },
+  toolBadge: {
+    fontSize: "0.65rem",
+    fontWeight: 700,
+    textTransform: "uppercase",
+    letterSpacing: "0.15em",
+    color: "#ccc",
+  },
+  toolTitle: { 
+    fontSize: "1.4rem", 
+    fontWeight: 500, 
+    margin: 0,
+    fontFamily: "var(--font-serif)",
+    color: "#111"
+  },
+  toolDesc: { 
+    fontSize: "0.95rem", 
+    color: "#777", 
+    lineHeight: 1.7, 
+    margin: 0,
+    fontWeight: 300
+  },
   toolBtn: {
     background: "#000",
     color: "#fff",
     textDecoration: "none",
-    padding: "10px 20px",
-    fontSize: "0.8rem",
-    fontWeight: 700,
+    padding: "14px 28px",
+    fontSize: "0.85rem",
+    fontWeight: 500,
     textAlign: "center" as const,
+    transition: "opacity 0.2s",
+    letterSpacing: "0.02em"
+  },
+  toolBtnSecondary: {
+    background: "transparent",
+    color: "#000",
+    textDecoration: "none",
+    padding: "14px 28px",
+    fontSize: "0.85rem",
+    fontWeight: 500,
+    textAlign: "center" as const,
+    border: "1px solid #eee",
+    transition: "background 0.2s"
   },
 };

@@ -43,50 +43,54 @@ export default async function HomePage() {
   return (
     <>
       <OrganizationJsonLd />
-      <section className="dvh-hero" style={{ position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
-        {/* Responsive Horizontal/Vertical Video Grid */}
-        {/* Responsive Horizontal/Vertical Video Grid - COMMENTED OUT AS REQUESTED */}
-        {/* 
-        <div className="hero-video-grid">
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        body { background-color: #000 !important; }
+      `}} />
+      <section className="dvh-hero animate-fade" style={{ position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", background: "#000" }}>
+
+        <div className="hero-video-grid flex flex-col md:flex-row h-screen" style={{ width: "100%", overflow: "hidden" }}>
           {[
-            "/12766274_2160_3840_30fps.mp4",
-            "/14807010_3840_2160_25fps.mp4",
-            "/15483565_2160_3840_60fps.mp4",
+            "/1.png",
+            "/2.png",
+            "/3.png",
           ].map((src, i) => (
-            <div key={i} className="hero-video-item">
-              <video 
-                autoPlay 
-                muted 
-                loop 
-                playsInline 
-                className="video-background"
-                style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.5 }}
-              >
-                <source src={src} type="video/mp4" />
-              </video>
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7))" }} />
+            <div key={i} className="hero-video-item relative" style={{
+              flex: "1 1 33.3333%",
+              height: "100%",
+              overflow: "hidden",
+              background: "#000",
+              zIndex: 1
+            }}>
+
+              {/* Image */}
+              <img
+                src={src}
+                alt={`hero-${i}`}
+                className="w-full h-full object-cover opacity-50"
+                style={{
+                  width: "110%",
+                  height: "100%",
+                  position: "absolute",
+                  left: "-5%",
+                  top: 0,
+                  display: "block",
+                  transform: "scale(1.1)",
+                  maxWidth: "none"
+                }}
+              />
+
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
+
             </div>
           ))}
         </div>
-        */}
-        
-        {/* New Fashion Hero Image */}
-        <div style={{ position: "absolute", inset: 0 }}>
-          <Image 
-            src="/images/fashion/hero.png" 
-            alt="The Atelier Hero" 
-            fill 
-            priority
-            style={{ objectFit: "cover", opacity: 0.9 }}
-            sizes="100vw"
-          />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.5))" }} />
-        </div>
-        
+
         <div className="container-app" style={{ position: "relative", textAlign: "center", color: "#fff", zIndex: 2, padding: "0 24px" }}>
-          <h1 className="animate-fade" style={{ 
+          <h1 className="animate-fade" style={{
             fontSize: "clamp(2.5rem, 12vw, 6rem)",
-            marginBottom: 24, 
+            marginBottom: 24,
             textTransform: "uppercase",
             fontWeight: 500,
             letterSpacing: "-0.03em",
@@ -94,23 +98,29 @@ export default async function HomePage() {
           }}>
             The French <br className="show-mobile" /> Art de Vivre
           </h1>
-          <p className="animate-fade" style={{ 
-            fontSize: "clamp(0.65rem, 2.5vw, 0.85rem)", 
-            letterSpacing: "0.4em", 
-            textTransform: "uppercase", 
-            marginBottom: 48, 
-            fontWeight: 400, 
-            opacity: 0.8 
+          <p className="animate-fade" style={{
+            fontSize: "clamp(0.65rem, 2.5vw, 0.85rem)",
+            letterSpacing: "0.4em",
+            textTransform: "uppercase",
+            marginBottom: 48,
+            fontWeight: 400,
+            opacity: 0.8
           }}>
             Iconic Designs. Exceptional Craftsmanship. Since 1960.
           </p>
           <div className="animate-fade" style={{ animationDelay: "0.4s" }}>
-            <Link href="/products" className="btn btn-primary" style={{ 
-              padding: "20px 56px", 
-              background: "#fff", 
+            <Link href="/products" className="btn" style={{
+              padding: "20px 56px",
+              background: "#fff",
               color: "#000",
               fontSize: "0.7rem",
-              letterSpacing: "0.25em"
+              letterSpacing: "0.25em",
+              border: "none !important",
+              outline: "none !important",
+              boxShadow: "none !important",
+              textDecoration: "none !important",
+              borderRadius: 0,
+              display: "inline-block"
             }}>
               SHOP COLLECTIONS
             </Link>
@@ -125,10 +135,10 @@ export default async function HomePage() {
             <div className="grid-luxury">
               {categories.slice(0, 4).map((cat: any, index: number) => (
                 <Link key={cat.id} href={`/categories/${cat.slug}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(450px, 70vh, 750px)", overflow: "hidden", textDecoration: "none" }}>
-                  <Image 
-                    src={cat.image || `https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80`} 
-                    alt={cat.name} 
-                    fill 
+                  <Image
+                    src={cat.image || `https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80`}
+                    alt={cat.name}
+                    fill
                     className="hover-zoom"
                     style={{ objectFit: "cover" }}
                     sizes="(max-width: 1024px) 100vw, 50vw"
@@ -149,13 +159,13 @@ export default async function HomePage() {
       {/* Brand Story: Art de Vivre */}
       <section className="section-padding" style={{ background: "#f9f9f9" }}>
         <div className="container-app">
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 400px), 1fr))", gap: "clamp(48px, 10vw, 140px)", alignItems: "center" }}>
+          <div className="grid-editorial-2">
             <div style={{ position: "relative", height: "clamp(450px, 75vh, 850px)", animation: "fadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1)" }}>
-              <Image 
-                src="/images/fashion/coats.png" 
-                alt="Luxury Fashion" 
-                fill 
-                style={{ objectFit: "cover" }} 
+              <Image
+                src="/images/fashion/coats.png"
+                alt="Luxury Fashion"
+                fill
+                style={{ objectFit: "cover" }}
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
@@ -173,6 +183,66 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* French Art de Vivre - Triple Lifestyle Grid */}
+      <section className="section-padding" style={{ background: "#ffffff", paddingBottom: "clamp(120px, 15vw, 200px)" }}>
+        <div className="container-app">
+          <div style={{ textAlign: "center", marginBottom: "clamp(60px, 10vw, 120px)" }}>
+            <p className="text-tracked" style={{ fontSize: "0.8rem", color: "#888", marginBottom: 24, fontWeight: 700 }}>Life in Style</p>
+            <h2 style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", lineHeight: 1.1, marginBottom: 32 }}>L'Art de Vivre.</h2>
+            <p style={{ fontSize: "1.1rem", color: "#666", maxWidth: 640, margin: "0 auto", fontWeight: 300 }}>
+              A curated curation of the timeless Parisian lifestyle. Explore our heritage of elegance and impeccable taste.
+            </p>
+          </div>
+
+          <div className="grid-editorial-3">
+            <div className="editorial-item hover-zoom-container">
+              <Image
+                src="/images/lifestyle/paris_chic.png"
+                alt="Parisian Style"
+                fill
+                className="hover-zoom"
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 1024px) 100vw, 33vw"
+              />
+              <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
+                <p className="text-tracked" style={{ fontSize: "0.65rem", fontWeight: 800 }}>01 / THE SILHOUETTE</p>
+              </div>
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
+            </div>
+
+            <div className="editorial-item tall hover-zoom-container" style={{ zIndex: 10 }}>
+              <Image
+                src="/images/lifestyle/interior.png"
+                alt="The Atelier Interior"
+                fill
+                className="hover-zoom"
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 1024px) 100vw, 33vw"
+              />
+              <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
+                <p className="text-tracked" style={{ fontSize: "0.65rem", fontWeight: 800 }}>02 / THE ARCHIVE</p>
+              </div>
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
+            </div>
+
+            <div className="editorial-item hover-zoom-container">
+              <Image
+                src="/images/lifestyle/craftsmanship.png"
+                alt="Artisanal Detail"
+                fill
+                className="hover-zoom"
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 1024px) 100vw, 33vw"
+              />
+              <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
+                <p className="text-tracked" style={{ fontSize: "0.65rem", fontWeight: 800 }}>03 / THE CRAFT</p>
+              </div>
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Featured Gallery */}
       {featured.length > 0 && (
         <section className="section-padding" style={{ background: "#ffffff" }}>
@@ -181,10 +251,10 @@ export default async function HomePage() {
               <h2 style={{ marginBottom: 16 }}>Curated Essentials</h2>
               <p className="text-tracked" style={{ fontSize: "0.7rem", color: "#888", fontWeight: 700, opacity: 0.6 }}>Exclusive Design Selections</p>
             </div>
-            <div style={{ 
-              display: "grid", 
-              gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", 
-              gap: "clamp(32px, 5vw, 64px)" 
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))",
+              gap: "clamp(32px, 5vw, 64px)"
             }}>
               {featured.slice(0, 3).map((p: any) => (
                 <ProductCard key={p.id} product={p} />
@@ -233,31 +303,31 @@ export default async function HomePage() {
       {/* Unique Feature: The Editorial Lookbook */}
       <section className="section-padding" style={{ background: "#f9f9f9", overflow: "hidden" }}>
         <div className="container-app">
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8vw", alignItems: "center" }}>
+          <div className="grid-editorial-2">
             <div style={{ position: "relative" }}>
-              <div style={{ position: "relative", height: "80vh", width: "100%", zIndex: 2 }}>
-                <Image 
-                  src="/images/fashion/hero.png" 
-                  alt="Lookbook 01" 
-                  fill 
-                  style={{ objectFit: "cover" }} 
-                  sizes="50vw"
+              <div style={{ position: "relative", height: "clamp(400px, 80vh, 750px)", width: "100%", zIndex: 2 }}>
+                <Image
+                  src="/images/fashion/hero.png"
+                  alt="Lookbook 01"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                 />
               </div>
-              <div style={{ 
-                position: "absolute", 
-                top: "10%", 
-                right: "-20%", 
-                height: "60vh", 
-                width: "70%", 
+              <div style={{
+                position: "absolute",
+                top: "10%",
+                right: "-10%",
+                height: "clamp(300px, 60vh, 500px)",
+                width: "60%",
                 zIndex: 1,
                 opacity: 0.8
-              }}>
-                <Image 
-                  src="/images/fashion/knitwear.png" 
-                  alt="Lookbook 02" 
-                  fill 
-                  style={{ objectFit: "cover" }} 
+              }} className="hide-mobile">
+                <Image
+                  src="/images/fashion/knitwear.png"
+                  alt="Lookbook 02"
+                  fill
+                  style={{ objectFit: "cover" }}
                   sizes="30vw"
                 />
               </div>
@@ -270,11 +340,11 @@ export default async function HomePage() {
               <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "#444", marginBottom: 40, fontWeight: 300, maxWidth: "440px" }}>
                 A curated selection of archival pieces and new season ready-to-wear, defined by architectural tailoring and premium natural fibres.
               </p>
-              <Link href="/products" style={{ 
-                fontSize: "0.8rem", 
-                fontWeight: 700, 
-                letterSpacing: "0.2em", 
-                color: "#000", 
+              <Link href="/products" style={{
+                fontSize: "0.8rem",
+                fontWeight: 700,
+                letterSpacing: "0.2em",
+                color: "#000",
                 textDecoration: "underline",
                 textUnderlineOffset: "8px"
               }}>

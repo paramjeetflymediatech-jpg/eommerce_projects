@@ -7,13 +7,13 @@
   --text-primary: #000000;
   --text-secondary: #444444;
   --text-muted: #888888;
-  
+
   --border: #e0e0e0;
   --border-subtle: #f0f0f0;
-  
+
   --accent: #000000;
   --accent-foreground: #ffffff;
-  
+
   --bg-card: #ffffff;
   --bg-elevated: #fcfcfc;
   --bg-muted: #f8f8f8;
@@ -42,22 +42,41 @@ body {
   overflow-x: hidden;
 }
 
-img, video {
+img,
+video {
   max-width: 100%;
 }
 
 /* --- Fluid Typography --- */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-serif);
   font-weight: 400;
   line-height: 1.2;
 }
 
-h1 { font-size: clamp(2.5rem, 8vw, 5.5rem); letter-spacing: -0.02em; }
-h2 { font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.01em; }
-h3 { font-size: clamp(1.2rem, 3vw, 1.8rem); }
+h1 {
+  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  letter-spacing: -0.02em;
+}
 
-p { font-size: 1rem; font-weight: 300; }
+h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+}
+
+p {
+  font-size: 1rem;
+  font-weight: 300;
+}
 
 /* --- Layout --- */
 .container-app {
@@ -88,7 +107,8 @@ p { font-size: 1rem; font-weight: 300; }
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
   cursor: pointer;
   border: none;
-  border-radius: 0; /* No rounded corners */
+  border-radius: 0;
+  /* No rounded corners */
 }
 
 .btn-primary {
@@ -115,6 +135,49 @@ p { font-size: 1rem; font-weight: 300; }
   background: transparent;
   color: var(--accent);
   padding: 8px 16px;
+}
+
+/* --- Editorial Responsive Grids --- */
+.grid-editorial-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 8vw, 140px);
+  align-items: center;
+}
+
+.grid-editorial-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.editorial-item {
+  position: relative;
+  overflow: hidden;
+  height: clamp(400px, 60vh, 700px);
+}
+
+.editorial-item.tall {
+  height: clamp(550px, 75vh, 900px);
+  margin-top: -80px;
+}
+
+@media (max-width: 1024px) {
+
+  .grid-editorial-2,
+  .grid-editorial-3 {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+
+  .editorial-item.tall {
+    margin-top: 0;
+    height: clamp(400px, 60vh, 700px);
+  }
+
+  .grid-editorial-2 {
+    gap: 60px;
+  }
 }
 
 .card {
@@ -145,7 +208,10 @@ p { font-size: 1rem; font-weight: 300; }
 }
 
 @keyframes fadeIn {
-  to { opacity: 1; transform: translateY(0); }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* --- Utils --- */
@@ -154,8 +220,13 @@ p { font-size: 1rem; font-weight: 300; }
   text-transform: uppercase;
 }
 
-.bg-black { background-color: #000; }
-.text-white { color: #fff; }
+.bg-black {
+  background-color: #000;
+}
+
+.text-white {
+  color: #fff;
+}
 
 /* --- Video Cover --- */
 .video-background {
@@ -184,8 +255,15 @@ p { font-size: 1rem; font-weight: 300; }
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 /* --- Checkout Specific Responsive --- */
@@ -194,14 +272,15 @@ p { font-size: 1rem; font-weight: 300; }
     grid-template-columns: 1fr !important;
     gap: 60px !important;
   }
-  
+
   .checkout-summary-column {
-    order: -1; /* Summary first on mobile */
+    order: -1;
+    /* Summary first on mobile */
     padding-bottom: 40px;
     border-bottom: 1px solid #eee;
     margin-bottom: 60px;
   }
-  
+
   .checkout-sticky {
     position: static !important;
     padding: 0 !important;
@@ -229,15 +308,20 @@ p { font-size: 1rem; font-weight: 300; }
   .section-padding {
     padding: 60px 0;
   }
-  
-  .hide-mobile { display: none !important; }
-  .show-mobile { display: block !important; }
-  
+
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .show-mobile {
+    display: block !important;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr !important;
     gap: 40px !important;
   }
-  
+
   .footer-bottom {
     flex-direction: column !important;
     gap: 24px !important;
@@ -250,7 +334,9 @@ p { font-size: 1rem; font-weight: 300; }
 }
 
 @media (min-width: 769px) {
-  .show-mobile { display: none !important; }
+  .show-mobile {
+    display: none !important;
+  }
 }
 
 /* --- Hero Video Grid (3 Vertical Columns) --- */
@@ -270,7 +356,7 @@ p { font-size: 1rem; font-weight: 300; }
   overflow: hidden;
   height: 100%;
   width: 100%;
-  border-right: 1px solid rgba(255,255,255,0.08);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .hero-video-item:last-child {
@@ -282,9 +368,10 @@ p { font-size: 1rem; font-weight: 300; }
     grid-template-columns: 1fr;
     grid-template-rows: repeat(3, 1fr);
   }
+
   .hero-video-item {
     border-right: none;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
 
@@ -307,13 +394,13 @@ p { font-size: 1rem; font-weight: 300; }
     grid-template-columns: 1fr !important;
     gap: 60px !important;
   }
-  
+
   .products-sidebar {
-    order: -1; 
+    order: -1;
     border-bottom: 1px solid #f0f0f0;
     padding-bottom: 40px;
   }
-  
+
   .products-sidebar-sticky {
     position: static !important;
   }
@@ -350,7 +437,7 @@ p { font-size: 1rem; font-weight: 300; }
   .product-actions-group {
     flex-direction: column !important;
   }
-  
+
   .product-actions-group button {
     width: 100% !important;
   }
@@ -374,11 +461,11 @@ p { font-size: 1rem; font-weight: 300; }
     grid-template-columns: 1fr !important;
     gap: 60px !important;
   }
-  
+
   .product-sticky-details {
     position: static !important;
   }
-  
+
   .product-image-column {
     margin-bottom: 40px;
   }
@@ -396,7 +483,7 @@ p { font-size: 1rem; font-weight: 300; }
   .admin-table-wrap {
     display: none !important;
   }
-  
+
   .admin-card-list {
     display: flex !important;
     gap: 16px;
@@ -449,9 +536,8 @@ p { font-size: 1rem; font-weight: 300; }
     flex-direction: column !important;
     align-items: flex-start !important;
   }
-  
+
   #add-product-btn {
     width: 100%;
   }
 }
-

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 const NAV = [
   { href: "/admin/dashboard", icon: "⊞", label: "Dashboard" },
@@ -107,15 +108,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className={`admin-sidebar${sidebarOpen ? " sidebar-open" : ""}`}
           >
             {/* Sidebar Logo */}
-            <div style={{ ...styles.sidebarTop, justifyContent: collapsed ? "center" : "space-between" }}>
+            <div style={{ ...styles.sidebarTop, justifyContent: collapsed ? "center" : "flex-start", padding: collapsed ? "20px 0" : "24px 20px" }}>
               {!collapsed && (
                 <Link href="/admin/dashboard" style={styles.logo}>
-                  <span style={styles.logoIcon}>S</span>
-                  <span style={styles.logoText}>ShopNest</span>
+                  <Image 
+                    src="/logo.png" 
+                    alt="Logo" 
+                    width={120} 
+                    height={40} 
+                    style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }} 
+                  />
                 </Link>
               )}
               {collapsed && (
-                <Link href="/admin/dashboard" style={styles.logoIcon}>S</Link>
+                <Link href="/admin/dashboard" style={{ display: "flex", justifyContent: "center" }}>
+                  <Image 
+                    src="/logo.png" 
+                    alt="Logo" 
+                    width={32} 
+                    height={32} 
+                    style={{ objectFit: "contain", filter: "brightness(0) invert(1)" }} 
+                  />
+                </Link>
               )}
               {/* Collapse toggle — desktop only */}
               <button
@@ -139,14 +153,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     title={collapsed ? label : undefined}
                     style={{
                       ...styles.navLink,
-                      background: active ? "#fff" : "transparent",
-                      color: active ? "#000" : "#aaa",
+                      background: active ? "rgba(255,255,255,0.05)" : "transparent",
+                      color: active ? "#fff" : "#888",
                       justifyContent: collapsed ? "center" : "flex-start",
-                      borderLeft: active ? "3px solid #000" : "3px solid transparent",
                     }}
                   >
-                    <span style={{ fontSize: 18, flexShrink: 0 }}>{icon}</span>
-                    {!collapsed && <span style={styles.navLabel}>{label}</span>}
+                    <span style={{ 
+                      fontSize: 18, 
+                      flexShrink: 0, 
+                      opacity: active ? 1 : 0.7,
+                      color: active ? "#fff" : "inherit"
+                    }}>{icon}</span>
+                    {!collapsed && <span style={{
+                      ...styles.navLabel,
+                      fontWeight: active ? 600 : 400
+                    }}>{label}</span>}
+                    {active && !collapsed && (
+                      <div style={{
+                        position: "absolute",
+                        right: 0,
+                        top: "20%",
+                        bottom: "20%",
+                        width: 3,
+                        background: "#fff",
+                        borderRadius: "2px 0 0 2px"
+                      }} />
+                    )}
                   </Link>
                 );
               })}
@@ -389,18 +421,18 @@ const styles: Record<string, React.CSSProperties> = {
     transition: "opacity 0.3s",
   },
   sidebar: {
-    background: "#111",
+    background: "#0a0a0a",
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
     flexShrink: 0,
+    borderRight: "1px solid rgba(255,255,255,0.05)",
   },
   sidebarTop: {
     display: "flex",
     alignItems: "center",
-    padding: "20px 16px",
-    borderBottom: "1px solid #222",
-    minHeight: 64,
+    borderBottom: "1px solid rgba(255,255,255,0.05)",
+    minHeight: 80,
     gap: 8,
   },
   logo: {
@@ -409,28 +441,6 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 10,
     textDecoration: "none",
     flex: 1,
-    overflow: "hidden",
-  },
-  logoIcon: {
-    width: 32,
-    height: 32,
-    background: "#fff",
-    color: "#000",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 14,
-    fontWeight: 800,
-    flexShrink: 0,
-    textDecoration: "none",
-  },
-  logoText: {
-    fontSize: "0.85rem",
-    fontWeight: 700,
-    color: "#fff",
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
-    whiteSpace: "nowrap",
     overflow: "hidden",
   },
   collapseBtn: {
@@ -455,13 +465,13 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     gap: 12,
-    padding: "11px 20px",
+    padding: "12px 20px",
     textDecoration: "none",
     fontSize: "0.875rem",
-    fontWeight: 500,
-    transition: "all 0.15s",
+    transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
     whiteSpace: "nowrap",
     overflow: "hidden",
+    position: "relative",
   },
   navLabel: {
     overflow: "hidden",
@@ -471,10 +481,10 @@ const styles: Record<string, React.CSSProperties> = {
   sidebarFooter: {
     display: "flex",
     alignItems: "center",
-    padding: "16px",
-    borderTop: "1px solid #222",
+    padding: "20px",
+    borderTop: "1px solid rgba(255,255,255,0.05)",
     gap: 10,
-    minHeight: 68,
+    minHeight: 80,
   },
   adminInfo: {
     display: "flex",

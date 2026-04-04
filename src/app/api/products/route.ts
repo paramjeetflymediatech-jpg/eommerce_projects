@@ -53,32 +53,6 @@ export async function GET(req: NextRequest) {
       order: sort === "price_asc" ? [["price", "ASC"]] : sort === "price_desc" ? [["price", "DESC"]] : [["createdAt", "DESC"]],
     });
 
-    // If no products in DB, return premium mock data for "wow" effect
-    if (count === 0 && !category && !search) {
-      const mockProducts = [
-        {
-          id: 101, name: "ORION SCULPTURAL CHAIR", slug: "orion-chair", price: 4200, isFeatured: true,
-          images: ["https://images.unsplash.com/photo-1540931441528-c17296067c29?auto=format&fit=crop&q=80"],
-          shortDescription: "A monolith of comfort.", category: { name: "LIGHTING" }, stock: 10, isActive: true
-        },
-        {
-          id: 102, name: "BRUTALIST DINING TABLE", slug: "brutalist-table", price: 12500, isFeatured: true,
-          images: ["https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80"],
-          shortDescription: "Architectural dining.", category: { name: "DINING" }, stock: 5, isActive: true
-        },
-        {
-          id: 103, name: "OBSIDIAN VASE COLLECTION", slug: "obsidian-vases", price: 850, isFeatured: false,
-          images: ["https://images.unsplash.com/photo-1489175159728-f7324b86868e?auto=format&fit=crop&q=80"],
-          shortDescription: "Hand-crafted glass.", category: { name: "ART & DECOR" }, stock: 24, isActive: true
-        },
-        {
-          id: 104, name: "SERENE LINEN SECTIONAL", slug: "serene-sectional", price: 9200, isFeatured: true,
-          images: ["https://images.unsplash.com/photo-1550224640-249a56641e71?auto=format&fit=crop&q=80"],
-          shortDescription: "Pure minimalism.", category: { name: "SOFAS" }, stock: 8, isActive: true
-        }
-      ];
-      return apiResponse({ products: mockProducts, pagination: getPaginationMeta(4, 1, 12) });
-    }
 
     return apiResponse({ products: rows, pagination: getPaginationMeta(count, page, limit) });
   } catch (err: any) {
