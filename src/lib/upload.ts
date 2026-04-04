@@ -4,10 +4,24 @@ import fs from "fs";
 export const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
 // Ensure directories exist
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true, mode: 0o755 });
+}
+try {
+  fs.chmodSync(UPLOAD_DIR, 0o755);
+} catch (e) {
+  console.error(`[UPLOAD] Failed to set permissions for ${UPLOAD_DIR}:`, e);
+}
+
 ["products", "categories", "avatars"].forEach((dir) => {
   const fullPath = path.join(UPLOAD_DIR, dir);
   if (!fs.existsSync(fullPath)) {
-    fs.mkdirSync(fullPath, { recursive: true });
+    fs.mkdirSync(fullPath, { recursive: true, mode: 0o755 });
+  }
+  try {
+    fs.chmodSync(fullPath, 0o755);
+  } catch (e) {
+    console.error(`[UPLOAD] Failed to set permissions for ${fullPath}:`, e);
   }
 });
 
@@ -37,7 +51,7 @@ export async function saveFile(
   const buffer = Buffer.from(await file.arrayBuffer());
   fs.writeFileSync(destPath, buffer);
   
-  // Set permissions to be publicly readable (important for live servers)
+  // Set permissions to be publicly readable but only writable by the server process (owner)
   try {
     fs.chmodSync(destPath, 0o644);
   } catch (e) {
