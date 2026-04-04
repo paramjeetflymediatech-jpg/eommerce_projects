@@ -36,6 +36,13 @@ export async function saveFile(
 
   const buffer = Buffer.from(await file.arrayBuffer());
   fs.writeFileSync(destPath, buffer);
+  
+  // Set permissions to be publicly readable (important for live servers)
+  try {
+    fs.chmodSync(destPath, 0o644);
+  } catch (e) {
+    console.error(`[UPLOAD] Failed to set permissions for ${destPath}:`, e);
+  }
 
   console.log(`[UPLOAD] File saved to: ${destPath}`);
   console.log(`[UPLOAD] Public URL: /uploads/${folder}/${filename}`);
