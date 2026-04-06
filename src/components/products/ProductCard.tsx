@@ -2,6 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { formatPrice } from "@/lib/utils";
@@ -24,6 +26,8 @@ export default function ProductCard({ product }: { product: Product }) {
   const toggleItem = useWishlistStore((s) => s.toggleItem);
   const isWishlisted = useWishlistStore((s) => s.isWishlisted(product.id));
   const [mounted, setMounted] = useState(false);
+  const { data: session } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -31,6 +35,10 @@ export default function ProductCard({ product }: { product: Product }) {
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (!session) {
+      router.push(`/login?callbackUrl=${encodeURIComponent(`/products/${product.slug}`)}`);
+      return;
+    }
     toggleItem({
       id: product.id,
       name: product.name,
@@ -62,8 +70,26 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Wishlist Toggle */}
-        <button onClick={handleWishlist} style={styles.wishlistBtn}>
-          {mounted ? (isWishlisted ? "●" : "○") : "○"}
+        <button
+          onClick={handleWishlist}
+          style={styles.wishlistBtn}
+          aria-label="Add to Wishlist"
+          title="Add to Wishlist"
+          suppressHydrationWarning
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill={mounted && isWishlisted ? "#e11d48" : "none"}
+            stroke={mounted && isWishlisted ? "#e11d48" : "#000"}
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            suppressHydrationWarning
+          >
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+          </svg>
         </button>
 
         {/* Featured Tag */}

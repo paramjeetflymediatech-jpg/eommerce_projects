@@ -9,6 +9,7 @@ interface Variant {
   size: string;
   color?: string | null;
   price?: number | null;
+  comparePrice?: number | null;
   stock: number;
   images?: string[] | null;
 }
@@ -17,6 +18,7 @@ interface Product {
   id: number;
   name: string;
   price: number;
+  comparePrice?: number;
   images: string[];
   slug: string;
   stock: number;
@@ -27,32 +29,67 @@ interface Product {
 }
 
 export default function ProductDetailContent({ product }: { product: Product }) {
-  // Extract unique colors to set initial state
-  const uniqueColors = useMemo(() => 
-    Array.from(new Set(product.variants?.map(v => v.color).filter(Boolean))) as string[]
+  // Build unique color list (preserving order)
+  const uniqueColors = useMemo(() =>
+    Array.from(new Set(
+      (product.variants ?? [])
+        .map(v => v.color)
+        .filter((c): c is string => Boolean(c))
+    ))
   , [product.variants]);
 
-  const [selectedColor, setSelectedColor] = useState<string | null>(uniqueColors[0] || null);
+  // Auto-select first color if colors exist
+  const [selectedColor, setSelectedColor] = useState<string | null>(
+    uniqueColors[0] ?? null
+  );
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
-  // Determine which images to show in the gallery
+  // When color changes, reset size
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+    setSelectedSize(null);
+  };
+
+  // Sizes available for the selected color (or all sizes if no color)
+  const sizesForActiveColor = useMemo(() => {
+    if (!product.variants?.length) return [];
+    const rows = selectedColor
+      ? product.variants.filter(v => v.color === selectedColor)
+      : product.variants;
+    return Array.from(new Set(rows.map(v => v.size))) as string[];
+  }, [product.variants, selectedColor]);
+
+  // Gallery images: colour-specific images take priority over product images
   const displayImages = useMemo(() => {
-    if (!selectedColor || !product.variants) return product.images;
-    
-    // Find images for the selected color
-    // We look for any variant that matches this color and has images defined
-    const colorVariant = product.variants.find(v => v.color === selectedColor && v.images && v.images.length > 0);
-    
-    if (colorVariant && colorVariant.images) {
-      return colorVariant.images;
+    if (!selectedColor || !product.variants?.length) return product.images;
+
+    // Collect all images from all variants of the active color
+    const colorImages: string[] = [];
+    for (const v of product.variants) {
+      if (v.color === selectedColor && Array.isArray(v.images)) {
+        for (const img of v.images) {
+          if (img && !colorImages.includes(img)) colorImages.push(img);
+        }
+      }
     }
-    
-    return product.images;
+
+    return colorImages.length > 0 ? colorImages : product.images;
   }, [product.images, product.variants, selectedColor]);
+
+  // CSS colour value for dot swatch (best-effort mapping)
+  const colorDot = (name: string) => {
+    const map: Record<string, string> = {
+      black: "#111", white: "#f5f5f5", red: "#dc2626", navy: "#1e3a5f",
+      beige: "#d4b896", camel: "#c19a6b", olive: "#6b7a2a", gray: "#9ca3af",
+      grey: "#9ca3af", blue: "#3b82f6", green: "#22c55e", pink: "#ec4899",
+      purple: "#a855f7", orange: "#f97316", yellow: "#eab308", brown: "#92400e",
+    };
+    return map[name.toLowerCase()] || name.toLowerCase();
+  };
 
   return (
     <div className={s.mainGrid}>
-      {/* Left: Imagery */}
+      {/* Left: Gallery — switches images on color change */}
       <ProductGallery images={displayImages} productName={product.name} />
 
       {/* Right: Details */}
@@ -65,28 +102,84 @@ export default function ProductDetailContent({ product }: { product: Product }) 
             <h1 className={s.title}>{product.name}</h1>
           </header>
 
-          {/* <div className={s.descriptionArea}>
-            <p className={s.shortDesc}>{product.shortDescription || "A testament to minimalist architectural design."}</p>
-          </div> */}
+          {/* Color Selector (visual swatches) */}
+          {uniqueColors.length > 0 && (
+            <div className={s.variantsSection} style={{ marginBottom: 4 }}>
+              <div style={{ marginBottom: 10 }}>
+                <span className={s.variantLabel}>
+                  Color:{" "}
+                  <span style={{ color: "#000", fontWeight: 700 }}>
+                    {selectedColor ?? "—"}
+                  </span>
+                </span>
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                {uniqueColors.map(color => (
+                  <button
+                    key={color}
+                    onClick={() => handleColorChange(color)}
+                    title={color}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 7,
+                      padding: "6px 14px 6px 8px",
+                      border: selectedColor === color
+                        ? "2px solid #000"
+                        : "1px solid #ddd",
+                      background: "#fff",
+                      cursor: "pointer",
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.04em",
+                      textTransform: "uppercase",
+                      transition: "border 0.15s",
+                    }}
+                  >
+                    <span style={{
+                      width: 14,
+                      height: 14,
+                      borderRadius: "50%",
+                      background: colorDot(color),
+                      border: "1px solid rgba(0,0,0,0.15)",
+                      flexShrink: 0,
+                      display: "inline-block",
+                    }} />
+                    {color}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className={s.actionArea}>
-            <AddToCartSection 
-              product={product} 
+            <AddToCartSection
+              product={product}
               externalSelectedColor={selectedColor}
-              onColorChange={setSelectedColor}
+              onColorChange={handleColorChange}
               externalSelectedSize={selectedSize}
               onSizeChange={setSelectedSize}
+              /* Pass only sizes for current color so the section renders them correctly */
+              filteredSizes={sizesForActiveColor}
             />
           </div>
 
           <div className={s.accordion}>
             <details className={s.details} open>
               <summary className={s.summary}>Product Description</summary>
-              <div className={s.fullDesc} dangerouslySetInnerHTML={{ __html: product.description.replace(/\n/g, "<br/>") }} />
+              <div
+                className={s.fullDesc}
+                dangerouslySetInnerHTML={{
+                  __html: product.description.replace(/\n/g, "<br/>"),
+                }}
+              />
             </details>
             <details className={s.details}>
-              <summary className={s.summary}>Shipping & Authentication</summary>
-              <p className={s.detailsContent}>This piece is subject to professional handling and white-glove delivery within 14-21 days of purchase. Each architectural component is authenticated by ShopNest.</p>
+              <summary className={s.summary}>Shipping &amp; Authentication</summary>
+              <p className={s.detailsContent}>
+                This piece is subject to professional handling and white-glove delivery within
+                14–21 days of purchase. Each piece is authenticated by ShopNest.
+              </p>
             </details>
           </div>
         </div>
@@ -94,5 +187,3 @@ export default function ProductDetailContent({ product }: { product: Product }) 
     </div>
   );
 }
-
-

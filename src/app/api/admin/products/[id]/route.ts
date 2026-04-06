@@ -55,10 +55,33 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     }, { transaction });
 
     if (variants && Array.isArray(variants)) {
-      // Very simple variant sync: delete old, add new
-      // In a real app, you might want to match by ID to preserve them
+      // Collect all non-empty SKUs from the incoming payload
+      const incomingSKUs = variants.map((v: any) => v.sku?.trim()).filter(Boolean) as string[];
+
+      // Find which of those SKUs are already used by OTHER products' variants
+      // (the current product's variants will be destroyed, so they're fine)
+      let takenSKUs = new Set<string>();
+      if (incomingSKUs.length > 0) {
+        const { Op } = await import("sequelize");
+        const conflicting = await ProductVariant.findAll({
+          where: {
+            sku: { [Op.in]: incomingSKUs },
+            productId: { [Op.ne]: product.id },
+          },
+          attributes: ["sku"],
+          raw: true,
+        });
+        takenSKUs = new Set(conflicting.map((r: any) => r.sku));
+      }
+
+      // Delete all existing variants for this product
       await ProductVariant.destroy({ where: { productId: product.id }, transaction });
+
       for (const v of variants) {
+        const skuValue = v.sku?.trim();
+        // Null out the SKU if it clashes with another product's variant
+        const safeSKU = skuValue && !takenSKUs.has(skuValue) ? skuValue : null;
+
         await ProductVariant.create({
           productId: product.id,
           size: v.size,
@@ -66,7 +89,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
           price: v.price ? parseFloat(v.price) : null,
           comparePrice: v.comparePrice ? parseFloat(v.comparePrice) : null,
           stock: parseInt(v.stock) || 0,
-          sku: v.sku || null,
+          sku: safeSKU,
+          images: Array.isArray(v.images) ? v.images.filter((img: string) => img?.trim()) : [],
         }, { transaction });
       }
     }

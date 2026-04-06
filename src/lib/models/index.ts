@@ -79,19 +79,13 @@ export const syncDB = async () => {
 
   syncPromise = (async () => {
     try {
-      // Authenticate and sync tables — database must already exist
-      console.log("🔄 Initializing database connection...");
       await sequelize.authenticate();
-      console.log("✅ MySQL connection established.");
-      
-      console.log("🔄 Syncing database schema (alter: true)...");
+      // alter:true safely adds new columns/indexes without dropping existing data
       await sequelize.sync({ alter: true });
-      console.log("✅ All tables synced successfully.");
-      
       dbReady = true;
     } catch (error) {
-      console.error("❌ DB sync error details:", error);
-      syncPromise = null; // Reset on error to allow retry
+      console.error("❌ DB sync error:", error);
+      syncPromise = null; // allow retry on next request
       throw error;
     }
   })();
@@ -101,7 +95,7 @@ export const syncDB = async () => {
 
 /**
  * Ensures the database is initialized and synced.
- * Call this at the start of any API route.
+ * Safe to call at the top of any API route — runs only once.
  */
 export async function ensureDB() {
   if (dbReady) return;

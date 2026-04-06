@@ -75,7 +75,23 @@ export async function POST(req: NextRequest) {
     }, { transaction });
 
     if (variants && Array.isArray(variants)) {
+      // Pre-check for globally conflicting SKUs before inserting
+      const incomingSKUs = variants.map((v: any) => v.sku?.trim()).filter(Boolean) as string[];
+      let takenSKUs = new Set<string>();
+      if (incomingSKUs.length > 0) {
+        const { Op } = await import("sequelize");
+        const conflicting = await ProductVariant.findAll({
+          where: { sku: { [Op.in]: incomingSKUs } },
+          attributes: ["sku"],
+          raw: true,
+        });
+        takenSKUs = new Set(conflicting.map((r: any) => r.sku));
+      }
+
       for (const v of variants) {
+        const skuValue = v.sku?.trim();
+        const safeSKU = skuValue && !takenSKUs.has(skuValue) ? skuValue : null;
+
         await ProductVariant.create({
           productId: product.id,
           size: v.size,
@@ -83,7 +99,8 @@ export async function POST(req: NextRequest) {
           price: v.price ? parseFloat(v.price) : null,
           comparePrice: v.comparePrice ? parseFloat(v.comparePrice) : null,
           stock: parseInt(v.stock) || 0,
-          sku: v.sku || null,
+          sku: safeSKU,
+          images: Array.isArray(v.images) ? v.images.filter((img: string) => img?.trim()) : [],
         }, { transaction });
       }
     }

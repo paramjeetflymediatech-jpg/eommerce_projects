@@ -8,8 +8,7 @@
     "postbuild": "next-sitemap",
     "start": "next start",
     "db:sync": "tsx --env-file=.env scripts/db-sync.ts",
-    "db:admin": "tsx --env-file=.env scripts/create-admin.ts",
-    "db:seed": "tsx --env-file=.env scripts/seed-data.ts"
+    "db:admin": "tsx --env-file=.env scripts/create-admin.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

@@ -214,6 +214,10 @@ p {
   }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 /* --- Utils --- */
 .text-tracked {
   letter-spacing: 0.2em;
@@ -539,5 +543,18 @@ p {
 
   #add-product-btn {
     width: 100%;
+  }
+}
+
+/* --- Admin Product Image Grid Responsive --- */
+@media (max-width: 760px) {
+  .admin-product-image-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-product-image-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
   }
 }
