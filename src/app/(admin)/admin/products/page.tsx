@@ -376,7 +376,7 @@ export default function AdminProductsPage() {
             </label>
 
             {/* ── Product Images ── */}
-            {/* <div style={{ marginBottom: 28 }}>
+            <div style={{ marginBottom: 28 }}>
               <div style={s.sectionTitle}>Product Images <span style={{ fontWeight: 400, color: "#aaa" }}>(Max 10)</span></div>
               <div style={s.imageGrid}>
                 {form.imageUrls.map((url, idx) => {
@@ -412,7 +412,7 @@ export default function AdminProductsPage() {
                   );
                 })}
               </div>
-            </div> */}
+            </div>
 
             {/* ── Product Variants ── */}
             <div style={{ borderTop: "1px solid #eee", paddingTop: 20, marginBottom: 24 }}>
