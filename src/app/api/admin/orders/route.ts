@@ -60,7 +60,7 @@ export async function PATCH(req: NextRequest) {
   if (!session) return apiError("Unauthorized", 401);
 
   try {
-    const { id, status, trackingId, carrier } = await req.json();
+    const { id, status, trackingId, carrier, shippingAddress } = await req.json();
     if (!id || !status) return apiError("Order ID and status are required");
 
     const order = await Order.findByPk(id, {
@@ -71,6 +71,7 @@ export async function PATCH(req: NextRequest) {
     order.status = status;
     if (trackingId !== undefined) order.trackingId = trackingId;
     if (carrier !== undefined) order.carrier = carrier;
+    if (shippingAddress) order.shippingAddress = shippingAddress;
     await order.save();
 
     // Trigger Email Notification
@@ -93,5 +94,32 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     console.error("Order update error:", error);
     return apiError("Failed to update order");
+  }
+}
+
+// DELETE /api/admin/orders — delete an order
+export async function DELETE(req: NextRequest) {
+  await ensureDB();
+  const session = await requireAdmin(req);
+  if (!session) return apiError("Unauthorized", 401);
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    if (!id) return apiError("Order ID required", 400);
+
+    const order = await Order.findByPk(id);
+    if (!order) return apiError("Order not found", 404);
+
+    // Delete associated order items to avoid foreign key constraints
+    await OrderItem.destroy({ where: { orderId: id } });
+    
+    // Delete the order
+    await order.destroy();
+
+    return apiResponse({ success: true });
+  } catch (error) {
+    console.error("Order deletion error:", error);
+    return apiError("Failed to delete order");
   }
 }

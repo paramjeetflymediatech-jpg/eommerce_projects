@@ -1,17 +1,21 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { items, getTotal, clearCart } = useCartStore();
+  const searchParams = useSearchParams();
+  const failedParam = searchParams.get("failed") === "true";
+  
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showFailedPopup, setShowFailedPopup] = useState(false);
   const [activeStep, setActiveStep] = useState(1); // 1: Cart, 2: Information, 3: Shipping, 4: Payment
   const [discountCode, setDiscountCode] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
@@ -23,7 +27,12 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    if (failedParam) {
+      setShowFailedPopup(true);
+      // Optional: clean URL so it doesn't pop up again on refresh
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, [failedParam]);
 
   useEffect(() => {
     if (mounted && status === "unauthenticated") {
@@ -58,16 +67,27 @@ export default function CheckoutPage() {
   const validateInformation = () => {
     const newErrors: Record<string, string> = {};
     if (!form.name.trim()) newErrors.name = "Full name is required";
+    else if (!/^[a-zA-Z\s\-']{2,50}$/.test(form.name.trim())) newErrors.name = "Please enter a valid, real name";
+
     if (!form.email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-      newErrors.email = "Email is invalid";
+    } else if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(form.email)) {
+      newErrors.email = "Please enter a genuine email address";
     }
+
     if (!form.phone.trim()) newErrors.phone = "Phone number is required";
+    else if (!/^\d{10,15}$/.test(form.phone.trim())) newErrors.phone = "Please enter a valid 10-15 digit phone number";
+
     if (!form.street.trim()) newErrors.street = "Shipping address is required";
+    else if (form.street.trim().length < 5) newErrors.street = "Please enter a complete, real address";
+
     if (!form.city.trim()) newErrors.city = "City is required";
+    else if (!/^[a-zA-Z\s\-']{2,50}$/.test(form.city.trim())) newErrors.city = "Please enter a valid city name";
+
     if (!form.state.trim()) newErrors.state = "State is required";
+    
     if (!form.zip.trim()) newErrors.zip = "ZIP code is required";
+    else if (!/^[0-9a-zA-Z\s\-]{3,12}$/.test(form.zip.trim())) newErrors.zip = "Please enter a genuine ZIP/postal code";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -137,6 +157,20 @@ export default function CheckoutPage() {
 
   return (
     <div style={{ background: "#f8f8f8", minHeight: "100vh", paddingTop: "120px", paddingBottom: "100px" }}>
+      {/* ── Failed Payment Popup ── */}
+      {showFailedPopup && (
+        <div style={styles.popupOverlay}>
+          <div style={styles.popupContent}>
+            <div style={styles.popupIcon}>✕</div>
+            <h2 style={styles.popupTitle}>Payment Failed</h2>
+            <p style={styles.popupSubtitle}>We couldn't process your payment. Please try again with a different payment method.</p>
+            <button style={styles.popupCloseBtn} onClick={() => setShowFailedPopup(false)}>
+              Try Again
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="container-app" style={{ maxWidth: "1200px" }}>
         
         <div style={styles.checkoutLayout}>
@@ -181,38 +215,63 @@ export default function CheckoutPage() {
                   <div style={styles.formGrid}>
                     <div style={{ gridColumn: "span 2" }}>
                       <label style={styles.label}>Full Name <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <input required style={{ ...styles.input, borderColor: errors.name ? "#ff4d4f" : "#e5e7eb" }} value={form.name} onChange={e => { setForm({...form, name: e.target.value}); if(errors.name) setErrors({...errors, name: ""}); }} placeholder="John Doe" />
+                      <input required maxLength={50} style={{ ...styles.input, borderColor: errors.name ? "#ff4d4f" : "#e5e7eb" }} value={form.name} onChange={e => { setForm({...form, name: e.target.value}); if(errors.name) setErrors({...errors, name: ""}); }} placeholder="Eleanor Vance" />
                       {errors.name && <p style={styles.errorText}>{errors.name}</p>}
                     </div>
                     <div>
                       <label style={styles.label}>Email Address <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <input required type="email" style={{ ...styles.input, borderColor: errors.email ? "#ff4d4f" : "#e5e7eb" }} value={form.email} onChange={e => { setForm({...form, email: e.target.value}); if(errors.email) setErrors({...errors, email: ""}); }} placeholder="john@example.com" />
+                      <input 
+                        required 
+                        type="email" 
+                        maxLength={100}
+                        readOnly={!!session?.user?.email}
+                        style={{ 
+                          ...styles.input, 
+                          borderColor: errors.email ? "#ff4d4f" : "#e5e7eb",
+                          backgroundColor: session?.user?.email ? "#f5f5f5" : "#fff",
+                          color: session?.user?.email ? "#888" : "#000"
+                        }} 
+                        value={form.email} 
+                        onChange={e => { setForm({...form, email: e.target.value}); if(errors.email) setErrors({...errors, email: ""}); }} 
+                        placeholder="eleanor@example.com" 
+                      />
                       {errors.email && <p style={styles.errorText}>{errors.email}</p>}
                     </div>
                     <div>
                       <label style={styles.label}>Phone Number <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <input required style={{ ...styles.input, borderColor: errors.phone ? "#ff4d4f" : "#e5e7eb" }} value={form.phone} onChange={e => { setForm({...form, phone: e.target.value}); if(errors.phone) setErrors({...errors, phone: ""}); }} placeholder="+1 234 567 890" />
+                      <input 
+                        required 
+                        maxLength={15}
+                        style={{ ...styles.input, borderColor: errors.phone ? "#ff4d4f" : "#e5e7eb" }} 
+                        value={form.phone} 
+                        onChange={e => { 
+                          const numericValue = e.target.value.replace(/\D/g, '');
+                          setForm({...form, phone: numericValue}); 
+                          if(errors.phone) setErrors({...errors, phone: ""}); 
+                        }} 
+                        placeholder="Enter your phone number" 
+                      />
                       {errors.phone && <p style={styles.errorText}>{errors.phone}</p>}
                     </div>
                     <div style={{ gridColumn: "span 2" }}>
                       <label style={styles.label}>Shipping Address <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <textarea required style={{ ...styles.input, height: "80px", resize: "none", borderColor: errors.street ? "#ff4d4f" : "#e5e7eb" }} value={form.street} onChange={e => { setForm({...form, street: e.target.value}); if(errors.street) setErrors({...errors, street: ""}); }} placeholder="Suite 500, 123 Main St" />
+                      <textarea required maxLength={200} style={{ ...styles.input, height: "80px", resize: "none", borderColor: errors.street ? "#ff4d4f" : "#e5e7eb" }} value={form.street} onChange={e => { setForm({...form, street: e.target.value}); if(errors.street) setErrors({...errors, street: ""}); }} placeholder="Enter your address" />
                       {errors.street && <p style={styles.errorText}>{errors.street}</p>}
                     </div>
                     <div>
                       <label style={styles.label}>City <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <input required style={{ ...styles.input, borderColor: errors.city ? "#ff4d4f" : "#e5e7eb" }} value={form.city} onChange={e => { setForm({...form, city: e.target.value}); if(errors.city) setErrors({...errors, city: ""}); }} placeholder="New York" />
+                      <input required maxLength={50} style={{ ...styles.input, borderColor: errors.city ? "#ff4d4f" : "#e5e7eb" }} value={form.city} onChange={e => { setForm({...form, city: e.target.value}); if(errors.city) setErrors({...errors, city: ""}); }} placeholder="Enter your city" />
                       {errors.city && <p style={styles.errorText}>{errors.city}</p>}
                     </div>
                     <div>
                       <label style={styles.label}>State / Zip <span style={{ color: "#ff4d4f" }}>*</span></label>
                       <div style={{ display: "flex", gap: 8 }}>
                         <div style={{ flex: 1 }}>
-                          <input required style={{ ...styles.input, borderColor: errors.state ? "#ff4d4f" : "#e5e7eb" }} value={form.state} onChange={e => { setForm({...form, state: e.target.value}); if(errors.state) setErrors({...errors, state: ""}); }} placeholder="NY" />
+                          <input required maxLength={50} style={{ ...styles.input, borderColor: errors.state ? "#ff4d4f" : "#e5e7eb" }} value={form.state} onChange={e => { setForm({...form, state: e.target.value}); if(errors.state) setErrors({...errors, state: ""}); }} placeholder="Enter your state" />
                           {errors.state && <p style={styles.errorText}>{errors.state}</p>}
                         </div>
                         <div style={{ flex: 1 }}>
-                          <input required style={{ ...styles.input, borderColor: errors.zip ? "#ff4d4f" : "#e5e7eb" }} value={form.zip} onChange={e => { setForm({...form, zip: e.target.value}); if(errors.zip) setErrors({...errors, zip: ""}); }} placeholder="10001" />
+                          <input required maxLength={20} style={{ ...styles.input, borderColor: errors.zip ? "#ff4d4f" : "#e5e7eb" }} value={form.zip} onChange={e => { setForm({...form, zip: e.target.value}); if(errors.zip) setErrors({...errors, zip: ""}); }} placeholder="Enter your zip code" />
                           {errors.zip && <p style={styles.errorText}>{errors.zip}</p>}
                         </div>
                       </div>
@@ -336,6 +395,14 @@ export default function CheckoutPage() {
   );
 }
 
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: 120, textAlign: "center" }}>Loading checkout...</div>}>
+      <CheckoutContent />
+    </Suspense>
+  );
+}
+
 const styles: Record<string, React.CSSProperties> = {
   checkoutLayout: {
     display: "grid",
@@ -362,4 +429,10 @@ const styles: Record<string, React.CSSProperties> = {
   applyBtn: { background: "#000", color: "#fff", border: "none", padding: "0 20px", fontSize: "0.7rem", fontWeight: 700, cursor: "pointer" },
   secureText: { marginTop: "20px", fontSize: "0.7rem", color: "#999", display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" },
   errorText: { color: "#ff4d4f", fontSize: "0.7rem", marginTop: "4px", fontWeight: 500 },
+  popupOverlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
+  popupContent: { background: "#fff", padding: "40px", maxWidth: "400px", width: "100%", textAlign: "center", borderRadius: "8px", boxShadow: "0 20px 40px rgba(0,0,0,0.1)", animation: "popIn 0.3s ease-out" },
+  popupIcon: { width: "60px", height: "60px", background: "#FFEBEA", color: "#FF3B30", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem", fontWeight: 800, margin: "0 auto 20px" },
+  popupTitle: { fontSize: "1.5rem", fontWeight: 800, margin: "0 0 12px", fontFamily: "var(--font-serif)" },
+  popupSubtitle: { fontSize: "0.9rem", color: "#666", lineHeight: 1.6, margin: "0 0 32px" },
+  popupCloseBtn: { background: "#000", color: "#fff", border: "none", padding: "16px", width: "100%", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", cursor: "pointer" }
 };

@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import FallbackImage from "@/components/common/FallbackImage";
 import ProductCard from "@/components/products/ProductCard";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Aion Luxury — The Atelier of Modern Elegance",
-  description: "Explore the Parisian Art de Vivre with Aion Luxury's curated couture and high-end ready-to-wear collections.",
+  title: "ShopNest — The Atelier of Modern Elegance",
+  description: "Explore the Parisian Art de Vivre with ShopNest's curated couture and high-end ready-to-wear collections.",
 };
 
 async function getFeaturedProducts() {
@@ -46,7 +45,7 @@ export default async function HomePage() {
       <OrganizationJsonLd />
       <style dangerouslySetInnerHTML={{
         __html: `
-        body { background-color: #fff !important; }
+        body { background-color: #000 !important; }
         @media (max-width: 1024px) {
           .hero-video-grid {
             display: block !important;
@@ -155,7 +154,7 @@ export default async function HomePage() {
             <div className="grid-luxury">
               {categories.slice(0, 4).map((cat: any, index: number) => (
                 <Link key={cat.id} href={`/categories/${cat.slug}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(450px, 70vh, 750px)", overflow: "hidden", textDecoration: "none" }}>
-                  <FallbackImage
+                  <Image
                     src={cat.image || `https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80`}
                     alt={cat.name}
                     fill
@@ -176,7 +175,94 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Curated Essentials (Featured Products) */}
+      {/* Brand Story: Art de Vivre */}
+      <section className="section-padding" style={{ background: "#f9f9f9" }}>
+        <div className="container-app">
+          <div className="grid-editorial-2">
+            <div style={{ position: "relative", height: "clamp(450px, 75vh, 850px)", animation: "fadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1)" }}>
+              <Image
+                src="/images/fashion/coats.png"
+                alt="Luxury Fashion"
+                fill
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 1024px) 100vw, 50vw"
+              />
+            </div>
+            <div style={{ padding: "0 4px" }}>
+              <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", marginBottom: 24, fontWeight: 700 }}>Heritage & Craft</p>
+              <h2 style={{ marginBottom: 32, lineHeight: 1, fontSize: "clamp(2.4rem, 6vw, 4.2rem)" }}>Sophistication In Every Detail.</h2>
+              <p style={{ fontSize: "1.1rem", color: "#444", lineHeight: 1.8, marginBottom: 48, fontWeight: 300, maxWidth: "540px" }}>
+                The silhouette of modern luxury. For over sixty years, ShopNest has been the standard-bearer of Parisian style. Each piece is a masterclass in tailoring, blending timeless aesthetics with the evolving needs of the modern archive.
+              </p>
+              <Link href="/about" className="btn btn-secondary" style={{ padding: "18px 48px" }}>
+                OUR STORY
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* French Art de Vivre - Triple Lifestyle Grid */}
+      <section className="section-padding" style={{ background: "#ffffff", paddingBottom: "clamp(120px, 15vw, 200px)" }}>
+        <div className="container-app">
+          <div style={{ textAlign: "center", marginBottom: "clamp(60px, 10vw, 120px)" }}>
+            <p className="text-tracked" style={{ fontSize: "0.8rem", color: "#888", marginBottom: 24, fontWeight: 700 }}>Life in Style</p>
+            <h2 style={{ fontSize: "clamp(2.5rem, 6vw, 4.5rem)", lineHeight: 1.1, marginBottom: 32 }}>L'Art de Vivre.</h2>
+            <p style={{ fontSize: "1.1rem", color: "#666", maxWidth: 640, margin: "0 auto", fontWeight: 300 }}>
+              A curated curation of the timeless Parisian lifestyle. Explore our heritage of elegance and impeccable taste.
+            </p>
+          </div>
+
+          <div className="grid-editorial-3">
+            <div className="editorial-item hover-zoom-container">
+              <Image
+                src="/images/lifestyle/paris_chic.png"
+                alt="Parisian Style"
+                fill
+                className="hover-zoom"
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 1024px) 100vw, 33vw"
+              />
+              <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
+                <p className="text-tracked" style={{ fontSize: "0.65rem", fontWeight: 800 }}>01 / THE SILHOUETTE</p>
+              </div>
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
+            </div>
+
+            <div className="editorial-item tall hover-zoom-container" style={{ zIndex: 10 }}>
+              <Image
+                src="/images/lifestyle/interior.png"
+                alt="The Atelier Interior"
+                fill
+                className="hover-zoom"
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 1024px) 100vw, 33vw"
+              />
+              <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
+                <p className="text-tracked" style={{ fontSize: "0.65rem", fontWeight: 800 }}>02 / THE ARCHIVE</p>
+              </div>
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
+            </div>
+
+            <div className="editorial-item hover-zoom-container">
+              <Image
+                src="/images/lifestyle/craftsmanship.png"
+                alt="Artisanal Detail"
+                fill
+                className="hover-zoom"
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 1024px) 100vw, 33vw"
+              />
+              <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
+                <p className="text-tracked" style={{ fontSize: "0.65rem", fontWeight: 800 }}>03 / THE CRAFT</p>
+              </div>
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Gallery */}
       {featured.length > 0 && (
         <section className="section-padding" style={{ background: "#ffffff" }}>
           <div className="container-app">
@@ -213,6 +299,154 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* Services/Features - Minimalist */}
+      <section style={{ padding: "clamp(80px, 12vw, 140px) 0", background: "#000", color: "#fff" }}>
+        <div className="container-app">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "clamp(48px, 6vw, 80px)" }}>
+            {[
+              { title: "Complimentary Delivery", desc: "Expert handling for your items" },
+              { title: "Personalised Service", desc: "Dedicated advisors at your choice" },
+              { title: "Secure Transactions", desc: "Certified payment security" },
+              { title: "Worldwide Network", desc: "Present in over 50 countries" },
+            ].map(({ title, desc }) => (
+              <div key={title} style={{ textAlign: "center" }}>
+                <h3 style={{ fontSize: "0.7rem", fontWeight: 800, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: 16, color: "#fff" }}>{title}</h3>
+                <p style={{ fontSize: "0.85rem", color: "#999", fontWeight: 400, maxWidth: "240px", margin: "0 auto" }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Unique Feature: The Editorial Lookbook */}
+      <section className="section-padding" style={{ background: "#f9f9f9", overflow: "hidden" }}>
+        <div className="container-app">
+          <div className="grid-editorial-2">
+            <div style={{ position: "relative" }}>
+              <div style={{ position: "relative", height: "clamp(400px, 80vh, 750px)", width: "100%", zIndex: 2 }}>
+                <Image
+                  src="/images/fashion/hero.png"
+                  alt="Lookbook 01"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+              <div style={{
+                position: "absolute",
+                top: "10%",
+                right: "-10%",
+                height: "clamp(300px, 60vh, 500px)",
+                width: "60%",
+                zIndex: 1,
+                opacity: 0.8
+              }} className="hide-mobile">
+                <Image
+                  src="/images/fashion/knitwear.png"
+                  alt="Lookbook 02"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="30vw"
+                />
+              </div>
+            </div>
+            <div style={{ paddingRight: "4vw" }}>
+              <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", marginBottom: 24, fontWeight: 700 }}>Exclusive Lookbook</p>
+              <h2 style={{ fontSize: "clamp(3rem, 8vw, 5rem)", lineHeight: 0.9, marginBottom: 32, letterSpacing: "-0.04em" }}>
+                THE <br /> SILHOUETTE <br /> OF DÉCEMBRE
+              </h2>
+              <p style={{ fontSize: "1.1rem", lineHeight: 1.6, color: "#444", marginBottom: 40, fontWeight: 300, maxWidth: "440px" }}>
+                A curated selection of archival pieces and new season ready-to-wear, defined by architectural tailoring and premium natural fibres.
+              </p>
+              <Link href="/products" style={{
+                fontSize: "0.8rem",
+                fontWeight: 700,
+                letterSpacing: "0.2em",
+                color: "#000",
+                textDecoration: "underline",
+                textUnderlineOffset: "8px"
+              }}>
+                EXPLORE THE LOOKBOOK
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Signature Collections Gallery - Fashion Pivot */}
+      <section className="section-padding" style={{ background: "#ffffff" }}>
+        <div className="container-app">
+          <div style={{ textAlign: "left", marginBottom: 64 }}>
+            <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", marginBottom: 16 }}>The Atelier</p>
+            <h2>Collection Pillars.</h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: 16 }}>
+            <div style={{ position: "relative", height: 600 }}>
+              <Image src="/images/fashion/coats.png" alt="Outerwear" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" />
+              <div style={{ position: "absolute", bottom: 40, left: 40, color: "#fff" }}>
+                <p className="text-tracked" style={{ fontSize: "0.7rem", fontWeight: 700 }}>01 / ARCHITECTURAL OUTERWEAR</p>
+              </div>
+            </div>
+            <div style={{ position: "relative", height: 600 }}>
+              <Image src="/images/fashion/accessories.png" alt="Accessories" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" />
+              <div style={{ position: "absolute", bottom: 40, left: 40, color: "#fff" }}>
+                <p className="text-tracked" style={{ fontSize: "0.7rem", fontWeight: 700 }}>02 / CURATED ACCESSORIES</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Press Marquee */}
+      <section style={{ padding: "80px 0", borderTop: "1px solid #eee", borderBottom: "1px solid #eee", background: "#fafafa" }}>
+        <div className="container-app">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", opacity: 1, flexWrap: "wrap", gap: 64 }}>
+            {["VOGUE", "ARCHITECTURAL DIGEST", "ELLE DECOR", "THE NEW YORK TIMES", "WALLPAPER*"].map((brand) => (
+              <span key={brand} style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "0.4em", color: "#000" }}>{brand}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Designers Section */}
+      <section className="section-padding" style={{ background: "#000", color: "#fff" }}>
+        <div className="container-app">
+          <div style={{ textAlign: "center", marginBottom: 80 }}>
+            <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", marginBottom: 16 }}>The Collaborators</p>
+            <h2 style={{ color: "#fff" }}>Visionary Designers</h2>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(220px, 100%), 1fr))", gap: "clamp(32px, 5vw, 64px)" }}>
+            {[
+              { name: "Sacha Lakic", role: "Speed & Fluidity", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80" },
+              { name: "Kenzo Takada", role: "Floral Fusion", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80" },
+              { name: "Marcel Wanders", role: "Modern Baroque", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" },
+            ].map((designer) => (
+              <div key={designer.name} style={{ textAlign: "center" }}>
+                <div className="grayscale-hover-container" style={{ position: "relative", width: "100%", aspectRatio: "4/5", marginBottom: 24, overflow: "hidden" }}>
+                  <Image src={designer.img} alt={designer.name} fill className="grayscale-hover" style={{ objectFit: "cover" }} sizes="(max-width: 768px) 50vw, 33vw" />
+                </div>
+                <h4 style={{ color: "#fff", fontSize: "1.2rem", marginBottom: 8 }}>{designer.name}</h4>
+                <p className="text-tracked" style={{ fontSize: "0.65rem", color: "#888" }}>{designer.role}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="section-padding" style={{ background: "#ffffff", borderBottom: "1px solid #eee" }}>
+        <div className="container-app" style={{ textAlign: "center", maxWidth: 640 }}>
+          <h2 style={{ marginBottom: 24 }}>The Inner Circle</h2>
+          <p style={{ color: "#666", marginBottom: 48, fontWeight: 300 }}>
+            Join our exclusive community to receive invitations to private previews and the latest news from the world of ShopNest.
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderBottom: "1px solid #000" }}>
+            <input type="email" placeholder="YOUR EMAIL ADDRESS" style={{ flex: "1 1 200px", border: "none", padding: "16px 0", fontSize: "0.75rem", letterSpacing: "0.1em", outline: "none", textTransform: "uppercase", minWidth: 0 }} />
+            <button className="btn btn-ghost" style={{ padding: "16px 0 16px 24px", fontSize: "0.7rem", flexShrink: 0 }}>SUBSCRIBE</button>
+          </div>
+        </div>
+      </section>
     </>
   );
 }
