@@ -19,6 +19,7 @@ export default function CheckoutPage() {
   const [form, setForm] = useState({ 
     name: "", email: "", street: "", city: "", state: "", zip: "", country: "US", phone: "" 
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setMounted(true);
@@ -53,6 +54,30 @@ export default function CheckoutPage() {
   const duties = subtotal * 0.02; // Placeholder 2%
   const taxes = subtotal * 0.05;  // Placeholder 5%
   const grandTotal = subtotal + shipping + duties + taxes - discountAmount;
+
+  const validateInformation = () => {
+    const newErrors: Record<string, string> = {};
+    if (!form.name.trim()) newErrors.name = "Full name is required";
+    if (!form.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+      newErrors.email = "Email is invalid";
+    }
+    if (!form.phone.trim()) newErrors.phone = "Phone number is required";
+    if (!form.street.trim()) newErrors.street = "Shipping address is required";
+    if (!form.city.trim()) newErrors.city = "City is required";
+    if (!form.state.trim()) newErrors.state = "State is required";
+    if (!form.zip.trim()) newErrors.zip = "ZIP code is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleContinueToShipping = () => {
+    if (validateInformation()) {
+      setActiveStep(3);
+    }
+  };
 
   const handlePlaceOrder = async () => {
     setLoading(true);
@@ -155,30 +180,41 @@ export default function CheckoutPage() {
                 <div style={styles.stepContent}>
                   <div style={styles.formGrid}>
                     <div style={{ gridColumn: "span 2" }}>
-                      <label style={styles.label}>Full Name</label>
-                      <input required style={styles.input} value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="John Doe" />
+                      <label style={styles.label}>Full Name <span style={{ color: "#ff4d4f" }}>*</span></label>
+                      <input required style={{ ...styles.input, borderColor: errors.name ? "#ff4d4f" : "#e5e7eb" }} value={form.name} onChange={e => { setForm({...form, name: e.target.value}); if(errors.name) setErrors({...errors, name: ""}); }} placeholder="John Doe" />
+                      {errors.name && <p style={styles.errorText}>{errors.name}</p>}
                     </div>
                     <div>
-                      <label style={styles.label}>Email Address</label>
-                      <input required style={styles.input} value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="john@example.com" />
+                      <label style={styles.label}>Email Address <span style={{ color: "#ff4d4f" }}>*</span></label>
+                      <input required type="email" style={{ ...styles.input, borderColor: errors.email ? "#ff4d4f" : "#e5e7eb" }} value={form.email} onChange={e => { setForm({...form, email: e.target.value}); if(errors.email) setErrors({...errors, email: ""}); }} placeholder="john@example.com" />
+                      {errors.email && <p style={styles.errorText}>{errors.email}</p>}
                     </div>
                     <div>
-                      <label style={styles.label}>Phone Number</label>
-                      <input required style={styles.input} value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+1 234 567 890" />
+                      <label style={styles.label}>Phone Number <span style={{ color: "#ff4d4f" }}>*</span></label>
+                      <input required style={{ ...styles.input, borderColor: errors.phone ? "#ff4d4f" : "#e5e7eb" }} value={form.phone} onChange={e => { setForm({...form, phone: e.target.value}); if(errors.phone) setErrors({...errors, phone: ""}); }} placeholder="+1 234 567 890" />
+                      {errors.phone && <p style={styles.errorText}>{errors.phone}</p>}
                     </div>
                     <div style={{ gridColumn: "span 2" }}>
-                      <label style={styles.label}>Shipping Address</label>
-                      <textarea required style={{ ...styles.input, height: "80px", resize: "none" }} value={form.street} onChange={e => setForm({...form, street: e.target.value})} placeholder="Suite 500, 123 Main St" />
+                      <label style={styles.label}>Shipping Address <span style={{ color: "#ff4d4f" }}>*</span></label>
+                      <textarea required style={{ ...styles.input, height: "80px", resize: "none", borderColor: errors.street ? "#ff4d4f" : "#e5e7eb" }} value={form.street} onChange={e => { setForm({...form, street: e.target.value}); if(errors.street) setErrors({...errors, street: ""}); }} placeholder="Suite 500, 123 Main St" />
+                      {errors.street && <p style={styles.errorText}>{errors.street}</p>}
                     </div>
                     <div>
-                      <label style={styles.label}>City</label>
-                      <input required style={styles.input} value={form.city} onChange={e => setForm({...form, city: e.target.value})} placeholder="New York" />
+                      <label style={styles.label}>City <span style={{ color: "#ff4d4f" }}>*</span></label>
+                      <input required style={{ ...styles.input, borderColor: errors.city ? "#ff4d4f" : "#e5e7eb" }} value={form.city} onChange={e => { setForm({...form, city: e.target.value}); if(errors.city) setErrors({...errors, city: ""}); }} placeholder="New York" />
+                      {errors.city && <p style={styles.errorText}>{errors.city}</p>}
                     </div>
                     <div>
-                      <label style={styles.label}>State / Zip</label>
+                      <label style={styles.label}>State / Zip <span style={{ color: "#ff4d4f" }}>*</span></label>
                       <div style={{ display: "flex", gap: 8 }}>
-                        <input required style={styles.input} value={form.state} onChange={e => setForm({...form, state: e.target.value})} placeholder="NY" />
-                        <input required style={styles.input} value={form.zip} onChange={e => setForm({...form, zip: e.target.value})} placeholder="10001" />
+                        <div style={{ flex: 1 }}>
+                          <input required style={{ ...styles.input, borderColor: errors.state ? "#ff4d4f" : "#e5e7eb" }} value={form.state} onChange={e => { setForm({...form, state: e.target.value}); if(errors.state) setErrors({...errors, state: ""}); }} placeholder="NY" />
+                          {errors.state && <p style={styles.errorText}>{errors.state}</p>}
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <input required style={{ ...styles.input, borderColor: errors.zip ? "#ff4d4f" : "#e5e7eb" }} value={form.zip} onChange={e => { setForm({...form, zip: e.target.value}); if(errors.zip) setErrors({...errors, zip: ""}); }} placeholder="10001" />
+                          {errors.zip && <p style={styles.errorText}>{errors.zip}</p>}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -187,7 +223,7 @@ export default function CheckoutPage() {
                       Already have an account? <Link href="/login" style={{ color: "#000", fontWeight: 600 }}>Sign In</Link>
                     </p>
                   )}
-                  <button className="btn btn-primary" style={{ marginTop: "32px", padding: "16px 40px" }} onClick={() => form.name && form.email && setActiveStep(3)}>CONTINUE TO SHIPPING</button>
+                  <button className="btn btn-primary" style={{ marginTop: "32px", padding: "16px 40px" }} onClick={handleContinueToShipping}>CONTINUE TO SHIPPING</button>
                 </div>
               )}
             </section>
@@ -325,4 +361,5 @@ const styles: Record<string, React.CSSProperties> = {
   totalRow: { display: "flex", justifyContent: "space-between", borderTop: "1px solid #000", marginTop: "24px", paddingTop: "24px", fontWeight: 800, fontSize: "1.2rem", color: "#000" },
   applyBtn: { background: "#000", color: "#fff", border: "none", padding: "0 20px", fontSize: "0.7rem", fontWeight: 700, cursor: "pointer" },
   secureText: { marginTop: "20px", fontSize: "0.7rem", color: "#999", display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" },
+  errorText: { color: "#ff4d4f", fontSize: "0.7rem", marginTop: "4px", fontWeight: 500 },
 };

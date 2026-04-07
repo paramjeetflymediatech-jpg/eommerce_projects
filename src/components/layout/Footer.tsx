@@ -27,7 +27,7 @@ export default function Footer() {
               <Link href="/" style={{ textDecoration: "none" }}>
                 <Image 
                   src="/logo.png" 
-                  alt="ShopNest" 
+                  alt="Aion Luxury" 
                   width={200} 
                   height={60} 
                   style={{ height: "auto", width: "auto", maxHeight: "50px" }}
@@ -43,7 +43,7 @@ export default function Footer() {
           {[
             { title: "Collections", links: [{ label: "All Items", href: "/products" }, { label: "New Arrivals", href: "/products" }, { label: "Featured", href: "/products" }, { label: "Sale", href: "/products" }] },
             { title: "The Brand", links: [{ label: "Our Story", href: "/about" }, { label: "Designers", href: "/products" }, { label: "Showrooms", href: "/" }, { label: "Contact", href: "/" }] },
-            { title: "Services", links: [{ label: "Delivery", href: "/" }, { label: "Returns", href: "/" }, { label: "Warranty", href: "/" }, { label: "FAQ", href: "/" }] },
+            { title: "Services", links: [{ label: "Delivery", href: "/" }, { label: "Returns", href: "/" }, { label: "Track Order", href: "/track" }, { label: "FAQ", href: "/" }] },
           ].map((col) => (
             <div key={col.title}>
               <h4 style={{ 
@@ -81,7 +81,7 @@ export default function Footer() {
           gap: 24
         }}>
           <p style={{ color: "#999", fontSize: "0.7rem", letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 500 }}>
-            © {year} SHOPNEST PARIS. ALL RIGHTS RESERVED.
+            © {year} AION LUXURY PARIS. ALL RIGHTS RESERVED.
           </p>
           <div style={{ display: "flex", gap: "clamp(24px, 4vw, 40px)", flexWrap: "wrap" }}>
             {["INSTAGRAM", "PINTEREST", "LINKEDIN"].map((s) => (

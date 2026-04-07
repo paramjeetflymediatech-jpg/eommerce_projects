@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import FallbackImage from "@/components/common/FallbackImage";
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -54,7 +55,7 @@ export default function ProductCard({ product }: { product: Product }) {
     <Link href={`/products/${product.slug}`} style={styles.card}>
       {/* Image Container */}
       <div style={styles.imageWrapper} className="hover-parent">
-        <Image
+        <FallbackImage
           src={imageUrl}
           alt={product.name}
           fill

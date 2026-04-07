@@ -13,7 +13,7 @@ try {
   console.error(`[UPLOAD] Failed to set permissions for ${UPLOAD_DIR}:`, e);
 }
 
-["products", "categories", "avatars"].forEach((dir) => {
+["products", "categories", "avatars", "reviews"].forEach((dir) => {
   const fullPath = path.join(UPLOAD_DIR, dir);
   if (!fs.existsSync(fullPath)) {
     fs.mkdirSync(fullPath, { recursive: true, mode: 0o755 });
@@ -25,8 +25,11 @@ try {
   }
 });
 
-export const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+export const ALLOWED_TYPES = [
+  "image/jpeg", "image/jpg", "image/png", "image/webp",
+  "video/mp4", "video/webm", "video/quicktime", "video/ogg"
+];
+export const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
 export function getPublicPath(fullPath: string): string {
   // Convert absolute path to public URL path
@@ -35,13 +38,13 @@ export function getPublicPath(fullPath: string): string {
 
 export async function saveFile(
   file: File,
-  folder: "products" | "categories" | "avatars"
+  folder: "products" | "categories" | "avatars" | "reviews"
 ): Promise<string> {
   if (!ALLOWED_TYPES.includes(file.type)) {
-    throw new Error("Invalid file type. Only JPEG, PNG, and WebP are allowed.");
+    throw new Error("Invalid file type. Only standard images and videos are allowed.");
   }
   if (file.size > MAX_FILE_SIZE) {
-    throw new Error("File too large. Maximum size is 5MB.");
+    throw new Error("File too large. Maximum size is 50MB.");
   }
 
   const ext = file.name.split(".").pop() || "jpg";

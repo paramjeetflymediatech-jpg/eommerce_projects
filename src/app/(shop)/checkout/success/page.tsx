@@ -116,7 +116,7 @@ function CheckoutSuccessContent() {
         </div>
 
         <p style={{ marginTop: "32px", fontSize: "0.72rem", color: "#bbb", letterSpacing: "0.05em" }}>
-          Questions? Contact us at <span style={{ color: "#000" }}>support@shopnest.com</span>
+          Questions? Contact us at <span style={{ color: "#000" }}>support@aionluxury.com</span>
         </p>
       </div>
 

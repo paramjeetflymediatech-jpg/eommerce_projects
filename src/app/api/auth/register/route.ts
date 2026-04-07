@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       return apiError("Please enter a valid email address");
 
     // 3. Admin email block (dynamic via env for future-proofing)
-    const adminEmail = process.env.ADMIN_EMAIL || "admin@shopnest.com";
+    const adminEmail = process.env.ADMIN_EMAIL || "admin@aionluxury.com";
     if (email.toLowerCase() === adminEmail.toLowerCase())
       return apiError("This email is reserved for administrative use.");
 

@@ -1,7 +1,7 @@
 import { User, syncDB } from "../src/lib/models/index";
 import bcrypt from "bcryptjs";
 
-const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@shopnest.com";
+const DEFAULT_ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@aionluxury.com";
 const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin@123";
 const DEFAULT_ADMIN_NAME = process.env.ADMIN_NAME || "System Administrator";
 

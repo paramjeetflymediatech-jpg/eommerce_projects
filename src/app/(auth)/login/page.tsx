@@ -52,7 +52,7 @@ function LoginForm() {
         {/* Logo */}
         <div style={styles.logoWrap}>
           <div style={styles.logo}>S</div>
-          <span style={styles.logoText}>SHOPNEST</span>
+          <span style={styles.logoText}>AION LUXURY</span>
         </div>
 
         <h1 style={styles.heading}>Welcome back</h1>

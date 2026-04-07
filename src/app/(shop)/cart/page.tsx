@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
+import FallbackImage from "@/components/common/FallbackImage";
 import Link from "next/link";
 
 export default function CartPage() {
@@ -46,7 +47,7 @@ export default function CartPage() {
               <div key={item.product.id} className="card" style={{ padding: 24, display: "flex", gap: 20 }}>
                 <Link href={`/products/${item.product.slug}`}>
                   <div style={{ position: "relative", width: 100, height: 100, borderRadius: 12, overflow: "hidden", background: "var(--bg-elevated)", flexShrink: 0 }}>
-                    {item.product.images?.[0] && <Image src={item.product.images[0]} alt={item.product.name} fill style={{ objectFit: "cover" }} sizes="100px" />}
+                    {item.product.images?.[0] && <FallbackImage src={item.product.images[0]} alt={item.product.name} fill style={{ objectFit: "cover" }} sizes="100px" />}
                   </div>
                 </Link>
                 <div style={{ flex: 1 }}>
@@ -79,15 +80,15 @@ export default function CartPage() {
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <span style={{ color: "var(--text-secondary)" }}>Shipping</span>
-                  <span style={{ color: "var(--success)", fontWeight: 600 }}>{total >= 50 ? "FREE" : formatPrice(9.99)}</span>
+                  <span style={{ color: "var(--success)", fontWeight: 600 }}>{total >= 500 ? "FREE" : formatPrice(50)}</span>
                 </div>
                 <hr className="divider" style={{ margin: 0 }} />
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: "1.1rem" }}>
                   <span style={{ fontWeight: 700 }}>Total</span>
-                  <span style={{ fontWeight: 800, fontSize: "1.3rem" }}>{formatPrice(total >= 50 ? total : total + 9.99)}</span>
+                  <span style={{ fontWeight: 800, fontSize: "1.3rem" }}>{formatPrice(total >= 500 ? total : total + 50)}</span>
                 </div>
               </div>
-              {total < 50 && <p style={{ fontSize: "0.8rem", color: "var(--success)", marginBottom: 20, textAlign: "center" }}>🎉 Add {formatPrice(50 - total)} more for free shipping!</p>}
+              {total < 500 && <p style={{ fontSize: "0.8rem", color: "var(--success)", marginBottom: 20, textAlign: "center" }}>🎉 Add {formatPrice(500 - total)} more for free shipping!</p>}
               <Link href="/checkout">
                 <button className="btn btn-primary" style={{ width: "100%", padding: "16px", fontSize: "1rem", marginBottom: 12 }}>Proceed to Checkout →</button>
               </Link>

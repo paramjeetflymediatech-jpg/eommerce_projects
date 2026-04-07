@@ -6,10 +6,16 @@ import { authOptions } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "ADMIN") return apiError("Unauthorized", 401);
+  if (!session) return apiError("Unauthorized", 401);
 
   const formData = await req.formData();
-  const folder = (formData.get("folder") as "products" | "categories" | "avatars") || "products";
+  const folder = (formData.get("folder") as "products" | "categories" | "avatars" | "reviews") || "products";
+  
+  // Only admins can upload to products and categories
+  if (session.user.role !== "ADMIN" && (folder === "products" || folder === "categories")) {
+    return apiError("Unauthorized", 401);
+  }
+
   const files = formData.getAll("files") as File[];
 
   if (!files.length) return apiError("No files provided");

@@ -69,11 +69,11 @@ export default function RegisterPage() {
       <div style={styles.card}>
         <div style={styles.logoWrap}>
           <div style={styles.logo}>S</div>
-          <span style={styles.logoText}>SHOPNEST</span>
+          <span style={styles.logoText}>AION LUXURY</span>
         </div>
 
         <h1 style={styles.heading}>Create account</h1>
-        <p style={styles.subtext}>Join ShopNest and start shopping</p>
+        <p style={styles.subtext}>Join Aion Luxury and start shopping</p>
 
         {error && (
           <div style={styles.rightToast}>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "Read the rules and guidelines for using the ShopNest platform.",
+  description: "Read the rules and guidelines for using the Aion Luxury platform.",
 };
 
 export default function TermsPage() {
@@ -22,17 +22,17 @@ export default function TermsPage() {
 
           <section>
             <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: 20, color: "var(--text-primary)" }}>2. Products & Pricing</h2>
-            <p>We strive to provide accurate product information and pricing. However, we reserve the right to correct errors and cancel orders if a product is listed at an incorrect price. All prices are in USD unless otherwise specified.</p>
+            <p>We strive to provide accurate product information and pricing. However, we reserve the right to correct errors and cancel orders if a product is listed at an incorrect price. All prices are in INR unless otherwise specified.</p>
           </section>
 
           <section>
             <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: 20, color: "var(--text-primary)" }}>3. Intellectual Property</h2>
-            <p>All content on the ShopNest platform, including logos, text, and images, is the property of ShopNest and is protected by copyright and intellectual property laws. You may not use our content without explicit permission.</p>
+            <p>All content on the Aion Luxury platform, including logos, text, and images, is the property of Aion Luxury and is protected by copyright and intellectual property laws. You may not use our content without explicit permission.</p>
           </section>
 
           <section>
             <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: 20, color: "var(--text-primary)" }}>4. Limitation of Liability</h2>
-            <p>ShopNest is provided "as is" without warranties. We are not liable for any damages arising from your use of our services, except as required by law.</p>
+            <p>Aion Luxury is provided "as is" without warranties. We are not liable for any damages arising from your use of our services, except as required by law.</p>
           </section>
 
           <div className="card" style={{ padding: 32, marginTop: 24, textAlign: "center" }}>

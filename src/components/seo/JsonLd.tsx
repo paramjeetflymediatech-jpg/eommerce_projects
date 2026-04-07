@@ -26,7 +26,7 @@ export function ProductJsonLd({ product }: ProductJsonLdProps) {
     offers: {
       "@type": "Offer",
       price: product.price,
-      priceCurrency: "USD",
+      priceCurrency: "INR",
       availability:
         (product.stock ?? 1) > 0
           ? "https://schema.org/InStock"
@@ -57,7 +57,7 @@ export function OrganizationJsonLd() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "ShopNest",
+    name: "Aion Luxury",
     url: appUrl,
     logo: `${appUrl}/logo.png`,
     sameAs: [],

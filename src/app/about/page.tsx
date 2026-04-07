@@ -9,7 +9,7 @@ export default function AboutPage() {
       <section className={styles.hero}>
         <div className={`container-app ${styles.heroContainer}`}>
           <h1 className={styles.heroTitle}>A New Era <br/> Of Attire</h1>
-          <p className={styles.heroSubtitle}>SHOPNEST: REDEFINING THE MODERN WARDROBE SINCE 2024</p>
+          <p className={styles.heroSubtitle}>AION LUXURY: REDEFINING THE MODERN WARDROBE SINCE 2024</p>
         </div>
       </section>
 
@@ -20,7 +20,7 @@ export default function AboutPage() {
             <span className={styles.overline}>Our Philosophy</span>
             <h2 className={styles.heading}>Tailored Integrity. Minimalist Soul.</h2>
             <p className={styles.paragraph}>
-              At ShopNest, we believe that the garments we wear define our presence in the world. 
+              At Aion Luxury, we believe that the garments we wear define our presence in the world. 
               Our collection is curated for those who seek more than just clothing—they seek a legacy of style.
             </p>
             <p className={styles.paragraph}>
@@ -42,7 +42,7 @@ export default function AboutPage() {
       <section className={styles.section} style={{ background: "#000", color: "#fff" }}>
         <div className="container-app">
           <div className={styles.valuesHeader}>
-            <h2 className={styles.heading} style={{ color: "#fff" }}>Why ShopNest?</h2>
+            <h2 className={styles.heading} style={{ color: "#fff" }}>Why Aion Luxury?</h2>
           </div>
           <div className={styles.valuesGrid}>
             <div className={styles.valueCard}>

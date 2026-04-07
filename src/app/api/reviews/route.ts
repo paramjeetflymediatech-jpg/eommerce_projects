@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   if (!session) return apiError("Unauthorized", 401);
 
   const body = await req.json();
-  const { productId, rating, title, comment } = body;
+  const { productId, rating, title, comment, images, videoUrl } = body;
 
   if (!productId || !rating || !comment) return apiError("productId, rating, and comment are required");
   if (rating < 1 || rating > 5) return apiError("Rating must be between 1 and 5");
@@ -52,6 +52,8 @@ export async function POST(req: NextRequest) {
     rating,
     title,
     comment,
+    images: Array.isArray(images) ? images : [],
+    videoUrl: videoUrl || null,
   });
 
   // Update product rating

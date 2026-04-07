@@ -23,6 +23,21 @@ export async function POST(req: NextRequest) {
 
   if (!items?.length) return apiError("No items in cart");
 
+  // Validate shipping address
+  if (!shippingAddress) return apiError("Shipping address is required", 400);
+
+  const requiredFields = ["name", "email", "street", "city", "state", "zip", "phone"];
+  for (const field of requiredFields) {
+    if (!shippingAddress[field] || shippingAddress[field].trim() === "") {
+      return apiError(`${field.charAt(0).toUpperCase() + field.slice(1)} is required`, 400);
+    }
+  }
+
+  // Basic email validation
+  if (!/\S+@\S+\.\S+/.test(shippingAddress.email)) {
+    return apiError("Invalid email address", 400);
+  }
+
   // Fetch products and build line items
   const lineItems = [];
   let orderTotal = 0;

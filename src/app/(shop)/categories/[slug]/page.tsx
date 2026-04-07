@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import FallbackImage from "@/components/common/FallbackImage";
 import ProductCard from "@/components/products/ProductCard";
 
 interface Props { params: { slug: string } }
@@ -48,7 +49,7 @@ export default async function CategoryPage(props: { params: CategoryParams }) {
 
       {category.image && (
         <div style={{ position: "relative", height: 280, borderRadius: 24, overflow: "hidden", marginBottom: 48, background: "var(--bg-elevated)" }}>
-          <Image src={category.image} alt={category.name} fill style={{ objectFit: "cover" }} />
+          <FallbackImage src={category.image} alt={category.name} fill style={{ objectFit: "cover" }} />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(0,0,0,0.7), transparent)", display: "flex", alignItems: "center", padding: 48 }}>
             <div>
               <h1 style={{ fontSize: "3rem", marginBottom: 12 }}>{category.name}</h1>

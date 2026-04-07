@@ -3,7 +3,7 @@ import "./globals.css";
 import Providers from "./providers";
 import StorefrontLayout from "@/components/layout/StorefrontLayout";
 
-const appName = process.env.NEXT_PUBLIC_APP_NAME || "ShopNest";
+const appName = process.env.NEXT_PUBLIC_APP_NAME || "Aion Luxury";
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {

@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 import { User } from "./models";
 import * as jose from "jose";
 
-const JWT_SECRET = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || "shopnest-super-secret-jwt-key-2024");
+const JWT_SECRET = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || "aionluxury-super-secret-jwt-key-2024");
 
 export const authOptions = {
   providers: [

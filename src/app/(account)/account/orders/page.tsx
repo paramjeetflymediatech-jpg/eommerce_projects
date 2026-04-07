@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
+import ReviewModal from "@/components/reviews/ReviewModal";
 
 const STATUS_STYLE: Record<string, { color: string; background: string }> = {
   PENDING:    { color: "#8E8E93", background: "#F1F1F2" },
@@ -14,6 +15,7 @@ const STATUS_STYLE: Record<string, { color: string; background: string }> = {
 export default function AccountOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   useEffect(() => {
     fetch("/api/orders")
@@ -92,6 +94,19 @@ export default function AccountOrdersPage() {
                           Qty: {item.quantity} × {formatPrice(Number(item.priceAtPurchase))}
                         </p>
                       </div>
+                      {/* REVIEW BUTTON */}
+                      {order.status === "DELIVERED" && (
+                        <button 
+                          onClick={() => setSelectedProduct({ 
+                            id: item.productId, 
+                            name: item.productName || item.product?.name,
+                            images: item.product?.images || ["/placeholder-product.jpg"]
+                          })}
+                          style={styles.reviewBtn}
+                        >
+                          Review
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -110,6 +125,30 @@ export default function AccountOrdersPage() {
           ))}
         </div>
       )}
+
+      {/* Review Modal */}
+      {selectedProduct && (
+        <ReviewModal 
+          product={selectedProduct} 
+          onClose={() => setSelectedProduct(null)} 
+          onSuccess={() => setSelectedProduct(null)} 
+        />
+      )}
     </div>
   );
 }
+
+const styles: Record<string, React.CSSProperties> = {
+  reviewBtn: {
+    background: "#fff",
+    border: "1px solid #000",
+    color: "#000",
+    fontSize: "0.6rem",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.15em",
+    padding: "8px 16px",
+    cursor: "pointer",
+    transition: "background 0.2s ease, color 0.2s ease",
+  }
+};

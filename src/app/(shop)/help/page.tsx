@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Help Center",
-  description: "Find answers to frequently asked questions and get support for your ShopNest account.",
+  description: "Find answers to frequently asked questions and get support for your Aion Luxury account.",
 };
 
 export default function HelpPage() {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Contact Us",
-  description: "Get in touch with the ShopNest team. We're here to help with your orders and inquiries.",
+  description: "Get in touch with the Aion Luxury team. We're here to help with your orders and inquiries.",
 };
 
 export default function ContactPage() {
@@ -37,8 +37,8 @@ export default function ContactPage() {
             <div>
               <h2 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: 16 }}>✉️ Email Us</h2>
               <p style={{ color: "var(--text-secondary)", lineHeight: 1.7 }}>
-                General: hello@shopnest.com<br />
-                Support: help@shopnest.com
+                General: hello@aionluxury.com<br />
+                Support: help@aionluxury.com
               </p>
             </div>
             <div className="card" style={{ padding: 24, background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)" }}>

@@ -7,12 +7,13 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-export function formatPrice(amount: number, currency = "USD"): string {
-  return new Intl.NumberFormat("en-US", {
+export function formatPrice(amount: number, currency = "INR"): string {
+  const formatted = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency,
-    minimumFractionDigits: 2,
+    minimumFractionDigits: 0,
   }).format(amount);
+  return `MRP: ${formatted}`;
 }
 
 export function formatDate(date: Date | string): string {

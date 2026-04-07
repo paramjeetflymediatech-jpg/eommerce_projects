@@ -8,6 +8,8 @@ export interface ReviewAttributes {
   rating: number;
   title?: string;
   comment: string;
+  images?: string[];
+  videoUrl?: string;
   isVerified: boolean;
   createdAt?: Date;
   updatedAt?: Date;
@@ -26,6 +28,8 @@ class Review
   declare rating: number;
   declare title: string;
   declare comment: string;
+  declare images: string[];
+  declare videoUrl: string;
   declare isVerified: boolean;
   declare createdAt: Date;
   declare updatedAt: Date;
@@ -47,6 +51,8 @@ Review.init(
     rating: { type: DataTypes.INTEGER, allowNull: false, validate: { min: 1, max: 5 } },
     title: { type: DataTypes.STRING(200), allowNull: true },
     comment: { type: DataTypes.TEXT, allowNull: false },
+    images: { type: DataTypes.JSON, allowNull: true },
+    videoUrl: { type: DataTypes.STRING(255), allowNull: true },
     isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
   },
   { sequelize, modelName: "Review", tableName: "reviews" }

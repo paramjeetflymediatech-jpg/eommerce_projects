@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
         {/* Visual Side (Left) */}
         <div style={styles.visualSide} className="desktop-only">
           <div style={styles.visualContent}>
-            <h2 style={styles.visualTitle}>ShopNest</h2>
+            <h2 style={styles.visualTitle}>Aion Luxury</h2>
             <p style={styles.visualText}>
               Exclusive Administration Portal <br />
               <span style={{ fontSize: "0.7rem", opacity: 0.5, letterSpacing: "0.4em" }}>EST. 2024</span>
@@ -80,7 +80,7 @@ export default function AdminLoginPage() {
                   id="admin-email"
                   required
                   type="email"
-                  placeholder="name@shopnest.com"
+                  placeholder="name@aionluxury.com"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   style={styles.input}

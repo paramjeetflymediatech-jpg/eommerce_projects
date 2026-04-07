@@ -84,7 +84,7 @@ export default function ForgotPasswordPage() {
       <div style={styles.card}>
         <div style={styles.logoWrap}>
           <div style={styles.logo}>S</div>
-          <span style={styles.logoText}>SHOPNEST</span>
+          <span style={styles.logoText}>AION LUXURY</span>
         </div>
 
         {/* Step indicators */}

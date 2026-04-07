@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import FallbackImage from "@/components/common/FallbackImage";
 
 export const metadata: Metadata = {
   title: "Shop by Category",
@@ -33,7 +34,7 @@ export default async function CategoriesPage() {
             <div className="card h-full" style={{ padding: 0, overflow: "hidden", transition: "transform 0.3s ease" }}>
               <div style={{ position: "relative", height: 200, background: "var(--bg-elevated)" }}>
                 {cat.image ? (
-                  <Image src={cat.image} alt={cat.name} fill style={{ objectFit: "cover" }} />
+                  <FallbackImage src={cat.image} alt={cat.name} fill style={{ objectFit: "cover" }} />
                 ) : (
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", fontSize: "3rem" }}>🛍️</div>
                 )}

@@ -2,6 +2,8 @@
 import { useState, useMemo } from "react";
 import ProductGallery from "./ProductGallery";
 import AddToCartSection from "./AddToCartSection";
+import ReviewsSection from "@/components/reviews/ReviewsSection";
+import { getColorFromName } from "@/lib/colors";
 import s from "./product-detail.module.css";
 
 interface Variant {
@@ -76,16 +78,6 @@ export default function ProductDetailContent({ product }: { product: Product }) 
     return colorImages.length > 0 ? colorImages : product.images;
   }, [product.images, product.variants, selectedColor]);
 
-  // CSS colour value for dot swatch (best-effort mapping)
-  const colorDot = (name: string) => {
-    const map: Record<string, string> = {
-      black: "#111", white: "#f5f5f5", red: "#dc2626", navy: "#1e3a5f",
-      beige: "#d4b896", camel: "#c19a6b", olive: "#6b7a2a", gray: "#9ca3af",
-      grey: "#9ca3af", blue: "#3b82f6", green: "#22c55e", pink: "#ec4899",
-      purple: "#a855f7", orange: "#f97316", yellow: "#eab308", brown: "#92400e",
-    };
-    return map[name.toLowerCase()] || name.toLowerCase();
-  };
 
   return (
     <div className={s.mainGrid}>
@@ -140,7 +132,7 @@ export default function ProductDetailContent({ product }: { product: Product }) 
                       width: 14,
                       height: 14,
                       borderRadius: "50%",
-                      background: colorDot(color),
+                      background: getColorFromName(color),
                       border: "1px solid rgba(0,0,0,0.15)",
                       flexShrink: 0,
                       display: "inline-block",
@@ -178,11 +170,15 @@ export default function ProductDetailContent({ product }: { product: Product }) 
               <summary className={s.summary}>Shipping &amp; Authentication</summary>
               <p className={s.detailsContent}>
                 This piece is subject to professional handling and white-glove delivery within
-                14–21 days of purchase. Each piece is authenticated by ShopNest.
+                14–21 days of purchase. Each piece is authenticated by Aion Luxury.
               </p>
             </details>
           </div>
         </div>
+      </div>
+      {/* Bottom: Reviews */}
+      <div style={{ gridColumn: "1 / -1", marginTop: 64 }}>
+        <ReviewsSection productId={product.id} />
       </div>
     </div>
   );

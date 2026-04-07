@@ -12,7 +12,7 @@ function baseEmailLayout(content: string, previewText: string = "") {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ShopNest Preview</title>
+  <title>Aion Luxury Preview</title>
   <style>
     body { background-color: #f9fafb; font-family: 'Inter', sans-serif; padding: 40px 0; margin: 0; }
     .main { background-color: #ffffff; margin: 0 auto; width: 100%; max-width: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); border: 1px solid #eeeeee; }
@@ -28,17 +28,17 @@ function baseEmailLayout(content: string, previewText: string = "") {
 </head>
 <body>
   <div class="main">
-    <div class="header"><p class="logo-text">SHOPNEST</p></div>
+    <div class="header"><p class="logo-text">AION LUXURY</p></div>
     <div class="content">
       <h1>Verify your identity</h1>
-      <p>Welcome to ShopNest! Use the verification code below to activate your account.</p>
+      <p>Welcome to Aion Luxury! Use the verification code below to activate your account.</p>
       <div class="otp-display">
         <div class="otp-code">123456</div>
         <p style="font-size: 13px; color: #6b7280; margin-top: 12px;">This code will expire in 10 minutes</p>
       </div>
       <p>If you didn't request this code, you can safely ignore this email.</p>
     </div>
-    <div class="footer">© 2024 ShopNest. All rights reserved.</div>
+    <div class="footer">© 2024 Aion Luxury. All rights reserved.</div>
   </div>
 </body>
 </html>`;

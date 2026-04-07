@@ -2,9 +2,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useWishlistStore } from "@/store/wishlistStore";
+import ProductCard from "@/components/products/ProductCard";
 
 export default function AccountWishlistPage() {
-  const { items } = useWishlistStore();
+  const items = useWishlistStore((s: any) => s.items);
   const [mounted, setMounted] = useState(false);
   
   useEffect(() => {
@@ -25,7 +26,18 @@ export default function AccountWishlistPage() {
         </div>
       ) : (
         <div style={s.grid}>
-           {/* Wishlist item cards */}
+          {items.map((item: any) => (
+            <ProductCard 
+              key={item.id} 
+              product={{
+                ...item,
+                rating: 0,
+                reviewCount: 0,
+                stock: 99, // default to in stock for wishlist display
+                isFeatured: false
+              }} 
+            />
+          ))}
         </div>
       )}
     </div>

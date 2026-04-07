@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { ensureDB, Order, User, OrderItem, Product } from "@/lib/models";
 import { apiResponse, apiError, getPaginationMeta } from "@/lib/utils";
+import { sendOrderStatusUpdateEmail } from "@/lib/mailer";
 import { Op } from "sequelize";
 
 async function requireAdmin(req: NextRequest) {
@@ -59,17 +60,38 @@ export async function PATCH(req: NextRequest) {
   if (!session) return apiError("Unauthorized", 401);
 
   try {
-    const { id, status } = await req.json();
+    const { id, status, trackingId, carrier } = await req.json();
     if (!id || !status) return apiError("Order ID and status are required");
 
-    const order = await Order.findByPk(id);
+    const order = await Order.findByPk(id, {
+      include: [{ model: User, as: "user", attributes: ["email", "name"] }]
+    });
     if (!order) return apiError("Order not found", 404);
 
     order.status = status;
+    if (trackingId !== undefined) order.trackingId = trackingId;
+    if (carrier !== undefined) order.carrier = carrier;
     await order.save();
+
+    // Trigger Email Notification
+    if (order.user?.email) {
+      try {
+        await sendOrderStatusUpdateEmail(order.user.email, {
+          customerName: order.user.name || "Customer",
+          orderNumber: order.id.toString().padStart(6, "0"),
+          orderId: order.id,
+          status: order.status,
+          trackingId: order.trackingId,
+          carrier: order.carrier,
+        });
+      } catch (emailError) {
+        console.error("Failed to send order update email:", emailError);
+      }
+    }
 
     return apiResponse({ order });
   } catch (error) {
-    return apiError("Failed to update order status");
+    console.error("Order update error:", error);
+    return apiError("Failed to update order");
   }
 }

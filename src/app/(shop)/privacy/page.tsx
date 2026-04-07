@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "Learn how we protect and manage your personal data at ShopNest.",
+  description: "Learn how we protect and manage your personal data at Aion Luxury.",
 };
 
 export default function PrivacyPage() {

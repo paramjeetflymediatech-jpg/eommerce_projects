@@ -58,7 +58,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             marginBottom: "8px",
             fontWeight: 400
           }}>
-            ShopNest
+            Aion Luxury
           </h2>
           <p style={{
             fontSize: "0.6rem",

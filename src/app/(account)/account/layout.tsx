@@ -30,7 +30,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         {/* Header Title */}
         <header style={s.pageHeader}>
           <h1 style={s.title}>My Account</h1>
-          <p style={s.subtitle}>Manage your profile, orders and preferences with ShopNest.</p>
+          <p style={s.subtitle}>Manage your profile, orders and preferences with Aion Luxury.</p>
         </header>
 
         <div style={s.mainGrid} className="account-main-grid">

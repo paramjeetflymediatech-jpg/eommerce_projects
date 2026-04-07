@@ -26,7 +26,7 @@ export async function generateMetadata(props: { params: PageParams }): Promise<M
   if (!data) return { title: "Piece Not Found" };
   const { product } = data;
   return {
-    title: `${product.name} — ShopNest`,
+    title: `${product.name} — Aion Luxury`,
     description: product.shortDescription || product.description?.slice(0, 160),
   };
 }

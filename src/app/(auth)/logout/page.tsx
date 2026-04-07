@@ -31,7 +31,7 @@ export default function LogoutPage() {
         
         <p style={s.subtitle}>
           {signedOut 
-            ? "Thank you for choosing ShopNest. We look forward to your next visit."
+            ? "Thank you for choosing Aion Luxury. We look forward to your next visit."
             : "We are securely ending your session. Please wait a moment."
           }
         </p>

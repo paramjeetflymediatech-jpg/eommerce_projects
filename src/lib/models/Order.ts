@@ -17,13 +17,15 @@ export interface OrderAttributes {
   };
   stripePaymentId?: string;
   stripeSessionId?: string;
+  trackingId?: string;
+  carrier?: string;
   notes?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 interface OrderCreationAttributes
-  extends Optional<OrderAttributes, "id" | "stripePaymentId" | "stripeSessionId" | "notes"> {}
+  extends Optional<OrderAttributes, "id" | "stripePaymentId" | "stripeSessionId" | "trackingId" | "carrier" | "notes"> {}
 
 class Order
   extends Model<OrderAttributes, OrderCreationAttributes>
@@ -36,7 +38,11 @@ class Order
   declare shippingAddress: OrderAttributes["shippingAddress"];
   declare stripePaymentId: string;
   declare stripeSessionId: string;
+  declare trackingId: string;
+  declare carrier: string;
   declare notes: string;
+  declare user?: { name: string; email: string };
+  declare items?: any[];
   declare createdAt: Date;
   declare updatedAt: Date;
 }
@@ -57,6 +63,8 @@ Order.init(
     shippingAddress: { type: DataTypes.JSON, allowNull: false },
     stripePaymentId: { type: DataTypes.STRING(255), allowNull: true },
     stripeSessionId: { type: DataTypes.STRING(255), allowNull: true },
+    trackingId: { type: DataTypes.STRING(255), allowNull: true },
+    carrier: { type: DataTypes.STRING(255), allowNull: true },
     notes: { type: DataTypes.TEXT, allowNull: true },
   },
   { sequelize, modelName: "Order", tableName: "orders" }

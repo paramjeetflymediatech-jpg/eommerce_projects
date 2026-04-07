@@ -35,6 +35,7 @@ export default function Header() {
     { label: "SHOP ALL", href: "/products" },
     { label: "STORY", href: "/about" },
     { label: "STORES", href: "/" },
+    { label: "TRACK ORDER", href: "/track" },
     { label: "ACCOUNT", href: session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account" },
   ];
 
@@ -106,7 +107,7 @@ export default function Header() {
             <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
               <Image
                 src="/logo.png"
-                alt="ShopNest"
+                alt="Aion Luxury"
                 width={200}
                 height={60}
                 priority
@@ -191,7 +192,7 @@ export default function Header() {
             letterSpacing: "0.2em",
             textTransform: "uppercase"
           }}>
-            ShopNest
+            Aion Luxury
           </span>
           <button
             onClick={() => setMobileOpen(false)}

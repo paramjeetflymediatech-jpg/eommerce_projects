@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { formatPrice } from "@/lib/utils";
+import { getColorFromName } from "@/lib/colors";
 
 interface Category { id: number; name: string; parentId: number | null; }
 
@@ -269,8 +271,8 @@ export default function AdminProductsPage() {
                     <td style={s.td}>{p.images?.[0] ? <img src={p.images[0]} alt={p.name} style={{ width: 44, height: 44, objectFit: "cover" }} /> : <div style={s.noImg}>—</div>}</td>
                     <td style={s.td}><span style={s.productName}>{p.name}</span><br /><span style={{ fontSize: "0.75rem", color: "#999" }}>{p.slug}</span></td>
                     <td style={s.td}><span style={s.badge}>{p.category?.name || "—"}</span></td>
-                    <td style={s.td}>${Number(p.price).toFixed(2)}</td>
-                    <td style={s.td}>{p.comparePrice ? <span style={{ color: "#999", textDecoration: "line-through", fontSize: "0.8rem" }}>${Number(p.comparePrice).toFixed(2)}</span> : <span style={{ color: "#eee" }}>—</span>}</td>
+                    <td style={s.td}>{formatPrice(p.price)}</td>
+                    <td style={s.td}>{p.comparePrice ? <span style={{ color: "#999", textDecoration: "line-through", fontSize: "0.8rem" }}>{formatPrice(p.comparePrice)}</span> : <span style={{ color: "#eee" }}>—</span>}</td>
                     <td style={s.td}><span style={{ ...s.stockBadge, background: p.stock > 0 ? "#F0FDF4" : "#FFF5F5", color: p.stock > 0 ? "#15803D" : "#DC2626" }}>{p.stock}</span></td>
                     <td style={s.td}>{p.isFeatured ? "⭐" : "—"}</td>
                     <td style={s.td}>
@@ -296,7 +298,7 @@ export default function AdminProductsPage() {
                   </div>
                   {p.isFeatured && <span style={{ fontSize: "0.7rem", background: "#fffbeb", color: "#b45309", padding: "2px 8px", fontWeight: 700 }}>★ Featured</span>}
                 </div>
-                <div className="admin-card-row"><span className="admin-card-label">Price</span><span className="admin-card-value">${Number(p.price).toFixed(2)}</span></div>
+                <div className="admin-card-row"><span className="admin-card-label">Price</span><span className="admin-card-value">{formatPrice(p.price)}</span></div>
                 <div className="admin-card-row"><span className="admin-card-label">Stock</span><span style={{ fontSize: "0.8rem", fontWeight: 700, color: p.stock > 0 ? "#15803D" : "#DC2626" }}>{p.stock} units</span></div>
                 <div className="admin-card-actions">
                   <button onClick={() => openEdit(p)} style={s.editBtn}>Edit</button>
@@ -338,7 +340,7 @@ export default function AdminProductsPage() {
                 <input style={s.inp} type="text" placeholder="auto-generated" value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} />
               </div>
               <div style={s.formField}>
-                <label style={s.lbl}>Price (USD) *</label>
+                <label style={s.lbl}>Price (INR) *</label>
                 <input style={s.inp} type="number" placeholder="0.00" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} />
               </div>
               <div style={s.formField}>
@@ -442,7 +444,7 @@ export default function AdminProductsPage() {
                       >
                         {g.color ? (
                           <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                            <span style={{ width: 10, height: 10, borderRadius: "50%", background: g.color, border: "1px solid rgba(0,0,0,0.2)", flexShrink: 0, display: "inline-block" }} />
+                            <span style={{ width: 10, height: 10, borderRadius: "50%", background: getColorFromName(g.color), border: "1px solid rgba(0,0,0,0.2)", flexShrink: 0, display: "inline-block" }} />
                             {g.color}
                           </span>
                         ) : `Color ${gIdx + 1}`}
@@ -474,7 +476,7 @@ export default function AdminProductsPage() {
                               key={c} type="button"
                               onClick={() => updateColorGroup(activeColorIdx, { color: c })}
                               title={c}
-                              style={{ width: 20, height: 20, borderRadius: "50%", border: activeGroup.color === c ? "2px solid #000" : "1px solid #ddd", background: c.toLowerCase(), cursor: "pointer", flexShrink: 0 }}
+                              style={{ width: 20, height: 20, borderRadius: "50%", border: activeGroup.color === c ? "2px solid #000" : "1px solid #ddd", background: getColorFromName(c), cursor: "pointer", flexShrink: 0 }}
                             />
                           ))}
                         </div>

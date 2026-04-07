@@ -19,6 +19,9 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState<any>({ totalPages: 1 });
+  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [editingTracking, setEditingTracking] = useState(false);
+  const [trackingData, setTrackingData] = useState({ trackingId: "", carrier: "" });
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -42,17 +45,30 @@ export default function AdminOrdersPage() {
     fetchOrders();
   }, [page, statusFilter]);
 
-  const updateStatus = async (id: number, status: string) => {
+  const updateStatus = async (id: number, status: string, trackingInfo?: any) => {
     try {
       const res = await fetch("/api/admin/orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status }),
+        body: JSON.stringify({ id, status, ...trackingInfo }),
       });
-      if (res.ok) fetchOrders();
+      if (res.ok) {
+        fetchOrders();
+        setEditingTracking(false);
+        setSelectedOrder(null);
+      }
     } catch (err) {
-      alert("Failed to update status");
+      alert("Failed to update order");
     }
+  };
+
+  const openTrackingModal = (order: any) => {
+    setSelectedOrder(order);
+    setTrackingData({ 
+      trackingId: order.trackingId || "", 
+      carrier: order.carrier || "" 
+    });
+    setEditingTracking(true);
   };
 
   return (
@@ -128,17 +144,26 @@ export default function AdminOrdersPage() {
                     <div style={styles.date}>{new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
                   </td>
                   <td style={styles.td}>
-                    <select
-                      value={order.status}
-                      onChange={(e) => updateStatus(order.id, e.target.value)}
-                      style={styles.statusSelect}
-                    >
-                      <option value="PENDING">PENDING</option>
-                      <option value="PROCESSING">PROCESSING</option>
-                      <option value="SHIPPED">SHIPPED</option>
-                      <option value="DELIVERED">DELIVERED</option>
-                      <option value="CANCELLED">CANCELLED</option>
-                    </select>
+                    <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                      <select
+                        value={order.status}
+                        onChange={(e) => updateStatus(order.id, e.target.value)}
+                        style={styles.statusSelect}
+                      >
+                        <option value="PENDING">PENDING</option>
+                        <option value="PROCESSING">PROCESSING</option>
+                        <option value="SHIPPED">SHIPPED</option>
+                        <option value="DELIVERED">DELIVERED</option>
+                        <option value="CANCELLED">CANCELLED</option>
+                      </select>
+                      <button 
+                         onClick={() => openTrackingModal(order)}
+                         style={styles.trackBtn}
+                         title="Manage Tracking"
+                      >
+                        🚚
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -203,6 +228,46 @@ export default function AdminOrdersPage() {
           Next
         </button>
       </div>
+
+      {/* Tracking Modal */}
+      {editingTracking && selectedOrder && (
+        <div style={styles.modalOverlay}>
+          <div style={styles.modal}>
+            <h2 style={styles.modalTitle}>Order Logstics</h2>
+            <p style={styles.modalSubtitle}>Update tracking information for order #{selectedOrder.id.toString().padStart(6, "0")}</p>
+            
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Carrier Name</label>
+              <input 
+                style={styles.input}
+                placeholder="e.g. FedEx, BlueDart"
+                value={trackingData.carrier}
+                onChange={(e) => setTrackingData({...trackingData, carrier: e.target.value})}
+              />
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Tracking ID</label>
+              <input 
+                style={styles.input}
+                placeholder="Enter tracking number"
+                value={trackingData.trackingId}
+                onChange={(e) => setTrackingData({...trackingData, trackingId: e.target.value})}
+              />
+            </div>
+
+            <div style={styles.modalActions}>
+              <button onClick={() => setEditingTracking(false)} style={styles.cancelBtn}>Cancel</button>
+              <button 
+                onClick={() => updateStatus(selectedOrder.id, selectedOrder.status, trackingData)} 
+                style={styles.saveBtn}
+              >
+                Save Tracking & Notify Client
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -362,5 +427,91 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 800,
     letterSpacing: "0.2em",
     color: "#aaa",
+  },
+  trackBtn: {
+    background: "#fff",
+    border: "1px solid #eee",
+    borderRadius: "4px",
+    cursor: "pointer",
+    padding: "6px 8px",
+    fontSize: "14px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  modalOverlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.4)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
+  },
+  modal: {
+    background: "#fff",
+    padding: "40px",
+    width: "100%",
+    maxWidth: "500px",
+    borderRadius: "12px",
+    boxShadow: "0 24px 48px rgba(0,0,0,0.1)",
+  },
+  modalTitle: {
+    fontFamily: "var(--font-serif)",
+    fontSize: "1.8rem",
+    margin: "0 0 8px",
+    fontWeight: 400,
+  },
+  modalSubtitle: {
+    fontSize: "0.8rem",
+    color: "#888",
+    marginBottom: "32px",
+  },
+  formGroup: {
+    marginBottom: "24px",
+  },
+  label: {
+    display: "block",
+    fontSize: "0.65rem",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: "0.1em",
+    color: "#aaa",
+    marginBottom: "10px",
+  },
+  input: {
+    width: "100%",
+    padding: "16px",
+    border: "1px solid #eee",
+    borderRadius: "8px",
+    fontSize: "0.9rem",
+    outline: "none",
+    fontFamily: "inherit",
+  },
+  modalActions: {
+    display: "flex",
+    gap: "12px",
+    marginTop: "40px",
+  },
+  cancelBtn: {
+    flex: 1,
+    padding: "16px",
+    background: "transparent",
+    border: "1px solid #eee",
+    borderRadius: "8px",
+    fontSize: "0.8rem",
+    fontWeight: 600,
+    cursor: "pointer",
+  },
+  saveBtn: {
+    flex: 2,
+    padding: "16px",
+    background: "#000",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    fontSize: "0.8rem",
+    fontWeight: 600,
+    cursor: "pointer",
   },
 };

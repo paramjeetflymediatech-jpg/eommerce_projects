@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
+import FallbackImage from "@/components/common/FallbackImage";
 import s from "./product-detail.module.css";
 
 interface ProductGalleryProps {
@@ -77,7 +78,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
                 className={s.galleryItem}
                 onClick={() => setIsLightboxOpen(true)}
               >
-                <Image 
+                <FallbackImage 
                   src={img} 
                   alt={`${productName} view ${i + 1}`} 
                   fill 
@@ -85,7 +86,6 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
                   style={{ objectFit: "cover" }} 
                   sizes="(max-width: 1000px) 100vw, 60vw" 
                   priority={i === 0}
-                  onError={(e) => console.error(`[GALLERY] Failed to load image: ${img}`)}
                 />
               </div>
             ))
@@ -148,7 +148,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
               }}
               onClick={() => scrollToImage(i)}
             >
-              <Image src={img} alt={`${productName} thumbnail ${i}`} fill unoptimized={true} style={{ objectFit: "cover" }} sizes="100px" />
+              <FallbackImage src={img} alt={`${productName} thumbnail ${i}`} fill unoptimized={true} style={{ objectFit: "cover" }} sizes="100px" />
             </div>
           ))}
         </div>
@@ -165,7 +165,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
           </button>
           <div className={s.lightboxContent} onClick={(e) => e.stopPropagation()}>
             <div className={s.lightboxImageWrapper}>
-              <Image 
+              <FallbackImage 
                 src={images[activeImageIndex]} 
                 alt={`${productName} fullscreen`}
                 fill
