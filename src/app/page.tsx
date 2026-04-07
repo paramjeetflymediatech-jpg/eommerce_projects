@@ -45,7 +45,6 @@ export default async function HomePage() {
       <OrganizationJsonLd />
       <style dangerouslySetInnerHTML={{
         __html: `
-        body { background-color: #000 !important; }
         @media (max-width: 1024px) {
           .hero-video-grid {
             display: block !important;
@@ -155,7 +154,7 @@ export default async function HomePage() {
               {categories.slice(0, 4).map((cat: any, index: number) => (
                 <Link key={cat.id} href={`/categories/${cat.slug}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(450px, 70vh, 750px)", overflow: "hidden", textDecoration: "none" }}>
                   <Image
-                    src={cat.image || `https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80`}
+                    src={cat.image || ``}
                     alt={cat.name}
                     fill
                     className="hover-zoom"
@@ -179,12 +178,13 @@ export default async function HomePage() {
       <section className="section-padding" style={{ background: "#f9f9f9" }}>
         <div className="container-app">
           <div className="grid-editorial-2">
-            <div style={{ position: "relative", height: "clamp(450px, 75vh, 850px)", animation: "fadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1)" }}>
+            <div style={{ animation: "fadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1)", width: "100%" }}>
               <Image
                 src="/images/fashion/coats.png"
                 alt="Luxury Fashion"
-                fill
-                style={{ objectFit: "cover" }}
+                width={800}
+                height={1000}
+                style={{ width: "100%", height: "auto", objectFit: "cover", display: "block" }}
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
@@ -301,7 +301,7 @@ export default async function HomePage() {
       )}
 
       {/* Services/Features - Minimalist */}
-      <section style={{ padding: "clamp(80px, 12vw, 140px) 0", background: "#000", color: "#fff" }}>
+      {/* <section style={{ padding: "clamp(80px, 12vw, 140px) 0", background: "#000", color: "#fff" }}>
         <div className="container-app">
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))", gap: "clamp(48px, 6vw, 80px)" }}>
             {[
@@ -317,7 +317,7 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Unique Feature: The Editorial Lookbook */}
       <section className="section-padding" style={{ background: "#f9f9f9", overflow: "hidden" }}>
@@ -331,23 +331,6 @@ export default async function HomePage() {
                   fill
                   style={{ objectFit: "cover" }}
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-              <div style={{
-                position: "absolute",
-                top: "10%",
-                right: "-10%",
-                height: "clamp(300px, 60vh, 500px)",
-                width: "60%",
-                zIndex: 1,
-                opacity: 0.8
-              }} className="hide-mobile">
-                <Image
-                  src="/images/fashion/knitwear.png"
-                  alt="Lookbook 02"
-                  fill
-                  style={{ objectFit: "cover" }}
-                  sizes="30vw"
                 />
               </div>
             </div>
@@ -383,7 +366,7 @@ export default async function HomePage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: 16 }}>
             <div style={{ position: "relative", height: 600 }}>
-              <Image src="/images/fashion/coats.png" alt="Outerwear" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" />
+              <Image src="/images/categories/coats.png" alt="Outerwear" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" />
               <div style={{ position: "absolute", bottom: 40, left: 40, color: "#fff" }}>
                 <p className="text-tracked" style={{ fontSize: "0.7rem", fontWeight: 700 }}>01 / ARCHITECTURAL OUTERWEAR</p>
               </div>
@@ -399,7 +382,7 @@ export default async function HomePage() {
       </section>
 
       {/* Press Marquee */}
-      <section style={{ padding: "80px 0", borderTop: "1px solid #eee", borderBottom: "1px solid #eee", background: "#fafafa" }}>
+      {/* <section style={{ padding: "80px 0", borderTop: "1px solid #eee", borderBottom: "1px solid #eee", background: "#fafafa" }}>
         <div className="container-app">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", opacity: 1, flexWrap: "wrap", gap: 64 }}>
             {["VOGUE", "ARCHITECTURAL DIGEST", "ELLE DECOR", "THE NEW YORK TIMES", "WALLPAPER*"].map((brand) => (
@@ -407,10 +390,10 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Designers Section */}
-      <section className="section-padding" style={{ background: "#000", color: "#fff" }}>
+      {/* <section className="section-padding" style={{ background: "#000", color: "#fff" }}>
         <div className="container-app">
           <div style={{ textAlign: "center", marginBottom: 80 }}>
             <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", marginBottom: 16 }}>The Collaborators</p>
@@ -432,10 +415,10 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Newsletter Section */}
-      <section className="section-padding" style={{ background: "#ffffff", borderBottom: "1px solid #eee" }}>
+      {/* <section className="section-padding" style={{ background: "#ffffff", borderBottom: "1px solid #eee" }}>
         <div className="container-app" style={{ textAlign: "center", maxWidth: 640 }}>
           <h2 style={{ marginBottom: 24 }}>The Inner Circle</h2>
           <p style={{ color: "#666", marginBottom: 48, fontWeight: 300 }}>
@@ -446,7 +429,7 @@ export default async function HomePage() {
             <button className="btn btn-ghost" style={{ padding: "16px 0 16px 24px", fontSize: "0.7rem", flexShrink: 0 }}>SUBSCRIBE</button>
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }
