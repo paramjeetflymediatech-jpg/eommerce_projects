@@ -175,7 +175,7 @@ export default async function HomePage() {
       )}
 
       {/* Brand Story: Art de Vivre */}
-      <section className="section-padding" style={{ background: "#f9f9f9" }}>
+      <section className="section-padding">
         <div className="container-app">
           <div className="grid-editorial-2">
             <div style={{ animation: "fadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1)", width: "100%" }}>
@@ -203,7 +203,7 @@ export default async function HomePage() {
       </section>
 
       {/* French Art de Vivre - Triple Lifestyle Grid */}
-      <section className="section-padding" style={{ background: "#ffffff", paddingBottom: "clamp(120px, 15vw, 200px)" }}>
+      <section className="section-padding" style={{ background: "#ffffff", paddingBottom: "clamp(60px, 8vw, 100px)" }}>
         <div className="container-app">
           <div style={{ textAlign: "center", marginBottom: "clamp(60px, 10vw, 120px)" }}>
             <p className="text-tracked" style={{ fontSize: "0.8rem", color: "#888", marginBottom: 24, fontWeight: 700 }}>Life in Style</p>
@@ -285,7 +285,7 @@ export default async function HomePage() {
 
       {/* New Arrivals - Seasonal Drop */}
       {newArrivals.length > 0 && (
-        <section style={{ padding: "clamp(60px, 10vw, 120px) 0", background: "#ffffff", borderTop: "1px solid #eee" }}>
+        <section style={{ padding: "clamp(30px, 5vw, 60px) 0", background: "#ffffff", borderTop: "1px solid #eee" }}>
           <div className="container-app">
             <div style={{ textAlign: "center", marginBottom: "clamp(40px, 8vw, 80px)" }}>
               <h2 style={{ fontFamily: "Lora, serif", marginBottom: 16 }}>The New Arrivals</h2>
@@ -320,7 +320,7 @@ export default async function HomePage() {
       </section> */}
 
       {/* Unique Feature: The Editorial Lookbook */}
-      <section className="section-padding" style={{ background: "#f9f9f9", overflow: "hidden" }}>
+      <section className="section-padding">
         <div className="container-app">
           <div className="grid-editorial-2">
             <div style={{ position: "relative" }}>
