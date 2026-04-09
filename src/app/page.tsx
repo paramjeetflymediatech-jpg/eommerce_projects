@@ -151,7 +151,7 @@ export default async function HomePage() {
         <section className="section-padding" style={{ background: "#ffffff" }}>
           <div className="container-app">
             <div className="grid-luxury">
-              {categories.slice(0, 4).map((cat: any, index: number) => (
+              {categories.slice(0, 3).map((cat: any, index: number) => (
                 <Link key={cat.id} href={`/categories/${cat.slug}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(450px, 70vh, 750px)", overflow: "hidden", textDecoration: "none" }}>
                   <Image
                     src={cat.image || ``}
@@ -159,7 +159,7 @@ export default async function HomePage() {
                     fill
                     className="hover-zoom"
                     style={{ objectFit: "cover" }}
-                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    sizes="(max-width: 1024px) 100vw, 33vw"
                   />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", display: "flex", alignItems: "flex-end", padding: "clamp(32px, 6vw, 80px)" }}>
                     <div style={{ color: "#fff" }}>
