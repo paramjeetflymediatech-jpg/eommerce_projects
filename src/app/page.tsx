@@ -272,10 +272,10 @@ export default async function HomePage() {
             </div>
             <div style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))",
               gap: "clamp(32px, 5vw, 64px)"
             }}>
-              {featured.slice(0, 3).map((p: any) => (
+              {featured.slice(0, 4).map((p: any) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
