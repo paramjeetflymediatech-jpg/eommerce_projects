@@ -52,13 +52,13 @@ export default function AdminUsersPage() {
       if (res.ok) {
         setEditUser(null);
         fetchUsers();
-        Swal.fire({ title: "SUCCESS", text: "Profile updated.", icon: "success", confirmButtonColor: "#000" });
+        Swal.fire({ title: "Success", text: "Profile updated.", icon: "success", confirmButtonColor: "#000" });
       } else {
         const data = await res.json();
-        Swal.fire({ title: "NOTICE", text: data.error || "Update failed", icon: "error", confirmButtonColor: "#000" });
+        Swal.fire({ title: "Notice", text: data.error || "Update failed", icon: "error", confirmButtonColor: "#000" });
       }
     } catch (err) {
-      Swal.fire({ title: "ERROR", text: "Update failed", icon: "error", confirmButtonColor: "#000" });
+      Swal.fire({ title: "Error", text: "Update failed", icon: "error", confirmButtonColor: "#000" });
     }
   };
 
@@ -83,7 +83,7 @@ export default function AdminUsersPage() {
       showCancelButton: true,
       confirmButtonColor: "#000",
       cancelButtonColor: "#d33",
-      confirmButtonText: "DELETE"
+      confirmButtonText: "Delete"
     });
 
     if (!result.isConfirmed) return;
@@ -92,13 +92,13 @@ export default function AdminUsersPage() {
       const res = await fetch(`/api/admin/users?id=${id}`, { method: "DELETE" });
       if (res.ok) {
         fetchUsers();
-        Swal.fire({ title: "REMOVED", icon: "success", confirmButtonColor: "#000" });
+        Swal.fire({ title: "Removed", icon: "success", confirmButtonColor: "#000" });
       } else {
         const data = await res.json();
-        Swal.fire({ title: "NOTICE", text: data.message || "Delete failed", icon: "info", confirmButtonColor: "#000" });
+        Swal.fire({ title: "Notice", text: data.message || "Delete failed", icon: "info", confirmButtonColor: "#000" });
       }
     } catch (err) {
-      Swal.fire({ title: "ERROR", text: "Delete failed", icon: "error", confirmButtonColor: "#000" });
+      Swal.fire({ title: "Error", text: "Delete failed", icon: "error", confirmButtonColor: "#000" });
     }
   };
 
@@ -227,8 +227,8 @@ export default function AdminUsersPage() {
                 value={editForm.role}
                 onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
               >
-                <option value="USER">USER (STOREFRONT ACCESS)</option>
-                <option value="ADMIN">ADMIN (PORTAL ACCESS)</option>
+                <option value="USER">User (Storefront access)</option>
+                <option value="ADMIN">Admin (Portal access)</option>
               </select>
             </div>
             <button
@@ -249,7 +249,7 @@ export default function AdminUsersPage() {
         >
           Previous
         </button>
-        <span style={styles.pageInfo}>PAGE {page} OF {pagination.totalPages}</span>
+        <span style={styles.pageInfo}>Page {page} of {pagination.totalPages}</span>
         <button
           onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
           disabled={page === pagination.totalPages}
@@ -286,10 +286,9 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: "-0.01em",
   },
   subtitle: {
-    fontSize: "0.8rem",
+    fontSize: "0.85rem",
     color: "#888",
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
     fontWeight: 500,
   },
   actions: {
@@ -311,11 +310,10 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "16px",
     background: "#000",
     color: "#fff",
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.05em",
+    letterSpacing: "normal",
     marginBottom: "32px",
-    textTransform: "uppercase",
   },
   tableWrapper: {
     overflowX: "auto",
@@ -329,11 +327,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   th: {
     padding: "24px 16px",
-    fontSize: "0.65rem",
+    fontSize: "0.8rem",
     fontWeight: 800,
     color: "#999",
-    letterSpacing: "0.2em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
     borderBottom: "1px solid #f2f2f2",
   },
   tr: {
@@ -375,11 +372,10 @@ const styles: Record<string, React.CSSProperties> = {
     background: "none",
     border: "none",
     cursor: "pointer",
-    fontSize: "0.75rem",
+    fontSize: "0.8rem",
     fontWeight: 700,
     padding: 0,
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
+    letterSpacing: "normal",
   },
   date: {
     fontSize: "0.8rem",
@@ -390,10 +386,9 @@ const styles: Record<string, React.CSSProperties> = {
     border: "none",
     cursor: "pointer",
     color: "#ccc",
-    fontSize: "0.7rem",
+    fontSize: "0.8rem",
     fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    letterSpacing: "normal",
     transition: "color 0.2s",
   },
   loading: { textAlign: "center", padding: "80px", color: "#888", fontSize: "0.8rem" },
@@ -409,18 +404,17 @@ const styles: Record<string, React.CSSProperties> = {
     background: "none",
     border: "none",
     cursor: "pointer",
-    fontSize: "0.7rem",
+    fontSize: "0.8rem",
     fontWeight: 800,
     color: "#000",
-    textTransform: "uppercase",
-    letterSpacing: "0.15em",
+    letterSpacing: "normal",
     padding: "8px 0",
     borderBottom: "1px solid #000",
   },
   pageInfo: {
-    fontSize: "0.65rem",
-    fontWeight: 800,
-    letterSpacing: "0.2em",
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    letterSpacing: "normal",
     color: "#aaa",
   },
   iconBtn: {
@@ -483,13 +477,11 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "inherit",
     outline: "none",
     background: "transparent",
-    textTransform: "uppercase",
   },
   lbl: {
-    fontSize: "0.6rem",
-    fontWeight: 800,
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
+    fontSize: "0.8rem",
+    fontWeight: 700,
+    letterSpacing: "normal",
     marginBottom: "8px",
     display: "block",
   },
@@ -499,10 +491,9 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#fff",
     border: "none",
     padding: "20px 0",
-    fontSize: "0.75rem",
-    fontWeight: 700,
-    letterSpacing: "0.2em",
-    textTransform: "uppercase",
+    fontSize: "0.9rem",
+    fontWeight: 600,
+    letterSpacing: "normal",
     cursor: "pointer",
     marginTop: "16px",
     transition: "background 0.3s",

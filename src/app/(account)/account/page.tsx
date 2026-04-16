@@ -35,7 +35,7 @@ export default function AccountOverviewPage() {
             }}
           >
             <div style={{ fontSize: "1.2rem", color: "#888", marginBottom: 16 }}>{item.icon}</div>
-            <h3 style={{ fontSize: "0.85rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", margin: "0 0 8px" }}>{item.label}</h3>
+            <h3 style={{ fontSize: "0.95rem", fontWeight: 700, letterSpacing: "normal", margin: "0 0 8px" }}>{item.label}</h3>
             <p style={{ fontSize: "0.85rem", color: "#888", margin: 0, fontWeight: 300, lineHeight: 1.6 }}>{item.desc}</p>
           </Link>
         ))}
@@ -45,7 +45,7 @@ export default function AccountOverviewPage() {
       <div style={{ marginTop: 64, paddingTop: 32, borderTop: "1px solid #eee" }}>
          <button
             onClick={() => signOut({ callbackUrl: "/" })}
-            style={{ background: "#000", color: "#fff", border: "none", padding: "16px 32px", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}
+            style={{ background: "#000", color: "#fff", border: "none", padding: "16px 32px", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer" }}
           >
             Sign Out Permanently
           </button>

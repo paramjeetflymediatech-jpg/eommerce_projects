@@ -73,8 +73,8 @@ const s: Record<string, React.CSSProperties> = {
   actions: { display: "flex", flexDirection: "column", gap: 16 },
   btn: { 
     background: "#000", color: "#fff", textDecoration: "none", 
-    padding: "14px 32px", fontSize: "0.75rem", fontWeight: 700, 
-    textTransform: "uppercase", letterSpacing: "0.15em" 
+    padding: "14px 32px", fontSize: "0.85rem", fontWeight: 700, 
+    letterSpacing: "normal" 
   },
-  link: { fontSize: "0.7rem", color: "#888", textDecoration: "none", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }
+  link: { fontSize: "0.85rem", color: "#888", textDecoration: "none", fontWeight: 700, letterSpacing: "normal" }
 };

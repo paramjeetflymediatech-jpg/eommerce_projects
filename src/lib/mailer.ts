@@ -47,12 +47,12 @@ function baseEmailLayout(content: string, previewText: string = "") {
     .footer { padding: 40px; text-align: center; color: #9ca3af; font-size: 13px; letter-spacing: 0.02em; }
     
     .logo { height: 32px; width: auto; margin-bottom: 24px; }
-    .logo-text { font-size: 18px; font-weight: 800; letter-spacing: 0.2em; color: #000000; text-transform: uppercase; margin: 0; }
+    .logo-text { font-size: 18px; font-weight: 800; letter-spacing: normal; color: #000000; margin: 0; }
     
     h1 { color: #111827; font-size: 24px; font-weight: 700; margin: 0 0 16px; letter-spacing: -0.01em; line-height: 1.25; }
     p { margin: 0 0 24px; }
     
-    .btn { display: inline-block; padding: 14px 28px; background-color: #000000; color: #ffffff !important; border-radius: 6px; text-decoration: none !important; font-size: 14px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; transition: all 0.25s ease; }
+    .btn { display: inline-block; padding: 14px 28px; background-color: #000000; color: #ffffff !important; border-radius: 6px; text-decoration: none !important; font-size: 14px; font-weight: 600; letter-spacing: normal; transition: all 0.25s ease; }
     
     .otp-display { background-color: #f3f4f6; border-radius: 12px; padding: 32px; text-align: center; margin: 32px 0; border: 1px dashed #d1d5db; }
     .otp-code { font-size: 40px; font-weight: 800; letter-spacing: 12px; color: #000000; margin: 0; padding-left: 12px; }
@@ -72,7 +72,7 @@ function baseEmailLayout(content: string, previewText: string = "") {
     <table class="main" role="presentation">
       <tr>
         <td class="header">
-          <p class="logo-text">AION LUXURY</p>
+          <p class="logo-text">Aion Luxury</p>
         </td>
       </tr>
       <tr>
@@ -134,7 +134,7 @@ function orderConfirmationTemplate(order: any) {
     <p>Thank you for your order, <strong>${order.customerName}</strong>. We're getting it ready and will notify you as soon as it ships.</p>
     
     <div style="background-color: #f9fafb; border-radius: 8px; padding: 24px; margin: 32px 0; border: 1px solid #e5e7eb;">
-      <p style="margin-bottom: 12px; font-weight: 600; color: #111827; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em;">Order Summary</p>
+      <p style="margin-bottom: 12px; font-weight: 600; color: #111827; font-size: 14px; letter-spacing: normal;">Order Summary</p>
       <div style="font-size: 15px; color: #4b5563;">
         <p style="margin: 0;">Order Number: <strong>${order.orderNumber}</strong></p>
         <p style="margin: 4px 0 0;">Total Amount: <strong>${order.total}</strong></p>
@@ -165,8 +165,8 @@ function orderStatusUpdateTemplate(order: any) {
     <p>Hello <strong>${order.customerName}</strong>, the status of your order <strong>#${order.orderNumber}</strong> has been updated to:</p>
     
     <div style="text-align: center; margin: 32px 0;">
-      <span style="display: inline-block; padding: 8px 24px; background-color: ${color}10; color: ${color}; border: 1px solid ${color}; border-radius: 100px; font-weight: 700; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase;">
-        ${order.status}
+      <span style="display: inline-block; padding: 8px 24px; background-color: ${color}10; color: ${color}; border: 1px solid ${color}; border-radius: 100px; font-weight: 700; font-size: 14px; letter-spacing: normal;">
+        \${order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase()}
       </span>
       <h2 style="font-size: 20px; font-weight: 700; margin: 0;">MRP: ₹${order.total.toLocaleString()}</h2>
     </div>
@@ -177,7 +177,7 @@ function orderStatusUpdateTemplate(order: any) {
 
     ${order.trackingId ? `
     <div style="background-color: #f9fafb; border-radius: 12px; padding: 32px; border: 1px solid #eeeeee; margin: 32px 0;">
-      <p style="margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; font-weight: 700;">Tracking Information</p>
+      <p style="margin: 0; font-size: 13px; letter-spacing: normal; color: #9ca3af; font-weight: 700;">Tracking Information</p>
       <p style="margin: 16px 0 8px; font-size: 18px; color: #111827; font-weight: 600;">${order.carrier || 'Standard Shipping'}</p>
       <p style="margin: 0; font-family: monospace; font-size: 16px; color: #000000; background: #ffffff; padding: 12px; border-radius: 6px; border: 1px solid #e5e7eb;">${order.trackingId}</p>
     </div>

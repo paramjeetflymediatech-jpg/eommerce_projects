@@ -54,11 +54,11 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         {/* Header */}
         <header style={styles.header}>
           <div style={styles.brand}>
-            <h1 style={styles.logo}>{appName.toUpperCase()}</h1>
+            <h1 style={styles.logo}>{appName}</h1>
             <p style={styles.tagline}>Premium Online Showroom</p>
           </div>
           <div style={styles.meta}>
-            <h2 style={styles.invoiceTitle}>INVOICE</h2>
+            <h2 style={styles.invoiceTitle}>Invoice</h2>
             <div style={styles.metaRow}>
               <span>Order Reference:</span>
               <strong>#{order.id.toString().padStart(6, "0")}</strong>
@@ -75,7 +75,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         {/* Addresses */}
         <section style={styles.addressGrid}>
           <div style={styles.addressCol}>
-            <h3 style={styles.sectionLabel}>FROM</h3>
+            <h3 style={styles.sectionLabel}>From</h3>
             <p style={styles.addressText}>
               <strong>{appName}</strong><br />
               123 Premium Avenue<br />
@@ -84,7 +84,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             </p>
           </div>
           <div style={styles.addressCol}>
-            <h3 style={styles.sectionLabel}>BILL TO</h3>
+            <h3 style={styles.sectionLabel}>Bill To</h3>
             <p style={styles.addressText}>
               <strong>{order.shippingAddress.name}</strong><br />
               {order.shippingAddress.street}<br />
@@ -99,10 +99,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         <table style={styles.table}>
           <thead>
             <tr style={styles.thRow}>
-              <th style={styles.th}>ITEM DESCRIPTION</th>
-              <th style={styles.thCenter}>QTY</th>
-              <th style={styles.thRight}>UNIT PRICE</th>
-              <th style={styles.thRight}>SUBTOTAL</th>
+              <th style={styles.th}>Item Description</th>
+              <th style={styles.thCenter}>Qty</th>
+              <th style={styles.thRight}>Unit Price</th>
+              <th style={styles.thRight}>Subtotal</th>
             </tr>
           </thead>
           <tbody>
@@ -170,9 +170,9 @@ const styles: Record<string, any> = {
     color: "#fff",
     border: "none",
     padding: "12px 24px",
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.1em",
+    letterSpacing: "normal",
     cursor: "pointer",
     borderRadius: "4px",
   },
@@ -193,20 +193,20 @@ const styles: Record<string, any> = {
   logo: {
     fontSize: "1.8rem",
     fontWeight: 800,
-    letterSpacing: "0.2em",
+    letterSpacing: "normal",
     margin: 0,
   },
   tagline: {
     fontSize: "0.65rem",
     color: "#888",
-    letterSpacing: "0.2em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
+    textTransform: "none",
     marginTop: "4px",
   },
   invoiceTitle: {
     fontSize: "2.4rem",
     fontWeight: 400,
-    letterSpacing: "0.2em",
+    letterSpacing: "normal",
     margin: "0 0 16px",
     textAlign: "right",
   },
@@ -223,13 +223,13 @@ const styles: Record<string, any> = {
   dividerLight: { height: "1px", background: "#eee", margin: "16px 0" },
   addressGrid: { display: "flex", gap: "64px", marginBottom: "64px" },
   addressCol: { flex: 1 },
-  sectionLabel: { fontSize: "0.65rem", fontWeight: 800, color: "#aaa", letterSpacing: "0.1em", marginBottom: "12px" },
+  sectionLabel: { fontSize: "0.85rem", fontWeight: 700, color: "#aaa", letterSpacing: "normal", marginBottom: "12px" },
   addressText: { fontSize: "0.9rem", color: "#333", lineHeight: 1.6, margin: 0 },
   table: { width: "100%", borderCollapse: "collapse", marginBottom: "64px" },
   thRow: { borderBottom: "1px solid #eee" },
-  th: { textAlign: "left", padding: "16px 0", fontSize: "0.65rem", color: "#aaa", letterSpacing: "0.1em" },
-  thCenter: { textAlign: "center", padding: "16px 0", fontSize: "0.65rem", color: "#aaa", letterSpacing: "0.1em" },
-  thRight: { textAlign: "right", padding: "16px 0", fontSize: "0.65rem", color: "#aaa", letterSpacing: "0.1em" },
+  th: { textAlign: "left", padding: "16px 0", fontSize: "0.85rem", color: "#aaa", letterSpacing: "normal" },
+  thCenter: { textAlign: "center", padding: "16px 0", fontSize: "0.85rem", color: "#aaa", letterSpacing: "normal" },
+  thRight: { textAlign: "right", padding: "16px 0", fontSize: "0.85rem", color: "#aaa", letterSpacing: "normal" },
   tr: { borderBottom: "1px solid #f9f9f9" },
   td: { padding: "20px 0", fontSize: "0.9rem", fontWeight: 600 },
   tdCenter: { padding: "20px 0", fontSize: "0.9rem", textAlign: "center" },

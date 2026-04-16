@@ -52,7 +52,7 @@ function CheckoutSuccessContent() {
           </svg>
         </div>
 
-        <p style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#888", marginBottom: "16px" }}>
+        <p style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", color: "#888", marginBottom: "16px" }}>
           Order Confirmed
         </p>
         <h1 style={{
@@ -81,13 +81,13 @@ function CheckoutSuccessContent() {
             border: "1px solid #f0f0f0",
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
-              <span style={{ fontSize: "0.75rem", color: "#888", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>Order ID</span>
+              <span style={{ fontSize: "0.85rem", color: "#888", fontWeight: 700, letterSpacing: "normal" }}>Order ID</span>
               <span style={{ fontSize: "0.8rem", fontWeight: 700, fontFamily: "monospace" }}>
                 {sessionId?.slice(-12).toUpperCase()}
               </span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: "0.75rem", color: "#888", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>Confirmation sent to</span>
+              <span style={{ fontSize: "0.85rem", color: "#888", fontWeight: 700, letterSpacing: "normal" }}>Confirmation sent to</span>
               <span style={{ fontSize: "0.8rem", fontWeight: 600 }}>{orderData.email}</span>
             </div>
           </div>
@@ -108,10 +108,10 @@ function CheckoutSuccessContent() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           <Link href="/products" className="btn btn-primary" style={{ width: "100%", padding: "16px" }}>
-            CONTINUE SHOPPING
+            Continue Shopping
           </Link>
           <Link href="/" className="btn btn-secondary" style={{ width: "100%", padding: "16px" }}>
-            BACK TO HOME
+            Back Home
           </Link>
         </div>
 

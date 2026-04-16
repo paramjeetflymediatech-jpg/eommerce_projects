@@ -630,13 +630,13 @@ export default function AdminProductsPage() {
 const s: Record<string, React.CSSProperties> = {
   mainContainer: { display: "flex", flexDirection: "column" },
   actionHeader: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 32, gap: 16, flexWrap: "wrap" },
-  addBtn: { background: "#000", color: "#fff", border: "none", padding: "10px 20px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer", textTransform: "uppercase", letterSpacing: "0.05em" },
+  addBtn: { background: "#000", color: "#fff", border: "none", padding: "10px 20px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer", letterSpacing: "normal" },
   alert: { padding: "12px 16px", marginBottom: 20, fontSize: "0.875rem" },
   center: { textAlign: "center", padding: 60, color: "#888" },
   empty: { textAlign: "center", padding: 80 },
   tableWrap: { overflowX: "auto", background: "#fff", border: "1px solid #eee", boxShadow: "0 1px 3px rgba(0,0,0,0.02)" },
   table: { width: "100%", borderCollapse: "collapse", minWidth: 700 },
-  th: { padding: "12px 16px", textAlign: "left", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#888", borderBottom: "1px solid #eee", background: "#f9f9f7", whiteSpace: "nowrap" },
+  th: { padding: "12px 16px", textAlign: "left", fontSize: "0.8rem", fontWeight: 700, letterSpacing: "normal", color: "#888", borderBottom: "1px solid #eee", background: "#f9f9f7", whiteSpace: "nowrap" },
   tr: { borderBottom: "1px solid #f0f0f0" },
   td: { padding: "12px 16px", fontSize: "0.875rem", verticalAlign: "middle" },
   productName: { fontWeight: 600, color: "#000" },
@@ -654,11 +654,11 @@ const s: Record<string, React.CSSProperties> = {
   closeBtn: { background: "none", border: "none", fontSize: "1.1rem", cursor: "pointer", color: "#888" },
   grid2: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px,100%), 1fr))", gap: 16, marginBottom: 16 },
   formField: { display: "flex", flexDirection: "column", gap: 4, marginBottom: 4 },
-  lbl: { fontSize: "0.68rem", fontWeight: 700, color: "#666", letterSpacing: "0.05em", textTransform: "uppercase" },
+  lbl: { fontSize: "0.75rem", fontWeight: 700, color: "#666", letterSpacing: "normal" },
   inp: { padding: "9px 11px", border: "1px solid #e0e0e0", outline: "none", fontSize: "0.88rem", color: "#000", background: "#fff", width: "100%", boxSizing: "border-box" },
   cancelBtn: { background: "#fff", color: "#000", border: "1px solid #ddd", padding: "10px 20px", fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" },
   saveBtn: { background: "#000", color: "#fff", border: "none", padding: "10px 24px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer" },
-  sectionTitle: { fontSize: "0.72rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "#555", marginBottom: 14, paddingBottom: 8, borderBottom: "1px solid #f0f0f0" },
+  sectionTitle: { fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", color: "#555", marginBottom: 14, paddingBottom: 8, borderBottom: "1px solid #f0f0f0" },
 
   // Product Images Grid
   imageGrid: { display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginTop: 8 },
@@ -685,6 +685,6 @@ const s: Record<string, React.CSSProperties> = {
   sizeTable: { border: "1px solid #f0f0f0", overflowX: "auto" },
   sizeTableHeader: { display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1.5fr 32px", gap: 0, background: "#f9f9f7", borderBottom: "1px solid #eee" },
   sizeTableRow: { display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1.5fr 32px", gap: 0, borderBottom: "1px solid #f5f5f5", alignItems: "center" },
-  sizeTh: { padding: "7px 10px", fontSize: "0.6rem", fontWeight: 700, color: "#999", textTransform: "uppercase", letterSpacing: "0.05em" },
+  sizeTh: { padding: "7px 10px", fontSize: "0.7rem", fontWeight: 700, color: "#999", letterSpacing: "normal" },
   sizeInput: { border: "none", borderRight: "1px solid #f0f0f0", borderRadius: 0, fontSize: "0.82rem", padding: "8px 10px" },
 };

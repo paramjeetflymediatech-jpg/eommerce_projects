@@ -52,7 +52,7 @@ function LoginForm() {
         {/* Logo */}
         <div style={styles.logoWrap}>
           <div style={styles.logo}>S</div>
-          <span style={styles.logoText}>AION LUXURY</span>
+          <span style={styles.logoText}>Aion Luxury</span>
         </div>
 
         <h1 style={styles.heading}>Welcome back</h1>
@@ -63,7 +63,7 @@ function LoginForm() {
             <div style={styles.toastInner}>
               <span style={{ fontSize: "1.2rem" }}>⚠</span>
               <div style={{ flex: 1 }}>
-                <p style={{ fontWeight: 700, margin: 0, fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Credential Error</p>
+                <p style={{ fontWeight: 700, margin: 0, fontSize: "0.85rem", letterSpacing: "normal" }}>Credential Error</p>
                 <p style={{ margin: 0, opacity: 0.9, lineHeight: 1.4 }}>{error}</p>
                 {error.includes("not verified") && (
                   <div style={{ marginTop: 8 }}>
@@ -198,9 +198,9 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: 1,
   },
   logoText: {
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.25em",
+    letterSpacing: "normal",
     color: "#000",
   },
   heading: {
@@ -238,11 +238,10 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 6,
   },
   label: {
-    fontSize: "0.75rem",
-    fontWeight: 600,
+    fontSize: "0.85rem",
+    fontWeight: 700,
     color: "#444",
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
   },
   input: {
     width: "100%",
@@ -283,10 +282,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#000",
     color: "#fff",
     border: "none",
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
     cursor: "pointer",
     transition: "background 0.3s",
     marginTop: 4,
@@ -318,10 +316,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#eee",
   },
   dividerText: {
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     color: "#aaa",
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    letterSpacing: "normal",
   },
   footer: {
     textAlign: "center",

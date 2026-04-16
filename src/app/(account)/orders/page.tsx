@@ -79,12 +79,12 @@ export default async function OrdersPage() {
                      color: STATUS_STYLING[order.status]?.color, 
                      background: STATUS_STYLING[order.status]?.background 
                    }}>
-                     {order.status}
+                     {order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase()}
                    </span>
                 </div>
                 <div style={s.actions}>
                    <Link href={`/orders/${order.id}/invoice`} target="_blank" style={s.invoiceLink}>
-                     VIEW INVOICE
+                     View Invoice
                    </Link>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export default async function OrdersPage() {
                 {order.items?.map((item: any) => (
                   <div key={item.id} style={s.itemRow}>
                     <p style={s.itemName}>{item.product?.name}</p>
-                    <p style={s.itemQty}>QTY: {item.quantity}</p>
+                    <p style={s.itemQty}>Qty: {item.quantity}</p>
                     <p style={s.itemPrice}>{formatPrice(item.price)}</p>
                   </div>
                 ))}
@@ -126,8 +126,7 @@ const s: Record<string, any> = {
   subtitle: {
     fontSize: "0.85rem",
     color: "#888",
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
     fontWeight: 600,
   },
   emptyState: {
@@ -146,8 +145,7 @@ const s: Record<string, any> = {
     textDecoration: "none",
     fontSize: "0.75rem",
     fontWeight: 700,
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
   },
   orderList: { display: "flex", flexDirection: "column", gap: "24px" },
   orderCard: {
@@ -170,8 +168,7 @@ const s: Record<string, any> = {
     fontSize: "0.65rem", 
     fontWeight: 800, 
     color: "#aaa", 
-    textTransform: "uppercase", 
-    letterSpacing: "0.1em",
+    letterSpacing: "normal",
     marginBottom: "4px"
   },
   metaValue: { fontSize: "0.85rem", color: "#000", fontWeight: 500, margin: 0 },
@@ -181,7 +178,6 @@ const s: Record<string, any> = {
     letterSpacing: "0.05em",
     padding: "4px 12px",
     borderRadius: "100px",
-    textTransform: "uppercase",
   },
   actions: { textAlign: "right" },
   invoiceLink: {
@@ -191,7 +187,7 @@ const s: Record<string, any> = {
     textDecoration: "none",
     borderBottom: "1px solid #000",
     paddingBottom: "2px",
-    letterSpacing: "0.05em",
+    letterSpacing: "normal",
   },
   orderItems: { padding: "24px 32px" },
   itemRow: {

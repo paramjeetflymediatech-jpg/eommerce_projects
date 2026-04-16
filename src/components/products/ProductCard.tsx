@@ -10,7 +10,9 @@ import { useWishlistStore } from "@/store/wishlistStore";
 import { formatPrice } from "@/lib/utils";
 
 interface Product {
-  id: number;
+  id: string | number;
+  originalId?: number;
+  variantId?: number;
   name: string;
   slug: string;
   price: number;
@@ -19,13 +21,15 @@ interface Product {
   rating: number;
   reviewCount: number;
   stock: number;
+  color?: string;
   isFeatured?: boolean;
   category?: { name: string; slug: string };
 }
 
 export default function ProductCard({ product }: { product: Product }) {
   const toggleItem = useWishlistStore((s) => s.toggleItem);
-  const isWishlisted = useWishlistStore((s) => s.isWishlisted(product.id));
+  const productId = product.originalId || Number(product.id);
+  const isWishlisted = useWishlistStore((s) => s.isWishlisted(productId));
   const [mounted, setMounted] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
@@ -41,7 +45,7 @@ export default function ProductCard({ product }: { product: Product }) {
       return;
     }
     toggleItem({
-      id: product.id,
+      id: productId,
       name: product.name,
       price: product.price,
       images: product.images,
@@ -50,9 +54,10 @@ export default function ProductCard({ product }: { product: Product }) {
   };
 
   const imageUrl = product.images?.[0] || "/placeholder-product.jpg";
+  const productUrl = `/products/${product.slug}${product.variantId ? `?variant=${product.variantId}` : ""}`;
 
   return (
-    <Link href={`/products/${product.slug}`} style={styles.card}>
+    <Link href={productUrl} style={styles.card}>
       {/* Image Container */}
       <div style={styles.imageWrapper} className="hover-parent">
         <FallbackImage
@@ -144,7 +149,7 @@ const styles: Record<string, React.CSSProperties> = {
     aspectRatio: "11/14",
     background: "#f9f9f9",
     overflow: "hidden",
-    marginBottom: "24px",
+    marginBottom: "16px",
   },
   image: {
     objectFit: "cover",
@@ -160,10 +165,9 @@ const styles: Record<string, React.CSSProperties> = {
     transition: "opacity 0.4s ease",
   },
   viewText: {
-    fontSize: "0.6rem",
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.2em",
+    fontSize: "0.8rem",
+    fontWeight: 500,
+    letterSpacing: "normal",
     color: "#000",
     background: "#fff",
     padding: "12px 24px",
@@ -189,10 +193,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#000",
     color: "#fff",
     padding: "6px 12px",
-    fontSize: "0.55rem",
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.2em",
+    fontSize: "0.65rem",
+    fontWeight: 600,
+    letterSpacing: "normal",
   },
   content: {
     padding: "0 4px",
@@ -202,19 +205,17 @@ const styles: Record<string, React.CSSProperties> = {
     height: "12px",
   },
   category: {
-    fontSize: "0.6rem",
-    color: "#ccc",
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.15em",
+    fontSize: "0.65rem",
+    color: "#888",
+    fontWeight: 500,
+    letterSpacing: "normal",
   },
   name: {
     fontSize: "0.95rem",
     fontWeight: 500,
-    letterSpacing: "0.02em",
-    lineHeight: 1.4,
-    marginBottom: "10px",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
+    lineHeight: 1.3,
+    marginBottom: "8px",
   },
   priceRow: {
     display: "flex",
@@ -222,9 +223,9 @@ const styles: Record<string, React.CSSProperties> = {
     gap: "12px",
   },
   price: {
-    fontSize: "0.9rem",
-    fontWeight: 800,
-    letterSpacing: "0.05em",
+    fontSize: "0.85rem",
+    fontWeight: 700,
+    letterSpacing: "normal",
   },
   comparePrice: {
     fontSize: "0.8rem",

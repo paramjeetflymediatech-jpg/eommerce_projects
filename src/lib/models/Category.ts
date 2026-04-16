@@ -7,13 +7,14 @@ export interface CategoryAttributes {
   slug: string;
   description?: string;
   image?: string;
+  banner?: string;
   parentId?: number | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 interface CategoryCreationAttributes
-  extends Optional<CategoryAttributes, "id" | "description" | "image" | "parentId"> {}
+  extends Optional<CategoryAttributes, "id" | "description" | "image" | "banner" | "parentId"> {}
 
 class Category
   extends Model<CategoryAttributes, CategoryCreationAttributes>
@@ -24,6 +25,7 @@ class Category
   declare slug: string;
   declare description: string;
   declare image: string;
+  declare banner: string;
   declare parentId: number | null;
   declare createdAt: Date;
   declare updatedAt: Date;
@@ -36,6 +38,7 @@ Category.init(
     slug: { type: DataTypes.STRING(120), allowNull: false, unique: "categories_slug_unique" },
     description: { type: DataTypes.TEXT, allowNull: true },
     image: { type: DataTypes.STRING(500), allowNull: true },
+    banner: { type: DataTypes.STRING(500), allowNull: true },
     parentId: {
       type: DataTypes.INTEGER,
       allowNull: true,

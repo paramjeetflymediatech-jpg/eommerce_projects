@@ -4,12 +4,12 @@
 }
 
 .hero {
-  min-height: 50vh;
+  min-height: 40vh;
   background: var(--bg-muted);
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--border-subtle);
-  padding: 80px 0;
+  padding: 60px 0;
 }
 
 .heroContainer {
@@ -26,37 +26,37 @@
 }
 
 .heroSubtitle {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
   font-weight: 700;
-  letter-spacing: 0.4em;
+  letter-spacing: normal;
   margin-top: 32px;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .section {
-  padding: clamp(60px, 12vw, 160px) 0;
+  padding: clamp(48px, 8vw, 100px) 0;
 }
 
 .grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  gap: 100px;
+  gap: 64px;
   align-items: center;
 }
 
 .textSide {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
 }
 
 .overline {
-  font-size: 0.7rem;
+  font-size: 0.85rem;
   color: var(--text-muted);
   font-weight: 700;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
+  letter-spacing: normal;
+  text-transform: none;
   display: block;
   margin-bottom: 8px;
 }
@@ -95,7 +95,7 @@
 }
 
 .valuesHeader {
-  margin-bottom: 100px;
+  margin-bottom: 64px;
   text-align: center;
 }
 
@@ -118,9 +118,9 @@
 }
 
 .valueTitle {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: normal;
   margin-bottom: 24px;
   color: #fff;
 }
@@ -133,7 +133,7 @@
 }
 
 .ctaSection {
-  padding: 160px 0;
+  padding: 100px 0;
   background: var(--bg-muted);
   text-align: center;
 }
@@ -153,9 +153,9 @@
   color: #fff;
   text-decoration: none;
   font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: normal;
+  text-transform: none;
   transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
 }
 

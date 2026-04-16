@@ -183,10 +183,10 @@ export default function AddToCartSection({
               ? (displayStock < 5 ? "#F59E0B" : "#10B981")
               : "#EF4444",
           }} />
-          <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#666" }}>
+          <span style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", color: "#666" }}>
             {displayStock > 0
-              ? (displayStock < 5 ? `Low Stock — Only ${displayStock} left` : "In Stock — Ready to Ship")
-              : "Sold Out"}
+              ? (displayStock < 5 ? `Low Stock — Only ${displayStock} left` : "In Stock — Ready to ship")
+              : "Sold out"}
           </span>
         </div>
       </div>

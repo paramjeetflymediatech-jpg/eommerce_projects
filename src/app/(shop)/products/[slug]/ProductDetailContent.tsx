@@ -2,7 +2,6 @@
 import { useState, useMemo } from "react";
 import ProductGallery from "./ProductGallery";
 import AddToCartSection from "./AddToCartSection";
-import ReviewsSection from "@/components/reviews/ReviewsSection";
 import { getColorFromName } from "@/lib/colors";
 import s from "./product-detail.module.css";
 
@@ -121,10 +120,9 @@ export default function ProductDetailContent({ product }: { product: Product }) 
                         : "1px solid #ddd",
                       background: "#fff",
                       cursor: "pointer",
-                      fontSize: "0.75rem",
+                      fontSize: "0.85rem",
                       fontWeight: 600,
-                      letterSpacing: "0.04em",
-                      textTransform: "uppercase",
+                      letterSpacing: "normal",
                       transition: "border 0.15s",
                     }}
                   >
@@ -175,10 +173,6 @@ export default function ProductDetailContent({ product }: { product: Product }) 
             </details>
           </div>
         </div>
-      </div>
-      {/* Bottom: Reviews */}
-      <div style={{ gridColumn: "1 / -1", marginTop: 64 }}>
-        <ReviewsSection productId={product.id} />
       </div>
     </div>
   );

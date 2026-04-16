@@ -52,18 +52,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div style={{ textAlign: "center", animation: "pulse 2s infinite ease-in-out" }}>
           <h2 style={{
             fontFamily: "var(--font-serif)",
-            fontSize: "1.8rem",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
+            fontSize: "2rem",
+            letterSpacing: "normal",
             marginBottom: "8px",
             fontWeight: 400
           }}>
             Aion Luxury
           </h2>
           <p style={{
-            fontSize: "0.6rem",
-            letterSpacing: "0.4em",
-            textTransform: "uppercase",
+            fontSize: "0.85rem",
+            letterSpacing: "normal",
             opacity: 0.6,
             marginLeft: "0.4em"
           }}>
@@ -378,10 +376,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           gap: 8px;
         }
         .admin-card-label {
-          font-size: 0.65rem !important;
+          font-size: 0.8rem !important;
           font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
+          letter-spacing: normal;
           color: #888;
         }
         .admin-card-value {

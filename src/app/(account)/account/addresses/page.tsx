@@ -123,12 +123,12 @@ export default function AddressesPage() {
       {/* Header */}
       <div style={{ marginBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
         <div>
-          <h2 style={{ fontSize: "1.2rem", fontWeight: 700, margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.1em" }}>Saved Addresses</h2>
+          <h2 style={{ fontSize: "1.4rem", fontWeight: 700, margin: "0 0 4px", letterSpacing: "normal" }}>Saved Addresses</h2>
           <p style={{ fontSize: "0.85rem", color: "#888", margin: 0 }}>{addresses.length} address{addresses.length !== 1 ? "es" : ""} found</p>
         </div>
         <button
           onClick={openAdd}
-          style={{ background: "#000", color: "#fff", border: "none", padding: "12px 24px", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer" }}
+          style={{ background: "#000", color: "#fff", border: "none", padding: "12px 24px", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer" }}
         >
           + Add New
         </button>
@@ -152,7 +152,7 @@ export default function AddressesPage() {
       {showForm && (
         <div style={{ paddingBottom: 40, borderBottom: "1px solid #eee", marginBottom: 40 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-            <h3 style={{ fontSize: "0.9rem", fontWeight: 700, margin: 0, textTransform: "uppercase" }}>{editId ? "Edit Address" : "New Address"}</h3>
+            <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>{editId ? "Edit Address" : "New Address"}</h3>
             <button onClick={() => setShowForm(false)} style={{ background: "none", border: "none", fontSize: "1rem", cursor: "pointer", color: "#888" }}>✕</button>
           </div>
 
@@ -187,11 +187,11 @@ export default function AddressesPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              style={{ background: "#000", color: "#fff", border: "none", padding: "12px 28px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer", textTransform: "uppercase" }}
+              style={{ background: "#000", color: "#fff", border: "none", padding: "12px 28px", fontSize: "0.85rem", fontWeight: 700, cursor: "pointer", letterSpacing: "normal" }}
             >
               {saving ? "Saving..." : "Save Address"}
             </button>
-            <button onClick={() => setShowForm(false)} style={{ background: "none", border: "1px solid #ddd", padding: "12px 24px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer", textTransform: "uppercase" }}>
+            <button onClick={() => setShowForm(false)} style={{ background: "none", border: "1px solid #ddd", padding: "12px 24px", fontSize: "0.85rem", fontWeight: 700, cursor: "pointer", letterSpacing: "normal" }}>
               Cancel
             </button>
           </div>
@@ -204,7 +204,7 @@ export default function AddressesPage() {
       ) : addresses.length === 0 ? (
         <div style={{ textAlign: "center", padding: "40px 0", border: "1px dashed #eee" }}>
           <p style={{ fontSize: "0.9rem", color: "#888", marginBottom: 20 }}>No addresses found.</p>
-          <button onClick={openAdd} style={{ background: "#000", color: "#fff", border: "none", padding: "12px 24px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer", textTransform: "uppercase" }}>Add First Address</button>
+          <button onClick={openAdd} style={{ background: "#000", color: "#fff", border: "none", padding: "12px 24px", fontSize: "0.85rem", fontWeight: 700, cursor: "pointer", letterSpacing: "normal" }}>Add First Address</button>
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
@@ -216,7 +216,7 @@ export default function AddressesPage() {
               background: "#fff",
             }}>
               {addr.isDefault && (
-                <span style={{ position: "absolute", top: 12, right: 12, background: "#000", color: "#fff", fontSize: "0.6rem", fontWeight: 800, padding: "2px 6px", letterSpacing: "0.05em" }}>DEFAULT</span>
+                <span style={{ position: "absolute", top: 12, right: 12, background: "#000", color: "#fff", fontSize: "0.7rem", fontWeight: 700, padding: "2px 8px", letterSpacing: "normal" }}>Default</span>
               )}
               <h4 style={{ margin: "0 0 12px", fontSize: "0.95rem", fontWeight: 700 }}>{addr.name}</h4>
               <p style={{ margin: "0 0 4px", fontSize: "0.85rem", color: "#555" }}>{addr.street}</p>
@@ -239,7 +239,7 @@ export default function AddressesPage() {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  label: { display: "block", fontSize: "0.65rem", fontWeight: 800, color: "#888", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 },
+  label: { display: "block", fontSize: "0.85rem", fontWeight: 700, color: "#888", letterSpacing: "normal", marginBottom: 8 },
   input: { width: "100%", padding: "12px 0", border: "none", borderBottom: "1px solid #eee", fontSize: "0.9rem", outline: "none", marginBottom: 12 },
-  actionLink: { background: "none", border: "none", padding: 0, fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", cursor: "pointer", color: "#000" },
+  actionLink: { background: "none", border: "none", padding: 0, fontSize: "0.8rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer", color: "#000" },
 };

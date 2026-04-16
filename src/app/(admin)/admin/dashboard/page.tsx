@@ -90,12 +90,11 @@ export default async function AdminDashboard() {
         <h3 style={{ 
           fontSize: "1rem", 
           fontWeight: 600, 
-          textTransform: "uppercase", 
-          letterSpacing: "0.1em",
+          letterSpacing: "normal",
           color: "#888",
           marginBottom: 24
         }}>
-          Quick Management
+          Quick management
         </h3>
       </div>
 
@@ -173,11 +172,10 @@ const s: Record<string, React.CSSProperties> = {
   },
   statContent: { display: "flex", flexDirection: "column", gap: 4 },
   statLabel: { 
-    fontSize: "0.75rem", 
+    fontSize: "0.85rem", 
     color: "#999", 
-    fontWeight: 600, 
-    textTransform: "uppercase", 
-    letterSpacing: "0.1em", 
+    fontWeight: 500, 
+    letterSpacing: "normal", 
     margin: 0 
   },
   statValue: { 
@@ -205,10 +203,9 @@ const s: Record<string, React.CSSProperties> = {
     marginBottom: 8
   },
   toolBadge: {
-    fontSize: "0.65rem",
-    fontWeight: 700,
-    textTransform: "uppercase",
-    letterSpacing: "0.15em",
+    fontSize: "0.8rem",
+    fontWeight: 600,
+    letterSpacing: "normal",
     color: "#ccc",
   },
   toolTitle: { 

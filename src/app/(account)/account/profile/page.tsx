@@ -94,10 +94,10 @@ const s: Record<string, React.CSSProperties> = {
   form: { maxWidth: 600 },
   grid: { display: "flex", flexDirection: "column", gap: 32, marginBottom: 48 },
   field: { display: "flex", flexDirection: "column", gap: 10 },
-  lbl: { fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#000" },
+  lbl: { fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", color: "#000" },
   inp: { width: "100%", padding: "14px 18px", border: "1px solid #ddd", fontSize: "0.9rem", outline: "none", color: "#000", background: "#fff" },
   avatarWrap: { display: "flex", alignItems: "center", gap: 24 },
   avatarPreview: { width: 64, height: 64, background: "#000", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem", fontWeight: 600 },
-  uploadBtn: { background: "none", border: "1px solid #ddd", padding: "8px 16px", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", cursor: "pointer" },
-  saveBtn: { padding: "16px 48px", background: "#000", color: "#fff", border: "none", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", cursor: "pointer" }
+  uploadBtn: { background: "none", border: "1px solid #ddd", padding: "8px 16px", fontSize: "0.8rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer" },
+  saveBtn: { padding: "16px 48px", background: "#000", color: "#fff", border: "none", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer" }
 };

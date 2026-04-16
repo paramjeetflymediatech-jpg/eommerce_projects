@@ -131,12 +131,12 @@ export default function AdminOrdersPage() {
             onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} 
             style={styles.select}
           >
-            <option value="ALL">ALL STATUSES</option>
-            <option value="PENDING">PENDING</option>
-            <option value="PROCESSING">PROCESSING</option>
-            <option value="SHIPPED">SHIPPED</option>
-            <option value="DELIVERED">DELIVERED</option>
-            <option value="CANCELLED">CANCELLED</option>
+            <option value="ALL">All Statuses</option>
+            <option value="PENDING">Pending</option>
+            <option value="PROCESSING">Processing</option>
+            <option value="SHIPPED">Shipped</option>
+            <option value="DELIVERED">Delivered</option>
+            <option value="CANCELLED">Cancelled</option>
           </select>
         </div>
       </header>
@@ -173,7 +173,7 @@ export default function AdminOrdersPage() {
                   </td>
                   <td style={styles.td}>
                     <div style={styles.itemsText}>
-                      {order.items?.length || 0} ITEMS
+                      {order.items?.length || 0} Items
                     </div>
                   </td>
                   <td style={styles.td}>
@@ -197,11 +197,11 @@ export default function AdminOrdersPage() {
                         onChange={(e) => updateStatus(order.id, e.target.value)}
                         style={styles.statusSelect}
                       >
-                        <option value="PENDING">PENDING</option>
-                        <option value="PROCESSING">PROCESSING</option>
-                        <option value="SHIPPED">SHIPPED</option>
-                        <option value="DELIVERED">DELIVERED</option>
-                        <option value="CANCELLED">CANCELLED</option>
+                        <option value="PENDING">Pending</option>
+                        <option value="PROCESSING">Processing</option>
+                        <option value="SHIPPED">Shipped</option>
+                        <option value="DELIVERED">Delivered</option>
+                        <option value="CANCELLED">Cancelled</option>
                       </select>
                       <button onClick={() => setViewingOrder(order)} style={{ ...styles.trackBtn, color: "#666" }} title="View Details">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -250,7 +250,7 @@ export default function AdminOrdersPage() {
                 onChange={(e) => updateStatus(order.id, e.target.value)}
                 style={{ border: "1px solid #eee", padding: "6px 10px", fontSize: "0.75rem", background: "#fff", outline: "none", flex: 1 }}
               >
-                {["PENDING","PROCESSING","SHIPPED","DELIVERED","CANCELLED"].map(s => <option key={s} value={s}>{s}</option>)}
+                {["PENDING","PROCESSING","SHIPPED","DELIVERED","CANCELLED"].map(s => <option key={s} value={s}>{s.charAt(0) + s.slice(1).toLowerCase()}</option>)}
               </select>
               <button onClick={() => setViewingOrder(order)} style={{ ...styles.trackBtn, color: "#666" }} title="View Details">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -276,7 +276,7 @@ export default function AdminOrdersPage() {
         >
           Previous
         </button>
-        <span style={styles.pageInfo}>PAGE {page} OF {pagination.totalPages}</span>
+        <span style={styles.pageInfo}>Page {page} of {pagination.totalPages}</span>
         <button 
           onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))} 
           disabled={page === pagination.totalPages}
@@ -297,21 +297,21 @@ export default function AdminOrdersPage() {
             
             <div style={styles.splitRow}>
               <div style={{ flex: 1, padding: "16px", background: "#f8f8f8", borderRadius: "8px" }}>
-                <h4 style={{ margin: "0 0 8px", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#888" }}>Customer Details</h4>
+                <h4 style={{ margin: "0 0 8px", fontSize: "0.85rem", letterSpacing: "normal", color: "#888" }}>Customer Details</h4>
                 <p style={{ margin: "0 0 4px", fontWeight: 800 }}>{viewingOrder.user?.name || "Guest"}</p>
                 <p style={{ margin: "0 0 4px", fontSize: "0.85rem", color: "#555" }}>{viewingOrder.user?.email}</p>
                 <p style={{ margin: "0", fontSize: "0.85rem", color: "#555" }}>Phone: {viewingOrder.shippingAddress?.phone || "N/A"}</p>
               </div>
 
               <div style={{ flex: 1, padding: "16px", background: "#f8f8f8", borderRadius: "8px" }}>
-                <h4 style={{ margin: "0 0 8px", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#888" }}>Delivery Address</h4>
+                <h4 style={{ margin: "0 0 8px", fontSize: "0.85rem", letterSpacing: "normal", color: "#888" }}>Delivery Address</h4>
                 <p style={{ margin: "0 0 4px", fontSize: "0.9rem", fontWeight: 600 }}>{viewingOrder.shippingAddress?.street}</p>
                 <p style={{ margin: "0", fontSize: "0.9rem", color: "#555" }}>{viewingOrder.shippingAddress?.city}, {viewingOrder.shippingAddress?.state} {viewingOrder.shippingAddress?.zip}</p>
               </div>
             </div>
 
             <div style={{ marginBottom: 32 }}>
-              <h4 style={{ margin: "0 0 16px", fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#888", borderBottom: "1px solid #eee", paddingBottom: "8px" }}>Purchased Items</h4>
+              <h4 style={{ margin: "0 0 16px", fontSize: "0.9rem", letterSpacing: "normal", color: "#888", borderBottom: "1px solid #eee", paddingBottom: "8px" }}>Purchased Items</h4>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {viewingOrder.items?.map((item: any) => (
                   <div key={item.id} style={{ display: "flex", gap: 16, alignItems: "center", borderBottom: "1px dashed #f0f0f0", paddingBottom: 16 }}>
@@ -333,7 +333,7 @@ export default function AdminOrdersPage() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#000", color: "#fff", padding: "20px", borderRadius: "8px" }}>
-              <span style={{ fontSize: "1rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }}>Grand Total</span>
+              <span style={{ fontSize: "1rem", fontWeight: 700, letterSpacing: "normal" }}>Grand Total</span>
               <span style={{ fontSize: "1.4rem", fontWeight: 800 }}>{formatPrice(viewingOrder.total)}</span>
             </div>
           </div>
@@ -369,7 +369,7 @@ export default function AdminOrdersPage() {
               </div>
             </div>
 
-            <h4 style={{ margin: "16px 0 12px", borderBottom: "1px solid #eee", paddingBottom: "8px", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.1em", color: "#000" }}>Update Destination</h4>
+            <h4 style={{ margin: "16px 0 12px", borderBottom: "1px solid #eee", paddingBottom: "8px", fontSize: "0.85rem", letterSpacing: "normal", color: "#000" }}>Update Destination</h4>
             
             <div style={styles.formGroup}>
               <label style={styles.label}>Street Address</label>
@@ -442,10 +442,9 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: "-0.01em",
   },
   subtitle: {
-    fontSize: "0.8rem",
+    fontSize: "0.85rem",
     color: "#888",
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
     fontWeight: 500,
   },
   filters: {
@@ -458,9 +457,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: "transparent",
     border: "none",
     borderBottom: "1px solid #e0e0e0",
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.15em",
+    letterSpacing: "normal",
     outline: "none",
     fontFamily: "inherit",
     cursor: "pointer",
@@ -469,11 +468,10 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "16px",
     background: "#000",
     color: "#fff",
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.05em",
+    letterSpacing: "normal",
     marginBottom: "32px",
-    textTransform: "uppercase",
   },
   tableWrapper: {
     overflowX: "auto",
@@ -487,11 +485,10 @@ const styles: Record<string, React.CSSProperties> = {
   },
   th: {
     padding: "24px 16px",
-    fontSize: "0.65rem",
+    fontSize: "0.8rem",
     fontWeight: 800,
     color: "#999",
-    letterSpacing: "0.2em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
     borderBottom: "1px solid #f2f2f2",
   },
   tr: {
@@ -518,9 +515,9 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#888",
   },
   itemsText: {
-    fontSize: "0.75rem",
+    fontSize: "0.8rem",
     fontWeight: 700,
-    letterSpacing: "0.05em",
+    letterSpacing: "normal",
     color: "#555",
   },
   total: {
@@ -529,10 +526,9 @@ const styles: Record<string, React.CSSProperties> = {
   },
   badge: {
     padding: "4px 12px",
-    fontSize: "0.6rem",
+    fontSize: "0.75rem",
     fontWeight: 800,
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
   },
   statusSelect: {
     border: "1px solid #eee",
@@ -560,18 +556,17 @@ const styles: Record<string, React.CSSProperties> = {
     background: "none",
     border: "none",
     cursor: "pointer",
-    fontSize: "0.7rem",
-    fontWeight: 800,
+    fontSize: "0.8rem",
+    fontWeight: 700,
     color: "#000",
-    textTransform: "uppercase",
-    letterSpacing: "0.15em",
+    letterSpacing: "normal",
     padding: "8px 0",
     borderBottom: "1px solid #000",
   },
   pageInfo: {
-    fontSize: "0.65rem",
-    fontWeight: 800,
-    letterSpacing: "0.2em",
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    letterSpacing: "normal",
     color: "#aaa",
   },
   trackBtn: {
@@ -625,10 +620,9 @@ const styles: Record<string, React.CSSProperties> = {
   },
   label: {
     display: "block",
-    fontSize: "0.65rem",
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    fontSize: "0.8rem",
+    fontWeight: 700,
+    letterSpacing: "normal",
     color: "#aaa",
     marginBottom: "10px",
   },

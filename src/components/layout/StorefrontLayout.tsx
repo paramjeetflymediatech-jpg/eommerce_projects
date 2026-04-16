@@ -15,7 +15,7 @@ export default function StorefrontLayout({ children }: { children: React.ReactNo
   return (
     <>
       <Header />
-      <main style={{ minHeight: "calc(100vh - 160px)" }}>{children}</main>
+      <main style={{ minHeight: "calc(100vh - 160px)", paddingTop: "64px" }}>{children}</main>
       <Footer />
       <CartDrawer />
     </>

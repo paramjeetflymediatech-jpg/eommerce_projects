@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&display=swap');
 
 :root {
   /* Ultra-Premium Monochrome Palette */
@@ -18,9 +18,9 @@
   --bg-elevated: #fcfcfc;
   --bg-muted: #f8f8f8;
 
-  /* Typography */
-  --font-serif: 'Lora', serif;
-  --font-sans: 'Montserrat', sans-serif;
+  /* Typography - Modern Pairing */
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
 }
 
 * {
@@ -36,8 +36,8 @@ html {
 body {
   background: var(--background);
   color: var(--text-primary);
-  font-family: var(--font-sans);
-  line-height: 1.6;
+  font-family: var(--font-body);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -54,39 +54,38 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  line-height: 1.2;
-}
-
-h1 {
-  font-size: clamp(2.5rem, 8vw, 5.5rem);
+  font-family: var(--font-heading);
+  font-weight: 500;
+  line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
+h1 {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+}
+
 h2 {
-  font-size: clamp(2rem, 5vw, 3.5rem);
-  letter-spacing: -0.01em;
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
 }
 
 h3 {
-  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
 }
 
 p {
-  font-size: 1rem;
-  font-weight: 300;
+  font-size: 0.95rem;
+  font-weight: 400;
 }
 
 /* --- Layout --- */
 .container-app {
-  width: 92%;
-  max-width: 1440px;
+  width: 90%;
+  max-width: 1320px;
   margin: 0 auto;
 }
 
 .section-padding {
-  padding: clamp(40px, 6vw, 80px) 0;
+  padding: clamp(32px, 5vw, 64px) 0;
 }
 
 .dvh-hero {
@@ -99,16 +98,14 @@ p {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 16px 32px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  padding: 14px 28px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
   cursor: pointer;
   border: none;
   border-radius: 0;
-  /* No rounded corners */
 }
 
 .btn-primary {
@@ -190,7 +187,7 @@ p {
 /* --- Responsive Helpers --- */
 .grid-luxury {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 4px;
 }
 
@@ -220,8 +217,7 @@ p {
 
 /* --- Utils --- */
 .text-tracked {
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .bg-black {
@@ -393,28 +389,6 @@ p {
   }
 }
 
-@media (max-width: 1024px) {
-  .products-content-grid {
-    grid-template-columns: 1fr !important;
-    gap: 60px !important;
-  }
-
-  .products-sidebar {
-    order: -1;
-    border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 40px;
-  }
-
-  .products-sidebar-sticky {
-    position: static !important;
-  }
-
-  .products-filters-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 40px;
-  }
-}
 
 @media (max-width: 768px) {
   .products-grid-responsive {
@@ -513,8 +487,7 @@ p {
 .admin-card-label {
   font-size: 0.75rem;
   color: #888;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: normal;
   font-weight: 700;
 }
 

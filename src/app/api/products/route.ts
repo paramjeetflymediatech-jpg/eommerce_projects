@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { Product, Category, ensureDB } from "@/lib/models";
+import { Product, Category, ProductVariant, ensureDB } from "@/lib/models";
 import { apiResponse, apiError, slugify, getPaginationMeta } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -18,8 +18,17 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get("search");
     const sort = searchParams.get("sort") || "createdAt_desc";
     const featured = searchParams.get("featured");
+    const minPrice = searchParams.get("minPrice");
+    const maxPrice = searchParams.get("maxPrice");
 
     const where: any = { isActive: true };
+    
+    if (minPrice || maxPrice) {
+      where.price = {};
+      if (minPrice) where.price[Op.gte] = parseFloat(minPrice);
+      if (maxPrice) where.price[Op.lte] = parseFloat(maxPrice);
+    }
+
     if (category) {
       // Recursive category filtering: include all child categories
       const allSubcategories = await Category.findAll({
@@ -47,14 +56,63 @@ export async function GET(req: NextRequest) {
 
     const { count, rows } = await Product.findAndCountAll({
       where,
-      include: [{ model: Category, as: "category", attributes: ["id", "name", "slug"] }],
-      limit,
-      offset,
+      include: [
+        { model: Category, as: "category", attributes: ["id", "name", "slug"] },
+        { model: ProductVariant, as: "variants", attributes: ["id", "color", "images", "price", "comparePrice", "stock"] }
+      ],
       order: sort === "price_asc" ? [["price", "ASC"]] : sort === "price_desc" ? [["price", "DESC"]] : [["createdAt", "DESC"]],
+      distinct: true, // Required when using includes with findAndCountAll
     });
 
+    // Expand variants into individual listing items
+    const expandedItems: any[] = [];
+    rows.forEach((product: any) => {
+      const p = product.toJSON();
+      
+      if (p.variants && p.variants.length > 0) {
+        // Group variants by color to show each color once
+        const colorGroups: Record<string, any> = {};
+        
+        p.variants.forEach((v: any) => {
+          const colorKey = v.color || "default";
+          if (!colorGroups[colorKey]) {
+            colorGroups[colorKey] = v;
+          }
+        });
 
-    return apiResponse({ products: rows, pagination: getPaginationMeta(count, page, limit) });
+        Object.values(colorGroups).forEach((variant: any) => {
+          expandedItems.push({
+            ...p,
+            id: `p${p.id}-v${variant.id}`, // composite ID
+            originalId: p.id,
+            variantId: variant.id,
+            name: variant.color ? `${p.name} — ${variant.color}` : p.name,
+            color: variant.color,
+            price: variant.price || p.price,
+            comparePrice: variant.comparePrice || p.comparePrice,
+            stock: variant.stock,
+            images: variant.images && variant.images.length > 0 ? variant.images : p.images,
+            isVariant: true
+          });
+        });
+      } else {
+        // No variants, just show the base product
+        expandedItems.push({
+          ...p,
+          isVariant: false
+        });
+      }
+    });
+
+    // Handle pagination on the expanded items
+    const totalExpanded = expandedItems.length;
+    const paginatedItems = expandedItems.slice(offset, offset + limit);
+
+    return apiResponse({ 
+      products: paginatedItems, 
+      pagination: getPaginationMeta(totalExpanded, page, limit) 
+    });
+
   } catch (err: any) {
     console.error("Products GET error:", err);
     return apiError("Internal server error", 500);

@@ -57,11 +57,11 @@ const s: Record<string, React.CSSProperties> = {
   alert: { padding: "16px", marginBottom: 32, fontSize: "0.85rem" },
   form: { maxWidth: 500 },
   section: { display: "flex", flexDirection: "column", gap: 32 },
-  secTitle: { fontSize: "0.8rem", fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", color: "#000" },
+  secTitle: { fontSize: "0.95rem", fontWeight: 700, letterSpacing: "normal", color: "#000" },
   grid: { display: "flex", flexDirection: "column", gap: 16 },
   field: { display: "flex", flexDirection: "column", gap: 8 },
-  lbl: { fontSize: "0.65rem", fontWeight: 700, color: "#888", textTransform: "uppercase", letterSpacing: "0.05em" },
+  lbl: { fontSize: "0.85rem", fontWeight: 700, color: "#888", letterSpacing: "normal" },
   inp: { width: "100%", padding: "14px 18px", border: "1px solid #ddd", fontSize: "0.9rem", color: "#000", outline: "none", background: "#fff" },
-  saveBtn: { padding: "16px 32px", background: "#000", color: "#fff", border: "none", fontSize: "0.7rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", cursor: "pointer", width: "fit-content" },
+  saveBtn: { padding: "16px 32px", background: "#000", color: "#fff", border: "none", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer", width: "fit-content" },
   hr: { height: 1, background: "#eee", margin: "48px 0" }
 };

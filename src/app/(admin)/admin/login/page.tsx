@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
             <h2 style={styles.visualTitle}>Aion Luxury</h2>
             <p style={styles.visualText}>
               Exclusive Administration Portal <br />
-              <span style={{ fontSize: "0.7rem", opacity: 0.5, letterSpacing: "0.4em" }}>EST. 2024</span>
+              <span style={{ fontSize: "0.85rem", opacity: 0.5, letterSpacing: "normal" }}>Est. 2024</span>
             </p>
           </div>
           <div style={styles.visualOverlay} />
@@ -117,7 +117,7 @@ export default function AdminLoginPage() {
                 disabled={loading}
                 style={{ ...styles.btn, opacity: loading ? 0.7 : 1, cursor: loading ? "wait" : "pointer" }}
               >
-                {loading ? "AUTHENTICATING..." : "ENTER PORTAL"}
+                {loading ? "Authenticating..." : "Enter Portal"}
               </button>
             </form>
 
@@ -191,17 +191,15 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "var(--font-serif)",
     fontSize: "3.5rem",
     fontWeight: 400,
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
     marginBottom: "16px",
     color: "#fff",
     textShadow: "0 2px 10px rgba(0,0,0,0.3)",
   },
   visualText: {
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.3em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
     lineHeight: 2,
     color: "#fff",
     opacity: 0.9,
@@ -237,22 +235,20 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: "8px",
   },
   subtitle: {
-    fontSize: "0.65rem",
-    fontWeight: 800,
+    fontSize: "0.85rem",
+    fontWeight: 600,
     color: "#999",
-    letterSpacing: "0.25em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
   },
   errorBox: {
     background: "#000",
     color: "#fff",
     padding: "16px",
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.05em",
+    letterSpacing: "normal",
     marginBottom: "32px",
     textAlign: "center",
-    textTransform: "uppercase",
   },
   form: {
     display: "flex",
@@ -265,11 +261,10 @@ const styles: Record<string, React.CSSProperties> = {
     gap: "8px",
   },
   label: {
-    fontSize: "0.6rem",
-    fontWeight: 800,
+    fontSize: "0.8rem",
+    fontWeight: 700,
     color: "#aaa",
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
   },
   input: {
     width: "100%",
@@ -290,10 +285,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#000",
     color: "#fff",
     border: "none",
-    fontSize: "0.7rem",
-    fontWeight: 800,
-    letterSpacing: "0.25em",
-    textTransform: "uppercase",
+    fontSize: "0.85rem",
+    fontWeight: 700,
+    letterSpacing: "normal",
     marginTop: "16px",
     transition: "all 0.4s cubic-bezier(0.19, 1, 0.22, 1)",
     borderRadius: 0,
@@ -310,12 +304,11 @@ const styles: Record<string, React.CSSProperties> = {
     fontStyle: "italic",
   },
   link: {
-    fontSize: "0.7rem",
-    fontWeight: 800,
+    fontSize: "0.8rem",
+    fontWeight: 700,
     color: "#000",
     textDecoration: "none",
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
   },
   toggleBtn: {
     position: "absolute",

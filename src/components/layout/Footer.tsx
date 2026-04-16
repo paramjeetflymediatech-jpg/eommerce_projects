@@ -10,16 +10,16 @@ export default function Footer() {
       style={{
         background: "#ffffff",
         borderTop: "1px solid #f5f5f5",
-        marginTop: "clamp(80px, 12vw, 140px)",
-        padding: "clamp(60px, 10vw, 120px) 0 clamp(40px, 6vw, 80px)",
+        // marginTop: "clamp(48px, 8vw, 80px)",
+        padding: "clamp(40px, 6vw, 64px) 0 clamp(24px, 4vw, 40px)",
       }}
     >
       <div className="container-app">
         <div className="footer-grid" style={{ 
           display: "grid", 
           gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))", 
-          gap: "clamp(48px, 6vw, 80px)", 
-          marginBottom: "clamp(64px, 8vw, 100px)" 
+          gap: "clamp(32px, 5vw, 48px)", 
+          marginBottom: "clamp(40px, 6vw, 64px)" 
         }}>
           {/* Brand */}
           <div style={{ maxWidth: "320px" }}>
@@ -47,12 +47,11 @@ export default function Footer() {
           ].map((col) => (
             <div key={col.title}>
               <h4 style={{ 
-                fontSize: "0.65rem", 
-                fontWeight: 800, 
+                fontSize: "0.85rem", 
+                fontWeight: 700, 
                 marginBottom: 24, 
                 color: "#000", 
-                letterSpacing: "0.25em", 
-                textTransform: "uppercase" 
+                letterSpacing: "0.02em" 
               }}>{col.title}</h4>
               <nav style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 {col.links.map((link) => (
@@ -80,17 +79,17 @@ export default function Footer() {
           flexWrap: "wrap",
           gap: 24
         }}>
-          <p style={{ color: "#999", fontSize: "0.7rem", letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 500 }}>
-            © {year} AION LUXURY PARIS. ALL RIGHTS RESERVED.
+          <p style={{ color: "#999", fontSize: "0.85rem", letterSpacing: "normal", fontWeight: 400 }}>
+            © {year} Aion Luxury Paris. All rights reserved.
           </p>
           <div style={{ display: "flex", gap: "clamp(24px, 4vw, 40px)", flexWrap: "wrap" }}>
-            {["INSTAGRAM", "PINTEREST", "LINKEDIN"].map((s) => (
+            {["Instagram", "Pinterest", "LinkedIn"].map((s) => (
               <a key={s} href="#" style={{ 
                 color: "#000", 
                 textDecoration: "none", 
-                fontSize: "0.65rem", 
-                fontWeight: 800, 
-                letterSpacing: "0.2em",
+                fontSize: "0.85rem", 
+                fontWeight: 500, 
+                letterSpacing: "normal",
                 transition: "opacity 0.3s ease"
               }}>{s}</a>
             ))}

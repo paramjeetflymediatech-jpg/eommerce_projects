@@ -51,7 +51,7 @@ export default async function ProductDetailPage(props: { params: PageParams }) {
       <div className={s.container}>
         {/* Navigation / Breadcrumb */}
         <nav className={s.breadcrumb}>
-          <Link href="/products" className={s.breadcrumbLink}>THE COLLECTION</Link>
+          <Link href="/products" className={s.breadcrumbLink}>The Collection</Link>
           <span className={s.separator}>/</span>
           <span className={s.breadcrumbCurrent}>{product.name}</span>
         </nav>
@@ -61,7 +61,7 @@ export default async function ProductDetailPage(props: { params: PageParams }) {
         {/* Related Pieces */}
         {related?.length > 0 && (
           <section className={s.relatedSection}>
-            <h2 className={s.relatedHeading}>YOU MIGHT ALSO LIKE</h2>
+            <h2 className={s.relatedHeading}>You might also like</h2>
             <div className={`${s.productGrid} products-grid-responsive`}>
               {related.map((p: any) => (
                 <ProductCard key={p.id} product={p} />

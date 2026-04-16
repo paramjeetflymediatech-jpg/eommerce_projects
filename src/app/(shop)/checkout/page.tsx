@@ -151,7 +151,7 @@ function CheckoutContent() {
         <h3 style={styles.stepTitle}>{title}</h3>
         {isCompleted && subtitle && <p style={styles.stepSubtitle}>{subtitle}</p>}
       </div>
-      {isCompleted && <button style={{ ...styles.changeBtn, color: activeStep === num ? "#fff" : "#000" }}>CHANGE</button>}
+      {isCompleted && <button style={{ ...styles.changeBtn, color: activeStep === num ? "#fff" : "#000" }}>Change</button>}
     </div>
   );
 
@@ -202,7 +202,7 @@ function CheckoutContent() {
                       </div>
                     ))}
                   </div>
-                  <button className="btn btn-primary" style={{ marginTop: "32px", padding: "16px 40px" }} onClick={() => setActiveStep(2)}>CONTINUE TO INFO</button>
+                  <button className="btn btn-primary" style={{ marginTop: "32px", padding: "16px 40px" }} onClick={() => setActiveStep(2)}>Continue to Info</button>
                 </div>
               )}
             </section>
@@ -282,7 +282,7 @@ function CheckoutContent() {
                       Already have an account? <Link href="/login" style={{ color: "#000", fontWeight: 600 }}>Sign In</Link>
                     </p>
                   )}
-                  <button className="btn btn-primary" style={{ marginTop: "32px", padding: "16px 40px" }} onClick={handleContinueToShipping}>CONTINUE TO SHIPPING</button>
+                  <button className="btn btn-primary" style={{ marginTop: "32px", padding: "16px 40px" }} onClick={handleContinueToShipping}>Continue to Shipping</button>
                 </div>
               )}
             </section>
@@ -302,7 +302,7 @@ function CheckoutContent() {
                       <span style={{ fontWeight: 700 }}>{shipping === 0 ? "FREE" : formatPrice(shipping)}</span>
                     </div>
                   </div>
-                  <button className="btn btn-primary" style={{ marginTop: "32px", padding: "16px 40px" }} onClick={() => setActiveStep(4)}>CONTINUE TO PAYMENT</button>
+                  <button className="btn btn-primary" style={{ marginTop: "32px", padding: "16px 40px" }} onClick={() => setActiveStep(4)}>Continue to Payment</button>
                 </div>
               )}
             </section>
@@ -326,7 +326,7 @@ function CheckoutContent() {
                     style={{ width: "100%", padding: "20px" }} 
                     onClick={handlePlaceOrder}
                   >
-                    {loading ? "PROCESSING..." : `PAY ${formatPrice(grandTotal)}`}
+                    {loading ? "Processing..." : `Pay ${formatPrice(grandTotal)}`}
                   </button>
                 </div>
               )}
@@ -349,7 +349,7 @@ function CheckoutContent() {
                     onChange={e => setDiscountCode(e.target.value)} 
                     placeholder="Enter code" 
                   />
-                  <button style={styles.applyBtn} onClick={() => setDiscountAmount(0)}>APPLY</button>
+                  <button style={styles.applyBtn} onClick={() => setDiscountAmount(0)}>Apply</button>
                 </div>
               </div>
 
@@ -410,23 +410,23 @@ const styles: Record<string, React.CSSProperties> = {
     gap: "16px",
     alignItems: "start",
   },
-  stepTitle: { fontSize: "0.8rem", fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-sans)" },
+  stepTitle: { fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", margin: 0, fontFamily: "var(--font-sans)" },
   stepSubtitle: { margin: "4px 0 0", fontSize: "0.75rem", opacity: 0.7, fontWeight: 400 },
   changeBtn: { background: "none", border: "1px solid #000", padding: "6px 14px", fontSize: "0.6rem", fontWeight: 700, cursor: "pointer" },
   stepContent: { background: "#fff", padding: "32px 32px 40px 68px", border: "1px solid #eee", borderTop: "none" },
   cartItemRow: { display: "flex", gap: "20px", paddingBottom: "20px", borderBottom: "1px solid #f8f8f8" },
   cartImg: { width: "70px", height: "90px", objectFit: "cover" },
   formGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" },
-  label: { display: "block", fontSize: "0.65rem", fontWeight: 700, marginBottom: "8px", color: "#999", textTransform: "uppercase", letterSpacing: "0.05em" },
+  label: { display: "block", fontSize: "0.85rem", fontWeight: 700, marginBottom: "8px", color: "#999", letterSpacing: "normal" },
   input: { width: "100%", padding: "12px", border: "1px solid #e5e7eb", fontSize: "0.9rem", outline: "none", fontFamily: "inherit" },
   shippingChoice: { padding: "24px", border: "2px solid #000", background: "#fcfcfc" },
   paymentBox: { padding: "20px", border: "1px solid #eee", background: "#f9f9f9", marginBottom: "24px" },
   priceColumn: { position: "sticky", top: "120px" },
   priceCard: { background: "#fff", padding: "32px", border: "1px solid #eee" },
-  priceHeader: { fontSize: "0.8rem", fontWeight: 800, color: "#000", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "32px" },
+  priceHeader: { fontSize: "0.85rem", fontWeight: 700, color: "#000", letterSpacing: "normal", marginBottom: "32px" },
   priceRow: { display: "flex", justifyContent: "space-between", fontSize: "0.9rem", marginBottom: "16px", color: "#666" },
   totalRow: { display: "flex", justifyContent: "space-between", borderTop: "1px solid #000", marginTop: "24px", paddingTop: "24px", fontWeight: 800, fontSize: "1.2rem", color: "#000" },
-  applyBtn: { background: "#000", color: "#fff", border: "none", padding: "0 20px", fontSize: "0.7rem", fontWeight: 700, cursor: "pointer" },
+  applyBtn: { background: "#000", color: "#fff", border: "none", padding: "0 20px", fontSize: "0.85rem", fontWeight: 700, cursor: "pointer" },
   secureText: { marginTop: "20px", fontSize: "0.7rem", color: "#999", display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" },
   errorText: { color: "#ff4d4f", fontSize: "0.7rem", marginTop: "4px", fontWeight: 500 },
   popupOverlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" },
@@ -434,5 +434,5 @@ const styles: Record<string, React.CSSProperties> = {
   popupIcon: { width: "60px", height: "60px", background: "#FFEBEA", color: "#FF3B30", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem", fontWeight: 800, margin: "0 auto 20px" },
   popupTitle: { fontSize: "1.5rem", fontWeight: 800, margin: "0 0 12px", fontFamily: "var(--font-serif)" },
   popupSubtitle: { fontSize: "0.9rem", color: "#666", lineHeight: 1.6, margin: "0 0 32px" },
-  popupCloseBtn: { background: "#000", color: "#fff", border: "none", padding: "16px", width: "100%", fontSize: "0.8rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", cursor: "pointer" }
+  popupCloseBtn: { background: "#000", color: "#fff", border: "none", padding: "16px", width: "100%", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer" }
 };

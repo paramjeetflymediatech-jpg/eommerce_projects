@@ -52,14 +52,13 @@ export default function AccountOrdersPage() {
                 </div>
                 <span style={{
                     ...STATUS_STYLE[selectedOrder.status],
-                    fontSize: "0.7rem",
-                    fontWeight: 800,
+                    fontSize: "0.8rem",
+                    fontWeight: 700,
                     padding: "6px 12px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.05em",
+                    letterSpacing: "normal",
                     borderRadius: "4px"
                   }}>
-                    {selectedOrder.status}
+                    {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1).toLowerCase()}
                 </span>
              </div>
 
@@ -154,7 +153,7 @@ export default function AccountOrdersPage() {
       <>
         {/* Header */}
         <div style={{ marginBottom: 32 }}>
-          <h2 style={{ fontSize: "1.2rem", fontWeight: 700, margin: "0 0 4px", textTransform: "uppercase", letterSpacing: "0.1em" }}>My Orders</h2>
+          <h2 style={{ fontSize: "1.4rem", fontWeight: 700, margin: "0 0 4px", letterSpacing: "normal" }}>My Orders</h2>
           <p style={{ fontSize: "0.85rem", color: "#888", margin: 0 }}>{orders.length} order{orders.length !== 1 ? "s" : ""} placed</p>
         </div>
 
@@ -167,8 +166,8 @@ export default function AccountOrdersPage() {
             <p style={{ fontSize: "2rem", marginBottom: 12 }}>▤</p>
             <p style={{ fontSize: "1rem", fontWeight: 600, marginBottom: 6 }}>No orders yet</p>
             <p style={{ fontSize: "0.85rem", color: "#888", marginBottom: 24 }}>Start shopping to see your orders here.</p>
-            <Link href="/products" style={{ background: "#000", color: "#fff", textDecoration: "none", padding: "12px 28px", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              BROWSE PRODUCTS
+            <Link href="/products" style={{ background: "#000", color: "#fff", textDecoration: "none", padding: "12px 28px", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal" }}>
+              Browse Products
             </Link>
           </div>
         ) : (
@@ -183,13 +182,12 @@ export default function AccountOrdersPage() {
                     </span>
                     <span style={{
                       ...STATUS_STYLE[order.status],
-                      fontSize: "0.6rem",
-                      fontWeight: 800,
+                      fontSize: "0.75rem",
+                      fontWeight: 700,
                       padding: "3px 10px",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
+                      letterSpacing: "normal",
                     }}>
-                      {order.status}
+                      {order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase()}
                     </span>
                   </div>
                   <div style={{ textAlign: "right", flexShrink: 0 }}>
@@ -237,10 +235,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#fff",
     border: "1px solid #000",
     color: "#000",
-    fontSize: "0.65rem",
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.15em",
+    fontSize: "0.8rem",
+    fontWeight: 700,
+    letterSpacing: "normal",
     padding: "8px 16px",
     cursor: "pointer",
     transition: "background 0.2s ease, color 0.2s ease",
@@ -250,10 +247,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: "transparent",
     border: "1px solid #000",
     color: "#000",
-    fontSize: "0.7rem",
+    fontSize: "0.8rem",
     fontWeight: 700,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    letterSpacing: "normal",
     padding: "8px 16px",
     cursor: "pointer",
     transition: "all 0.2s ease",
@@ -305,11 +301,10 @@ const styles: Record<string, React.CSSProperties> = {
     borderRight: "1px solid #f5f5f5",
   },
   boxTitle: {
-    fontSize: "0.75rem",
-    fontWeight: 800,
+    fontSize: "0.85rem",
+    fontWeight: 700,
     color: "#aaa",
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    letterSpacing: "normal",
     margin: "0 0 24px 0",
   },
   boxText: {
@@ -394,10 +389,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#fff",
     color: "#000",
     border: "1px solid #000",
-    fontSize: "0.8rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    letterSpacing: "normal",
     textDecoration: "none",
     textAlign: "center",
   },
@@ -407,10 +401,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#000",
     color: "#fff",
     border: "1px solid #000",
-    fontSize: "0.8rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    letterSpacing: "normal",
     textDecoration: "none",
     textAlign: "center",
   }

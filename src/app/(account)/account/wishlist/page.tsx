@@ -51,7 +51,7 @@ const s: Record<string, React.CSSProperties> = {
   emptyMsg: { fontSize: "0.95rem", color: "#888", marginBottom: 24 },
   cta: { 
     display: "inline-block", padding: "14px 40px", background: "#000", color: "#fff", 
-    textDecoration: "none", fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em" 
+    textDecoration: "none", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal" 
   },
   grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 32 }
 };

@@ -39,7 +39,7 @@ function OrderTrackingContent() {
     trackOrder(orderQuery);
   };
 
-  const steps = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED"];
+  const steps = ["Pending", "Processing", "Shipped", "Delivered"];
   const currentStepIndex = steps.indexOf(order?.status || "");
 
   return (
@@ -74,7 +74,9 @@ function OrderTrackingContent() {
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <p style={styles.refLabel}>Status</p>
-                    <h2 style={{ ...styles.statusValue, color: getStatusColor(order.status) }}>{order.status}</h2>
+                    <h2 style={{ ...styles.statusValue, color: getStatusColor(order.status) }}>
+                      {order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase()}
+                    </h2>
                   </div>
                </div>
 
@@ -196,10 +198,8 @@ const styles: Record<string, React.CSSProperties> = {
     border: "none",
     borderRadius: "0",
     fontSize: "0.9rem",
-    fontWeight: 600,
-    cursor: "pointer",
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    fontWeight: 700,
+    letterSpacing: "normal",
   },
   error: {
     padding: "16px",
@@ -226,10 +226,9 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: "48px",
   },
   refLabel: {
-    fontSize: "0.7rem",
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    fontSize: "0.85rem",
+    fontWeight: 700,
+    letterSpacing: "normal",
     color: "#aaa",
     marginBottom: "4px",
   },
@@ -240,11 +239,10 @@ const styles: Record<string, React.CSSProperties> = {
     margin: 0,
   },
   statusValue: {
-    fontSize: "1.1rem",
-    fontWeight: 800,
+    fontSize: "1.15rem",
+    fontWeight: 700,
     margin: 0,
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
+    letterSpacing: "normal",
   },
   timeline: {
     position: "relative",
@@ -316,10 +314,9 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: "24px",
   },
   itemsTitle: {
-    fontSize: "0.75rem",
-    fontWeight: 800,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    fontSize: "0.85rem",
+    fontWeight: 700,
+    letterSpacing: "normal",
     color: "#aaa",
     marginBottom: "16px",
   },

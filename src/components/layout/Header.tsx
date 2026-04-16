@@ -14,34 +14,26 @@ export default function Header() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  const isHome = pathname === "/";
 
   useEffect(() => {
     setMounted(true);
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
   }, [mobileOpen]);
 
   const navLinks = [
-    { label: "SHOP ALL", href: "/products" },
-    { label: "STORY", href: "/about" },
-    { label: "STORES", href: "/" },
-    { label: "TRACK ORDER", href: "/track" },
-    { label: "ACCOUNT", href: session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account" },
+    { label: "Shop All", href: "/products" },
+    { label: "Story", href: "/about" },
+    { label: "Stores", href: "/" },
+    { label: "Track Order", href: "/track" },
+    { label: "Account", href: session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account" },
   ];
 
-  const headerBg = isHome && !scrolled ? "transparent" : "#fff";
-  const headerBorder = isHome && !scrolled ? "none" : "1px solid #e0e0e0";
-  const textColor = isHome && !scrolled ? "#fff" : "#000";
+  const headerBg = "#fff";
+  const headerBorder = "1px solid #e0e0e0";
+  const textColor = "#000";
 
   return (
     <>
@@ -89,15 +81,15 @@ export default function Header() {
                 <span style={{ height: 1.5, background: "var(--nav-text)", width: "100%", transition: "background 0.4s" }} />
               </div>
               <span style={{
-                fontSize: "0.65rem",
+                fontSize: "0.85rem",
                 fontWeight: 700,
-                letterSpacing: "0.2em",
+                letterSpacing: "normal",
                 color: "var(--nav-text)",
                 display: "inline-block",
                 marginTop: 1,
                 transition: "color 0.4s"
               }}>
-                MENU
+                Menu
               </span>
             </button>
           </div>
@@ -128,16 +120,11 @@ export default function Header() {
                 border: "none",
                 cursor: "pointer",
                 color: "var(--nav-text)",
-                fontSize: "0.65rem",
+                fontSize: "0.85rem",
                 fontWeight: 700,
-                letterSpacing: "0.15em",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 4,
-                transition: "color 0.4s"
               }}
             >
-              BAG <span style={{ opacity: 0.5 }}>({mounted ? cartCount : 0})</span>
+              Bag <span style={{ opacity: 0.5 }}>({mounted ? cartCount : 0})</span>
             </button>
           </div>
         </div>
@@ -187,10 +174,9 @@ export default function Header() {
           }}
         >
           <span style={{
-            fontSize: "0.75rem",
+            fontSize: "1rem",
             fontWeight: 700,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase"
+            letterSpacing: "normal"
           }}>
             Aion Luxury
           </span>
@@ -237,28 +223,28 @@ export default function Header() {
                   Logged in as <span style={{ color: "#000", fontWeight: 600 }}>{session.user?.name}</span>
                 </p>
                 <div style={{ display: "flex", gap: "24px" }}>
-                  <Link
-                    href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account"}
-                    onClick={() => setMobileOpen(false)}
-                    style={{ fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.1em", textDecoration: "none", color: "#000" }}
-                  >
-                    {session?.user?.role === "ADMIN" ? "ADMIN PORTAL" : "MY ACCOUNT"}
-                  </Link>
-                  <button
-                    onClick={() => signOut()}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "#888",
-                      fontSize: "0.75rem",
-                      fontWeight: 700,
-                      letterSpacing: "0.1em",
-                      padding: 0
-                    }}
-                  >
-                    LOGOUT
-                  </button>
+                    <Link
+                      href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account"}
+                      onClick={() => setMobileOpen(false)}
+                      style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", textDecoration: "none", color: "#000" }}
+                    >
+                      {session?.user?.role === "ADMIN" ? "Admin Portal" : "My Account"}
+                    </Link>
+                    <button
+                      onClick={() => signOut()}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "#888",
+                        fontSize: "0.85rem",
+                        fontWeight: 700,
+                        letterSpacing: "normal",
+                        padding: 0
+                      }}
+                    >
+                      Logout
+                    </button>
                 </div>
               </div>
             ) : (
@@ -267,9 +253,9 @@ export default function Header() {
                   href="/login"
                   onClick={() => setMobileOpen(false)}
                   style={{
-                    fontSize: "0.75rem",
+                    fontSize: "0.85rem",
                     fontWeight: 700,
-                    letterSpacing: "0.15em",
+                    letterSpacing: "normal",
                     textDecoration: "none",
                     color: "#000",
                     background: "#f5f5f5",
@@ -277,21 +263,21 @@ export default function Header() {
                     textAlign: "center"
                   }}
                 >
-                  SIGN IN
+                  Sign In
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setMobileOpen(false)}
                   style={{
-                    fontSize: "0.75rem",
+                    fontSize: "0.85rem",
                     fontWeight: 700,
-                    letterSpacing: "0.15em",
+                    letterSpacing: "normal",
                     textDecoration: "none",
                     color: "#888",
                     textAlign: "center"
                   }}
                 >
-                  CREATE ACCOUNT
+                  Create Account
                 </Link>
               </div>
             )}

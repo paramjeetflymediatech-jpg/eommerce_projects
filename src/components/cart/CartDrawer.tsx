@@ -55,10 +55,10 @@ export default function CartDrawer() {
       }}>
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "24px", borderBottom: "1px solid var(--border)" }}>
-          <h2 style={{ fontSize: "1.1rem", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" }}>
+          <h2 style={{ fontSize: "1.1rem", fontWeight: 700, letterSpacing: "0.02em" }}>
             Shopping Bag <span style={{ color: "var(--text-muted)", fontSize: "0.8rem", fontWeight: 400 }}>({mounted ? totalCount : 0})</span>
           </h2>
-          <button onClick={closeCart} className="btn-close" style={{ background: "none", border: "none", cursor: "pointer", padding: "8px", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em" }}>CLOSE ✕</button>
+          <button onClick={closeCart} className="btn-close" style={{ background: "none", border: "none", cursor: "pointer", padding: "8px", fontSize: "0.8rem", fontWeight: 600, letterSpacing: "normal" }}>Close ✕</button>
         </div>
 
         {/* Items */}
@@ -81,8 +81,8 @@ export default function CartDrawer() {
                         <h4 style={styles.itemName}>{item.product.name}</h4>
                       </Link>
                       {item.variant && (
-                        <p style={{ fontSize: "0.7rem", color: "#666", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                          Size: <span style={{ fontWeight: 800, color: "#000" }}>{item.variant.size}</span>
+                        <p style={{ fontSize: "0.75rem", color: "#666", marginBottom: 8, letterSpacing: "normal" }}>
+                          Size: <span style={{ fontWeight: 600, color: "#000" }}>{item.variant.size}</span>
                           {item.variant.color && ` / Color: ${item.variant.color}`}
                         </p>
                       )}
@@ -95,7 +95,7 @@ export default function CartDrawer() {
                           <span style={{ fontSize: "0.8rem", fontWeight: 700 }}>{item.quantity}</span>
                           <button onClick={() => updateQuantity(item.product.id, item.variant?.id, item.quantity + 1)} style={styles.qtyBtn}>+</button>
                         </div>
-                        <button onClick={() => removeItem(item.product.id, item.variant?.id)} style={styles.removeBtn}>REMOVE</button>
+                        <button onClick={() => removeItem(item.product.id, item.variant?.id)} style={styles.removeBtn}>Remove</button>
                       </div>
                     </div>
                   </div>
@@ -104,8 +104,8 @@ export default function CartDrawer() {
 
               {/* YOU MIGHT ALSO LIKE */}
               {totalCount < 2 && suggested.length > 0 && (
-                <div style={{ marginTop: 60, paddingBottom: 40 }}>
-                  <h3 style={{ fontSize: "0.6rem", fontWeight: 800, color: "#ccc", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 24 }}>YOU MIGHT ALSO LIKE</h3>
+                <div style={{ marginTop: 10, paddingBottom: 10 }}>
+                  <h3 style={{ fontSize: "0.8rem", fontWeight: 700, color: "#888", letterSpacing: "normal", marginBottom: 24 }}>You might also like</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                     {suggested.map(p => (
                       <div key={p.id} style={styles.suggestedItem}>
@@ -120,7 +120,7 @@ export default function CartDrawer() {
                           onClick={() => addItem(p, 1)}
                           style={styles.addSuggestBtn}
                         >
-                          + ADD
+                          + Add
                         </button>
                       </div>
                     ))}
@@ -135,12 +135,12 @@ export default function CartDrawer() {
         {mounted && items.length > 0 && (
           <div style={{ padding: "24px", borderTop: "1px solid var(--border)", background: "#fff" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-              <span style={{ fontSize: "0.9rem", color: "#888", textTransform: "uppercase", letterSpacing: "0.1em" }}>Subtotal</span>
+              <span style={{ fontSize: "0.95rem", color: "#888", letterSpacing: "normal" }}>Subtotal</span>
               <span style={{ fontSize: "1.2rem", fontWeight: 800 }}>{formatPrice(total)}</span>
             </div>
             <Link href="/checkout" onClick={closeCart}>
-              <button className="btn btn-primary" style={{ width: "100%", padding: "18px", fontSize: "0.8rem", letterSpacing: "0.2em" }}>
-                ORDER NOW
+              <button className="btn btn-primary" style={{ width: "100%", padding: "18px", fontSize: "0.9rem", letterSpacing: "0.05em" }}>
+                Order Now
               </button>
             </Link>
           </div>
@@ -157,11 +157,11 @@ export default function CartDrawer() {
 const styles: Record<string, React.CSSProperties> = {
   cartItem: { display: "flex", gap: 20, padding: 20, border: "1px solid #f0f0f0" },
   imgWrapper: { position: "relative", width: 80, height: 100, background: "#f9f9f9", flexShrink: 0 },
-  itemName: { fontSize: "0.85rem", fontWeight: 700, color: "#000", marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" },
+  itemName: { fontSize: "0.95rem", fontWeight: 700, color: "#000", marginBottom: 6, letterSpacing: "normal" },
   qtyControl: { display: "flex", alignItems: "center", gap: 12, border: "1px solid #eee", padding: "4px 12px" },
   qtyBtn: { background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem", padding: 0 },
-  removeBtn: { background: "none", border: "none", cursor: "pointer", color: "#ccc", fontSize: "0.6rem", fontWeight: 800, padding: 0, marginLeft: "auto", letterSpacing: "0.1em" },
+  removeBtn: { background: "none", border: "none", cursor: "pointer", color: "#ccc", fontSize: "0.7rem", fontWeight: 600, padding: 0, marginLeft: "auto", letterSpacing: "normal" },
   suggestedItem: { display: "flex", alignItems: "center", gap: 16, padding: "12px", background: "#fff", border: "1px dashed #eee" },
-  addSuggestBtn: { background: "none", border: "1px solid #000", fontSize: "0.6rem", fontWeight: 800, padding: "6px 12px", cursor: "pointer" },
+  addSuggestBtn: { background: "none", border: "1px solid #000", fontSize: "0.7rem", fontWeight: 600, padding: "6px 12px", cursor: "pointer" },
 };
 

@@ -108,7 +108,7 @@ function VerifyOtpForm() {
       <div style={styles.card}>
         <div style={styles.logoWrap}>
           <div style={styles.logo}>S</div>
-          <span style={styles.logoText}>AION LUXURY</span>
+          <span style={styles.logoText}>Aion Luxury</span>
         </div>
 
         <div style={styles.iconWrap}>
@@ -248,9 +248,9 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 800,
   },
   logoText: {
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.25em",
+    letterSpacing: "normal",
     color: "#000",
   },
   iconWrap: {
@@ -303,8 +303,8 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "0.75rem",
     fontWeight: 600,
     color: "#444",
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
+    textTransform: "none",
   },
   input: {
     width: "100%",
@@ -340,10 +340,10 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#000",
     color: "#fff",
     border: "none",
-    fontSize: "0.75rem",
+    fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
+    letterSpacing: "normal",
+    textTransform: "none",
     borderRadius: 0,
   },
   resendWrap: {

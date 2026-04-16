@@ -112,8 +112,8 @@ const s: Record<string, React.CSSProperties> = {
   nav: { display: "flex", flexDirection: "column", gap: 4, marginBottom: 32 },
   navItem: { 
     display: "flex", alignItems: "center", gap: 12, padding: "14px 20px", 
-    textDecoration: "none", fontSize: "0.85rem", transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
-    textTransform: "uppercase", letterSpacing: "0.08em"
+    textDecoration: "none", fontSize: "0.9rem", transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+    letterSpacing: "normal"
   },
   navIcon: { fontSize: "1.1rem", opacity: 0.8 },
   navLabel: { transition: "transform 0.2s" },
@@ -121,7 +121,7 @@ const s: Record<string, React.CSSProperties> = {
   userEmail: { fontSize: "0.75rem", color: "#888", marginBottom: 12, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis" },
   logoutBtn: { 
     width: "100%", padding: "10px", background: "#000", color: "#fff", border: "none", 
-    fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", cursor: "pointer", textTransform: "uppercase" 
+    fontSize: "0.8rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer" 
   },
   content: { background: "#fff", border: "1px solid #eee", padding: "clamp(24px, 5vw, 48px)", boxShadow: "0 1px 3px rgba(0,0,0,0.02)" },
   center: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontStyle: "italic", color: "#888" },

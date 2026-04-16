@@ -160,8 +160,7 @@ const styles: Record<string, React.CSSProperties> = {
   title: {
     fontSize: "1.2rem",
     fontWeight: 700,
-    textTransform: "uppercase",
-    letterSpacing: "0.1em",
+    letterSpacing: "normal",
     margin: 0,
   },
   ratingRow: {
@@ -233,10 +232,9 @@ const styles: Record<string, React.CSSProperties> = {
     gap: "8px",
   },
   verifiedTag: {
-    fontSize: "0.6rem",
+    fontSize: "0.7rem",
     color: "#34C759",
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
+    letterSpacing: "normal",
     fontWeight: 800,
   },
   itemStars: {

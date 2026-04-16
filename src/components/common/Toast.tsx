@@ -52,7 +52,7 @@ const styles: Record<string, React.CSSProperties> = {
     animation: "slideInToast 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards",
   },
   content: { flex: 1 },
-  message: { margin: 0, fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.05em", textTransform: "uppercase" },
+  message: { margin: 0, fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal" },
   close: { background: "none", border: "none", cursor: "pointer", fontSize: "0.7rem", color: "#ccc", padding: "4px" },
 };
 
