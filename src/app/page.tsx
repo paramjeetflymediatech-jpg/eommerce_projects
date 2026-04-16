@@ -136,14 +136,14 @@ export default async function HomePage() {
           <div className="container-app">
             <div className="grid-luxury">
               {categories.map((cat: any, index: number) => (
-                <Link key={cat.id} href={`/products?category=${cat.id}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(450px, 70vh, 750px)", overflow: "hidden", textDecoration: "none" }}>
+                <Link key={cat.id} href={`/products?category=${cat.id}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(300px, 45vh, 400px)", overflow: "hidden", textDecoration: "none" }}>
                   <Image
                     src={cat.image || ``}
                     alt={cat.name}
                     fill
                     className="hover-zoom"
                     style={{ objectFit: "cover" }}
-                    sizes="(max-width: 1024px) 100vw, 33vw"
+                    sizes="(max-width: 1024px) 100vw, 25vw"
                   />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", display: "flex", alignItems: "flex-end", padding: "clamp(32px, 6vw, 80px)" }}>
                     <div style={{ color: "#fff" }}>
@@ -206,7 +206,7 @@ Rooted in heritage yet forward in perspective, ShopNest continues to refine the 
                 alt="Parisian Style"
                 fill
                 className="hover-zoom"
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", objectPosition: "center top" }}
                 sizes="(max-width: 1024px) 100vw, 33vw"
               />
               {/* <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
@@ -221,7 +221,7 @@ Rooted in heritage yet forward in perspective, ShopNest continues to refine the 
                 alt="The Atelier Interior"
                 fill
                 className="hover-zoom"
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", objectPosition: "center top" }}
                 sizes="(max-width: 1024px) 100vw, 33vw"
               />
               {/* <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
@@ -236,7 +236,7 @@ Rooted in heritage yet forward in perspective, ShopNest continues to refine the 
                 alt="Artisanal Detail"
                 fill
                 className="hover-zoom"
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", objectPosition: "center top" }}
                 sizes="(max-width: 1024px) 100vw, 33vw"
               />
               {/* <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>

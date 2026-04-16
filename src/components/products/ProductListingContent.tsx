@@ -136,11 +136,11 @@ export default function ProductListingContent({ products, categories, searchPara
                       color: "#000",
                       fontSize: "0.9rem",
                       letterSpacing: "normal",
-                      marginBottom: "16px",
                       transition: "all 0.3s ease",
                       width: "fit-content",
                       fontWeight: !searchParams.category ? 700 : 400,
                       borderBottom: !searchParams.category ? "1px solid #000" : "1px solid transparent",
+                      marginBottom: "12px"
                     }}
                   >
                     All Pieces
@@ -293,17 +293,6 @@ export default function ProductListingContent({ products, categories, searchPara
           .products-content-grid {
             grid-template-columns: 1fr !important;
             gap: 24px !important;
-          }
-        }
-
-        @media (min-width: 1025px) {
-          .sidebar-heading-desktop,
-          .sidebar-section-heading {
-            display: none !important;
-          }
-
-          .products-grid-container {
-            flex: 1;
           }
         }
       `}</style>

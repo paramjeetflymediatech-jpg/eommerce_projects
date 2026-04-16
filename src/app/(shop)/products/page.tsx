@@ -84,7 +84,7 @@ export default async function ProductsPage(props: { searchParams: Promise<Search
         {activeCategory?.banner ? (
           <div style={{
             ...styles.banner,
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${activeCategory.banner})`
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${activeCategory.banner})`
           }}>
             <div style={styles.bannerContent}>
               <h1 style={styles.bannerTitle}>{activeCategory.name}</h1>
@@ -132,7 +132,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   title: {
     fontFamily: "var(--font-serif)",
-    fontSize: "clamp(2.4rem, 6vw, 4.5rem)",
+    fontSize: "clamp(1.4rem, 3.5vw, 2.2rem)",
     fontWeight: 400,
     color: "#000",
     marginBottom: "16px",
@@ -146,19 +146,21 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     letterSpacing: "normal",
   },
+  
   banner: {
     width: "100%",
     height: "clamp(300px, 40vh, 500px)",
     backgroundSize: "cover",
     backgroundPosition: "center",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "end",
+    justifyContent: "end",
     marginBottom: "60px",
     borderRadius: "24px",
     overflow: "hidden",
     position: "relative",
   },
+
   bannerContent: {
     textAlign: "center",
     color: "#fff",
@@ -166,15 +168,15 @@ const styles: Record<string, React.CSSProperties> = {
   },
   bannerTitle: {
     fontFamily: "var(--font-serif)",
-    fontSize: "clamp(3rem, 10vw, 6rem)",
+    fontSize: "clamp(3rem, 10vw, 4rem)",
     fontWeight: 400,
     marginBottom: "16px",
+    marginRight: "30px",
     lineHeight: 1,
   },
   bannerSubtitle: {
     fontSize: "1rem",
     fontWeight: 700,
     letterSpacing: "0.1em",
-    textTransform: "uppercase",
   }
 };

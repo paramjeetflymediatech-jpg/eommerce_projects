@@ -30,7 +30,7 @@
 }
 
 html {
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -39,7 +39,7 @@ body {
   font-family: var(--font-body);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img,
@@ -151,11 +151,11 @@ p {
 .editorial-item {
   position: relative;
   overflow: hidden;
-  height: clamp(400px, 60vh, 700px);
+  height: clamp(500px, 75vh, 850px);
 }
 
 .editorial-item.tall {
-  height: clamp(550px, 75vh, 900px);
+  height: clamp(650px, 90vh, 1100px);
   margin-top: -80px;
 }
 
@@ -187,13 +187,21 @@ p {
 /* --- Responsive Helpers --- */
 .grid-luxury {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 4px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 
 @media (max-width: 1024px) {
   .grid-luxury {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-luxury {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 
@@ -378,8 +386,36 @@ p {
 /* --- Products Page Responsive --- */
 .products-content-grid {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 300px 1fr;
   gap: 80px;
+  align-items: flex-start;
+}
+
+.products-sidebar {
+  position: static;
+}
+
+@media (min-width: 1025px) {
+  .products-sidebar {
+    position: sticky !important;
+    top: 80px !important; /* Slightly more space below header */
+    align-self: flex-start !important;
+    max-height: calc(100vh - 100px) !important;
+    overflow-y: auto !important;
+    padding-right: 20px !important;
+    padding-bottom: 40px !important; /* Extra bottom space for scrolling list */
+    z-index: 10;
+  }
+
+  /* Hide scrollbar for a luxury feel */
+  .products-sidebar::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+  .products-sidebar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 @media (max-width: 1200px) {
