@@ -43,7 +43,7 @@ export default function Header() {
           --nav-bg: ${headerBg};
         }
       `}</style>
-      
+
       {/* HEADER */}
       <header
         style={{
@@ -54,7 +54,7 @@ export default function Header() {
           zIndex: 100,
           background: "var(--nav-bg)",
           borderBottom: headerBorder,
-          height: 64,
+          height: 84,
           color: "var(--nav-text)",
           display: "flex",
           alignItems: "center",
@@ -81,7 +81,7 @@ export default function Header() {
                 <span style={{ height: 1.5, background: "var(--nav-text)", width: "100%", transition: "background 0.4s" }} />
               </div>
               <span style={{
-                fontSize: "0.85rem",
+                fontSize: "0.95rem",
                 fontWeight: 700,
                 letterSpacing: "normal",
                 color: "var(--nav-text)",
@@ -96,23 +96,23 @@ export default function Header() {
 
           {/* CENTER - LOGO */}
           <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
-            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "16px" }}>
+            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
               <Image
                 src="/logo.png"
                 alt="Aion Luxury"
-                width={160}
-                height={48}
+                width={200}
+                height={60}
                 priority
-                style={{ height: "auto", width: "auto", maxHeight: "42px" }}
+                style={{ height: "auto", width: "auto", maxHeight: "56px" }}
               />
-              <span style={{ width: "1px", height: "24px", background: "#e0e0e0", display: "inline-block" }} />
+              <span style={{ width: "1px", height: "32px", background: "#e0e0e0", display: "inline-block" }} />
               <Image
-                src="/makeinindia.png"
+                src="/makeinindiaa.png"
                 alt="Make in India"
-                width={120}
-                height={58}
+                width={100}
+                height={72}
                 priority
-                style={{ height: "auto", width: "auto", maxHeight: "68px", borderRadius: "2px" }}
+                style={{ height: "auto", width: "100px", maxHeight: "80px", borderRadius: "2px" }}
               />
             </Link>
           </div>
@@ -129,7 +129,7 @@ export default function Header() {
                 border: "none",
                 cursor: "pointer",
                 color: "var(--nav-text)",
-                fontSize: "0.85rem",
+                fontSize: "0.95rem",
                 fontWeight: 700,
               }}
             >
@@ -206,7 +206,7 @@ export default function Header() {
 
         {/* NAV */}
         <div style={{ padding: "40px 32px", flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             {navLinks.map((item) => (
               <Link
                 key={item.label}
@@ -232,28 +232,28 @@ export default function Header() {
                   Logged in as <span style={{ color: "#000", fontWeight: 600 }}>{session.user?.name}</span>
                 </p>
                 <div style={{ display: "flex", gap: "24px" }}>
-                    <Link
-                      href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account"}
-                      onClick={() => setMobileOpen(false)}
-                      style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", textDecoration: "none", color: "#000" }}
-                    >
-                      {session?.user?.role === "ADMIN" ? "Admin Portal" : "My Account"}
-                    </Link>
-                    <button
-                      onClick={() => signOut()}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        color: "#888",
-                        fontSize: "0.85rem",
-                        fontWeight: 700,
-                        letterSpacing: "normal",
-                        padding: 0
-                      }}
-                    >
-                      Logout
-                    </button>
+                  <Link
+                    href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account"}
+                    onClick={() => setMobileOpen(false)}
+                    style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", textDecoration: "none", color: "#000" }}
+                  >
+                    {session?.user?.role === "ADMIN" ? "Admin Portal" : "My Account"}
+                  </Link>
+                  <button
+                    onClick={() => signOut()}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "#888",
+                      fontSize: "0.85rem",
+                      fontWeight: 700,
+                      letterSpacing: "normal",
+                      padding: 0
+                    }}
+                  >
+                    Logout
+                  </button>
                 </div>
               </div>
             ) : (

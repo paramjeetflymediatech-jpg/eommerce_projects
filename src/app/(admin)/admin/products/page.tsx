@@ -380,12 +380,14 @@ export default function AdminProductsPage() {
             {/* ── Product Images ── */}
             <div style={{ marginBottom: 28 }}>
               <div style={s.sectionTitle}>Product Images <span style={{ fontWeight: 400, color: "#aaa" }}>(Max 10)</span></div>
+              <p style={{ fontSize: "0.75rem", color: "#888", marginBottom: 16 }}>The first image is the main view; the second image appears on hover in the shop.</p>
               <div style={s.imageGrid}>
                 {form.imageUrls.map((url, idx) => {
                   const isUploading = uploadingImg === `main-${idx}`;
+                  const label = idx === 0 ? "Front Image (Main)" : idx === 1 ? "Back Image (Hover)" : `#${idx + 1}`;
                   return (
                     <div key={idx} style={s.imageSlot}>
-                      <div style={s.imageSlotLabel}>#{idx + 1}</div>
+                      <div style={{ ...s.imageSlotLabel, color: idx < 2 ? "#000" : "#bbb" }}>{label}</div>
                       <div style={s.imagePreview}>
                         {url ? (
                           <>

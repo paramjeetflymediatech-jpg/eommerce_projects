@@ -54,6 +54,7 @@ export default function ProductCard({ product }: { product: Product }) {
   };
 
   const imageUrl = product.images?.[0] || "/placeholder-product.jpg";
+  const hoverImageUrl = product.images?.length > 1 ? product.images[1] : null;
   const productUrl = `/products/${product.slug}${product.variantId ? `?variant=${product.variantId}` : ""}`;
 
   return (
@@ -66,9 +67,21 @@ export default function ProductCard({ product }: { product: Product }) {
           fill
           unoptimized={true}
           style={styles.image}
-          className="hover-image"
+          className="hover-image-front"
           sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
         />
+        
+        {hoverImageUrl && (
+          <FallbackImage
+            src={hoverImageUrl}
+            alt={`${product.name} - Back View`}
+            fill
+            unoptimized={true}
+            style={{ ...styles.image, opacity: 0 }}
+            className="hover-image-back"
+            sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
+          />
+        )}
         
         {/* Hover Overlay */}
         <div style={styles.overlay} className="hover-overlay">
@@ -123,14 +136,23 @@ export default function ProductCard({ product }: { product: Product }) {
       </div>
 
       <style>{`
-        .hover-parent:hover .hover-image {
+        .hover-parent:hover .hover-image-front {
+          opacity: 0;
+          transform: scale(1.05);
+        }
+        .hover-parent:hover .hover-image-back {
+          opacity: 1;
           transform: scale(1.05);
         }
         .hover-parent:hover .hover-overlay {
           opacity: 1;
         }
-        .hover-image {
-          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        .hover-image-front, .hover-image-back {
+          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+        }
+        /* Fallback for scaled images that might look blurry */
+        .hover-image-front, .hover-image-back {
+          backface-visibility: hidden;
         }
       `}</style>
     </Link>

@@ -8,8 +8,8 @@ import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "ShopNest — The Atelier of Modern Elegance",
-  description: "Explore the Parisian Art de Vivre with ShopNest's curated couture and high-end ready-to-wear collections.",
+  title: "Aion Luxury — The Atelier of Modern Elegance",
+  description: "Explore the Parisian Art de Vivre with Aion Luxury's curated couture and high-end ready-to-wear collections.",
 };
 
 async function getFeaturedProducts() {
@@ -161,7 +161,7 @@ export default async function HomePage() {
               <p style={{ fontSize: "0.95rem", color: "#444", lineHeight: 1.6, marginBottom: 32, fontWeight: 400, maxWidth: "540px" }}>
                 Crafted with an uncompromising attention to detail, each garment reflects a dedication to precision, balance, and material integrity. Premium natural fibres are carefully selected to enhance both structure and comfort, allowing each piece to move effortlessly while maintaining its form. This commitment to quality extends beyond construction, creating a wardrobe that feels enduring rather than seasonal.
 
-Rooted in heritage yet forward in perspective, ShopNest continues to refine the language of modern dressing—where subtle innovation meets timeless design. The result is a collection that speaks quietly but confidently, offering a refined expression of luxury that evolves with time while remaining unmistakably its own.
+                Rooted in heritage yet forward in perspective, Aion Luxury continues to refine the language of modern dressing—where subtle innovation meets timeless design. The result is a collection that speaks quietly but confidently, offering a refined expression of luxury that evolves with time while remaining unmistakably its own.
               </p>
               <Link href="/about" className="btn btn-secondary" style={{ padding: "14px 40px" }}>
                 Our Story
@@ -239,7 +239,7 @@ Rooted in heritage yet forward in perspective, ShopNest continues to refine the 
               <h2 style={{ marginBottom: 16 }}>Curated Essentials</h2>
               <p className="text-tracked" style={{ fontSize: "0.7rem", color: "#888", fontWeight: 700, opacity: 0.6 }}>Exclusive Design Selections</p>
             </div>
-            
+
             <ProductSlider products={featured} />
           </div>
         </section>
@@ -253,7 +253,7 @@ Rooted in heritage yet forward in perspective, ShopNest continues to refine the 
               <h2 style={{ fontFamily: "Lora, serif", marginBottom: 16 }}>The New Arrivals</h2>
               <div style={{ width: 60, height: 1, background: "#000", margin: "0 auto" }} />
             </div>
-            
+
             <ProductSlider products={newArrivals} />
           </div>
         </section>
