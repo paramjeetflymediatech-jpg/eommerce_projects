@@ -29,7 +29,13 @@ interface Product {
   variants?: Variant[];
 }
 
-export default function ProductDetailContent({ product }: { product: Product }) {
+export default function ProductDetailContent({ 
+  product, 
+  initialVariantId 
+}: { 
+  product: Product; 
+  initialVariantId?: string;
+}) {
   // Build unique color list (preserving order)
   const uniqueColors = useMemo(() =>
     Array.from(new Set(
@@ -39,11 +45,19 @@ export default function ProductDetailContent({ product }: { product: Product }) 
     ))
   , [product.variants]);
 
-  // Auto-select first color if colors exist
+  // Initial variant helper
+  const initialVariant = useMemo(() => {
+    if (!initialVariantId || !product.variants) return null;
+    return product.variants.find(v => String(v.id) === initialVariantId);
+  }, [initialVariantId, product.variants]);
+
+  // Pre-select variant from URL if available, otherwise default to first color
   const [selectedColor, setSelectedColor] = useState<string | null>(
-    uniqueColors[0] ?? null
+    initialVariant?.color ?? uniqueColors[0] ?? null
   );
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(
+    initialVariant?.size ?? null
+  );
 
   // When color changes, reset size
   const handleColorChange = (color: string) => {

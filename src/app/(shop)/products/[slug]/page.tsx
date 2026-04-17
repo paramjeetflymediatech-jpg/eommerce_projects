@@ -31,8 +31,12 @@ export async function generateMetadata(props: { params: PageParams }): Promise<M
   };
 }
 
-export default async function ProductDetailPage(props: { params: PageParams }) {
+export default async function ProductDetailPage(props: { 
+  params: PageParams;
+  searchParams: Promise<{ variant?: string }>;
+}) {
   const params = await props.params;
+  const { variant } = await props.searchParams;
   const data = await getProduct(params.slug);
   if (!data) notFound();
   
@@ -56,7 +60,10 @@ export default async function ProductDetailPage(props: { params: PageParams }) {
           <span className={s.breadcrumbCurrent}>{product.name}</span>
         </nav>
 
-        <ProductDetailContent product={product} />
+        <ProductDetailContent 
+          product={product} 
+          initialVariantId={variant} 
+        />
 
         {/* Related Pieces */}
         {related?.length > 0 && (
