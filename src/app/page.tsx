@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import ProductCard from "@/components/products/ProductCard";
+import CategorySlider from "@/components/products/CategorySlider";
+import ProductSlider from "@/components/products/ProductSlider";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { formatPrice } from "@/lib/utils";
 
@@ -30,7 +32,7 @@ async function getCategories() {
 
 async function getNewArrivals() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/products?sort=createdAt_desc&limit=4`, { next: { revalidate: 60 } });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/products?sort=createdAt_desc&limit=8`, { next: { revalidate: 60 } });
     if (!res.ok) return [];
     const data = await res.json();
     return data.products || [];
@@ -130,30 +132,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Categories Grid - Responsive Luxury */}
+      {/* Featured Categories Slider - Responsive Luxury */}
       {categories.length > 0 && (
         <section className="section-padding" style={{ background: "#ffffff" }}>
           <div className="container-app">
-            <div className="grid-luxury">
-              {categories.map((cat: any, index: number) => (
-                <Link key={cat.id} href={`/products?category=${cat.id}`} className="hover-zoom-container" style={{ position: "relative", height: "clamp(300px, 45vh, 400px)", overflow: "hidden", textDecoration: "none" }}>
-                  <Image
-                    src={cat.image || ``}
-                    alt={cat.name}
-                    fill
-                    className="hover-zoom"
-                    style={{ objectFit: "cover" }}
-                    sizes="(max-width: 1024px) 100vw, 25vw"
-                  />
-                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", display: "flex", alignItems: "flex-end", padding: "clamp(32px, 6vw, 80px)" }}>
-                    <div style={{ color: "#fff" }}>
-                      <p className="text-tracked" style={{ fontSize: "0.6rem", fontWeight: 700, marginBottom: 8, opacity: 0.7 }}>Discovery</p>
-                      <h3 style={{ fontSize: "1.8rem", letterSpacing: "normal" }}>{cat.name}</h3>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            <CategorySlider categories={categories} />
           </div>
         </section>
       )}
@@ -256,15 +239,8 @@ Rooted in heritage yet forward in perspective, ShopNest continues to refine the 
               <h2 style={{ marginBottom: 16 }}>Curated Essentials</h2>
               <p className="text-tracked" style={{ fontSize: "0.7rem", color: "#888", fontWeight: 700, opacity: 0.6 }}>Exclusive Design Selections</p>
             </div>
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(min(240px, 100%), 1fr))",
-              gap: "clamp(32px, 5vw, 64px)"
-            }}>
-              {featured.slice(0, 4).map((p: any) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            
+            <ProductSlider products={featured} />
           </div>
         </section>
       )}
@@ -277,11 +253,8 @@ Rooted in heritage yet forward in perspective, ShopNest continues to refine the 
               <h2 style={{ fontFamily: "Lora, serif", marginBottom: 16 }}>The New Arrivals</h2>
               <div style={{ width: 60, height: 1, background: "#000", margin: "0 auto" }} />
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))", gap: "clamp(24px, 4vw, 48px)" }}>
-              {newArrivals.slice(0, 4).map((p: any) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
+            
+            <ProductSlider products={newArrivals} />
           </div>
         </section>
       )}

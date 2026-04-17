@@ -220,7 +220,9 @@ p {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* --- Utils --- */
@@ -398,12 +400,14 @@ p {
 @media (min-width: 1025px) {
   .products-sidebar {
     position: sticky !important;
-    top: 80px !important; /* Slightly more space below header */
+    top: 80px !important;
+    /* Slightly more space below header */
     align-self: flex-start !important;
     max-height: calc(100vh - 100px) !important;
     overflow-y: auto !important;
     padding-right: 20px !important;
-    padding-bottom: 40px !important; /* Extra bottom space for scrolling list */
+    padding-bottom: 40px !important;
+    /* Extra bottom space for scrolling list */
     z-index: 10;
   }
 
@@ -412,6 +416,7 @@ p {
     width: 0px;
     background: transparent;
   }
+
   .products-sidebar {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -565,5 +570,22 @@ p {
 @media (max-width: 480px) {
   .admin-product-image-grid {
     grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* --- Category Banner Responsive (1920x600 target) --- */
+.category-banner {
+  aspect-ratio: 1920 / 600;
+  max-height: 480px;
+}
+@media (max-width: 1024px) {
+  .category-banner {
+    aspect-ratio: 21 / 9;
+    max-height: none;
+  }
+}
+@media (max-width: 640px) {
+  .category-banner {
+    aspect-ratio: 16 / 9;
   }
 }

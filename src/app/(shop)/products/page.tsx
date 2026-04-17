@@ -1,42 +1,43 @@
 import type { Metadata } from "next";
 import ProductCard from "@/components/products/ProductCard";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "All Products",
   description: "Browse our full catalog of premium products. Filter by category, price, and rating.",
 };
 
-interface SearchParams { 
-  category?: string; 
-  sort?: string; 
-  page?: string; 
-  search?: string; 
-  minPrice?: string; 
-  maxPrice?: string; 
-  featured?: string; 
+interface SearchParams {
+  category?: string;
+  sort?: string;
+  page?: string;
+  search?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  featured?: string;
 }
 
 import ProductListingContent from "@/components/products/ProductListingContent";
 
 async function getProducts(params: SearchParams) {
-  const query = new URLSearchParams({ 
-    page: params.page || "1", 
-    limit: "12", 
-    ...(params.category && { category: params.category }), 
-    ...(params.sort && { sort: params.sort }), 
-    ...(params.search && { search: params.search }), 
-    ...(params.minPrice && { minPrice: params.minPrice }), 
-    ...(params.maxPrice && { maxPrice: params.maxPrice }), 
-    ...(params.featured && { featured: params.featured }), 
+  const query = new URLSearchParams({
+    page: params.page || "1",
+    limit: "12",
+    ...(params.category && { category: params.category }),
+    ...(params.sort && { sort: params.sort }),
+    ...(params.search && { search: params.search }),
+    ...(params.minPrice && { minPrice: params.minPrice }),
+    ...(params.maxPrice && { maxPrice: params.maxPrice }),
+    ...(params.featured && { featured: params.featured }),
   }).toString();
-  
+
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/products?${query}`, { next: { revalidate: 30 } });
     if (!res.ok) return { products: [], pagination: null };
     return res.json();
-  } catch { 
-    return { products: [], pagination: null }; 
+  } catch {
+    return { products: [], pagination: null };
   }
 }
 
@@ -45,8 +46,8 @@ async function getCategories() {
     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/categories`, { next: { revalidate: 300 } });
     if (!res.ok) return { categories: [] };
     return res.json();
-  } catch { 
-    return { categories: [] }; 
+  } catch {
+    return { categories: [] };
   }
 }
 
@@ -54,7 +55,7 @@ async function getCategories() {
 export default async function ProductsPage(props: { searchParams: Promise<SearchParams> }) {
   const searchParams = await props.searchParams;
   const [{ products, pagination }, { categories }] = await Promise.all([
-    getProducts(searchParams), 
+    getProducts(searchParams),
     getCategories()
   ]);
 
@@ -71,25 +72,31 @@ export default async function ProductsPage(props: { searchParams: Promise<Search
   };
 
   const activeCategory = searchParams.category ? findCategory(categories, searchParams.category) : null;
-  const pageTitle = searchParams.search 
-    ? `Results for "${searchParams.search}"` 
-    : searchParams.featured === "true" 
-      ? "Architectural Series" 
+  const pageTitle = searchParams.search
+    ? `Results for "${searchParams.search}"`
+    : searchParams.featured === "true"
+      ? "Architectural Series"
       : activeCategory ? activeCategory.name : "The Collection";
-  
+
   return (
     <div style={styles.outer}>
       <div style={styles.container}>
         {/* Page Header / Banner */}
         {activeCategory?.banner ? (
-          <div style={{
-            ...styles.banner,
-            backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${activeCategory.banner})`
-          }}>
-            <div style={styles.bannerContent}>
+          <div className="category-banner" style={styles.banner}>
+            <Image
+              src={activeCategory.banner}
+              alt={activeCategory.name}
+              fill
+              priority
+              style={{ objectFit: "contain", zIndex: 0 }}
+            />
+            {/* Overlay for text readability */}
+            
+            {/* <div style={styles.bannerContent}>
               <h1 style={styles.bannerTitle}>{activeCategory.name}</h1>
               <p style={styles.bannerSubtitle}>{pagination?.total || 0} Products</p>
-            </div>
+            </div> */}
           </div>
         ) : (
           <header style={styles.header}>
@@ -100,10 +107,10 @@ export default async function ProductsPage(props: { searchParams: Promise<Search
           </header>
         )}
 
-        <ProductListingContent 
-          products={products} 
-          categories={categories} 
-          searchParams={searchParams} 
+        <ProductListingContent
+          products={products}
+          categories={categories}
+          searchParams={searchParams}
           pagination={pagination}
         />
       </div>
@@ -146,19 +153,25 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     letterSpacing: "normal",
   },
-  
+
   banner: {
     width: "100%",
-    height: "clamp(300px, 40vh, 500px)",
     backgroundSize: "cover",
     backgroundPosition: "center",
     display: "flex",
-    alignItems: "end",
-    justifyContent: "end",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: "60px",
-    borderRadius: "24px",
+    borderRadius: "8px",
     overflow: "hidden",
     position: "relative",
+    
+  },
+  bannerOverlay: {
+    position: "absolute",
+    inset: 0,
+    background: "rgba(0,0,0,0.5)",
+    zIndex: 5,
   },
 
   bannerContent: {
@@ -168,10 +181,9 @@ const styles: Record<string, React.CSSProperties> = {
   },
   bannerTitle: {
     fontFamily: "var(--font-serif)",
-    fontSize: "clamp(3rem, 10vw, 4rem)",
+    fontSize: "clamp(2rem, 6vw, 3.5rem)",
     fontWeight: 400,
-    marginBottom: "16px",
-    marginRight: "30px",
+    marginBottom: "12px",
     lineHeight: 1,
   },
   bannerSubtitle: {

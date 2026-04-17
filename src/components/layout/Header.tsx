@@ -96,14 +96,23 @@ export default function Header() {
 
           {/* CENTER - LOGO */}
           <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
-            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
+            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "16px" }}>
               <Image
                 src="/logo.png"
                 alt="Aion Luxury"
-                width={200}
-                height={60}
+                width={160}
+                height={48}
                 priority
-                style={{ height: "auto", width: "auto", maxHeight: "50px" }}
+                style={{ height: "auto", width: "auto", maxHeight: "42px" }}
+              />
+              <span style={{ width: "1px", height: "24px", background: "#e0e0e0", display: "inline-block" }} />
+              <Image
+                src="/makeinindia.png"
+                alt="Make in India"
+                width={120}
+                height={58}
+                priority
+                style={{ height: "auto", width: "auto", maxHeight: "68px", borderRadius: "2px" }}
               />
             </Link>
           </div>
