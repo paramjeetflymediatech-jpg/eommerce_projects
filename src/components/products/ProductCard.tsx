@@ -169,12 +169,12 @@ const styles: Record<string, React.CSSProperties> = {
   imageWrapper: {
     position: "relative",
     aspectRatio: "11/14",
-    background: "#f9f9f9",
+    background: "white",
     overflow: "hidden",
     marginBottom: "16px",
   },
   image: {
-    objectFit: "cover",
+    objectFit: "contain",
   },
   overlay: {
     position: "absolute",

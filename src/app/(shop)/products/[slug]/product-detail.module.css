@@ -323,6 +323,7 @@
   aspect-ratio: 3/4;
   scroll-snap-align: start;
   overflow: hidden;
+  background-color: white;
 }
 
 .thumbnailGrid {
@@ -430,6 +431,7 @@
   position: relative;
   width: 90%;
   height: 90%;
+  
 }
 
 .closeButton {
