@@ -378,24 +378,67 @@ export default function AdminProductsPage() {
             </label>
 
             {/* ── Product Images ── */}
-            <div style={{ marginBottom: 28 }}>
-              <div style={s.sectionTitle}>Product Images <span style={{ fontWeight: 400, color: "#aaa" }}>(Max 10)</span></div>
-              <p style={{ fontSize: "0.75rem", color: "#888", marginBottom: 16 }}>The first image is the main view; the second image appears on hover in the shop.</p>
-              <div style={s.imageGrid}>
-                {form.imageUrls.map((url, idx) => {
+            <div style={{ marginBottom: 32 }}>
+              <div style={s.sectionTitle}>Product Media <span style={{ fontWeight: 400, color: "#aaa" }}>(Front, Back & Gallery)</span></div>
+              
+              {/* Primary Images (Front & Back) */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
+                {[0, 1].map((idx) => {
+                  const url = form.imageUrls[idx];
                   const isUploading = uploadingImg === `main-${idx}`;
-                  const label = idx === 0 ? "Front Image (Main)" : idx === 1 ? "Back Image (Hover)" : `#${idx + 1}`;
+                  const label = idx === 0 ? "Front Image (Shop Display)" : "Back Image (Hover View)";
+                  const desc = idx === 0 ? "Main view shown in catalogs" : "Second view shown on mouse hover";
+                  
                   return (
-                    <div key={idx} style={s.imageSlot}>
-                      <div style={{ ...s.imageSlotLabel, color: idx < 2 ? "#000" : "#bbb" }}>{label}</div>
-                      <div style={s.imagePreview}>
+                    <div key={idx} style={{ ...s.imageSlot, padding: 16 }}>
+                      <div style={{ ...s.imageSlotLabel, color: "#000", fontSize: "0.75rem", marginBottom: 4 }}>{label}</div>
+                      <div style={{ fontSize: "0.65rem", color: "#888", marginBottom: 12 }}>{desc}</div>
+                      <div style={{ ...s.imagePreview, height: 160 }}>
                         {url ? (
                           <>
-                            <img src={url} alt={`preview ${idx}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            <img src={url} alt={label} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                             <button onClick={() => updateMainImage(idx, "")} style={s.imgRemoveBtn}>✕</button>
                           </>
                         ) : isUploading ? (
-                          <div style={s.imgPlaceholder}><div style={s.spinner} /><span style={{ fontSize: "0.6rem", color: "#999", marginTop: 4 }}>Uploading…</span></div>
+                          <div style={s.imgPlaceholder}><div style={s.spinner} /><span style={{ fontSize: "0.7rem", color: "#999", marginTop: 8 }}>Uploading…</span></div>
+                        ) : (
+                          <div style={s.imgPlaceholder}>
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                          </div>
+                        )}
+                      </div>
+                      <input
+                        style={{ ...s.inp, fontSize: "0.75rem", padding: "8px 10px", marginTop: 12, marginBottom: 8 }}
+                        value={url} onChange={e => updateMainImage(idx, e.target.value)}
+                        placeholder="Paste URL"
+                      />
+                      <label style={{ ...s.uploadLabel, padding: "8px 0" }}>
+                        {isUploading ? "Uploading…" : "Upload File"}
+                        <input type="file" accept="image/*" style={{ display: "none" }} disabled={isUploading}
+                          onChange={e => e.target.files?.[0] && uploadFile(e.target.files[0], `main-${idx}`, url => updateMainImage(idx, url))} />
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Gallery Images */}
+              <div className="no-margin" style= {{...s.sectionTitle, fontSize: "0.75rem", borderBottom: "none", marginBottom: 10 }}>Additional Gallery Images <span style={{ fontWeight: 400, color: "#aaa" }}>(Optional)</span></div>
+              <div style={s.imageGrid}>
+                {form.imageUrls.slice(2).map((url, i) => {
+                  const idx = i + 2;
+                  const isUploading = uploadingImg === `main-${idx}`;
+                  return (
+                    <div key={idx} style={s.imageSlot}>
+                      <div style={s.imageSlotLabel}>#{idx + 1}</div>
+                      <div style={s.imagePreview}>
+                        {url ? (
+                          <>
+                            <img src={url} alt={`Gallery ${idx}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            <button onClick={() => updateMainImage(idx, "")} style={s.imgRemoveBtn}>✕</button>
+                          </>
+                        ) : isUploading ? (
+                          <div style={s.imgPlaceholder}><div style={s.spinner} /></div>
                         ) : (
                           <div style={s.imgPlaceholder}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
@@ -403,12 +446,12 @@ export default function AdminProductsPage() {
                         )}
                       </div>
                       <input
-                        style={{ ...s.inp, fontSize: "0.7rem", padding: "6px 8px", marginTop: 6, marginBottom: 4 }}
+                        style={{ ...s.inp, fontSize: "0.65rem", padding: "4px 6px", marginTop: 4, marginBottom: 2 }}
                         value={url} onChange={e => updateMainImage(idx, e.target.value)}
-                        placeholder="Paste URL"
+                        placeholder="URL"
                       />
-                      <label style={s.uploadLabel}>
-                        {isUploading ? "Uploading…" : "Upload File"}
+                      <label style={{ ...s.uploadLabel, fontSize: "0.6rem", padding: "4px 0" }}>
+                        {isUploading ? "…" : "Upload"}
                         <input type="file" accept="image/*" style={{ display: "none" }} disabled={isUploading}
                           onChange={e => e.target.files?.[0] && uploadFile(e.target.files[0], `main-${idx}`, url => updateMainImage(idx, url))} />
                       </label>
@@ -497,24 +540,23 @@ export default function AdminProductsPage() {
 
                       {/* Per-color Images */}
                       <div style={{ marginBottom: 20 }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                          <label style={s.lbl}>Images for {activeGroup.color || "this color"}</label>
-                          <button type="button"
-                            onClick={() => updateColorGroup(activeColorIdx, { images: [...activeGroup.images, ""] })}
-                            style={{ fontSize: "0.65rem", padding: "4px 10px", background: "#f5f5f5", border: "1px solid #ddd", cursor: "pointer" }}>
-                            + Add Slot
-                          </button>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                          <label style={s.lbl}>Color Display Images <span style={{ fontWeight: 400, color: "#bbb" }}>(Front & Back)</span></label>
                         </div>
-                        <div style={s.variantImageGrid}>
-                          {(activeGroup.images.length === 0 ? [""] : activeGroup.images).map((imgUrl, imgIdx) => {
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                          {[0, 1].map((imgIdx) => {
+                            const imgUrl = activeGroup.images[imgIdx] || "";
                             const vKey = `variant-${activeColorIdx}-${imgIdx}`;
                             const isUploading = uploadingImg === vKey;
+                            const label = imgIdx === 0 ? "Front View" : "Back View";
+                            
                             return (
-                              <div key={imgIdx} style={s.variantImageSlot}>
-                                <div style={s.variantImagePreview}>
+                              <div key={imgIdx} style={{ ...s.variantImageSlot, width: "100%" }}>
+                                <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "#888", marginBottom: 4 }}>{label}</div>
+                                <div style={{ ...s.variantImagePreview, height: 100 }}>
                                   {imgUrl ? (
                                     <>
-                                      <img src={imgUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                      <img src={imgUrl} alt={label} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                                       <button type="button" onClick={() => {
                                         const imgs = [...activeGroup.images]; imgs[imgIdx] = "";
                                         updateColorGroup(activeColorIdx, { images: imgs });
@@ -524,41 +566,34 @@ export default function AdminProductsPage() {
                                     <div style={s.imgPlaceholder}><div style={s.spinner} /></div>
                                   ) : (
                                     <div style={s.imgPlaceholder}>
-                                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
                                     </div>
                                   )}
                                 </div>
                                 <input
-                                  style={{ ...s.inp, fontSize: "0.65rem", padding: "4px 6px", marginTop: 4, marginBottom: 2 }}
+                                  style={{ ...s.inp, fontSize: "0.65rem", padding: "6px 8px", marginTop: 8, marginBottom: 4 }}
                                   value={imgUrl}
                                   onChange={e => {
-                                    const imgs = [...activeGroup.images]; imgs[imgIdx] = e.target.value;
+                                    const imgs = [...activeGroup.images];
+                                    while (imgs.length <= imgIdx) imgs.push(""); // ensure index exists
+                                    imgs[imgIdx] = e.target.value;
                                     updateColorGroup(activeColorIdx, { images: imgs });
                                   }}
                                   placeholder="URL"
                                 />
-                                <label style={{ ...s.uploadLabel, fontSize: "0.6rem", padding: "4px 0" }}>
+                                <label style={{ ...s.uploadLabel, fontSize: "0.65rem", padding: "6px 0" }}>
                                   {isUploading ? "…" : "Upload"}
                                   <input type="file" accept="image/*" style={{ display: "none" }} disabled={isUploading}
                                     onChange={e => {
                                       if (!e.target.files?.[0]) return;
                                       uploadFile(e.target.files[0], vKey, url => {
                                         const imgs = [...activeGroup.images];
-                                        // If slot was empty and it's last slot, we can fill it
-                                        if (imgIdx < imgs.length) imgs[imgIdx] = url;
-                                        else imgs.push(url);
+                                        while (imgs.length <= imgIdx) imgs.push("");
+                                        imgs[imgIdx] = url;
                                         updateColorGroup(activeColorIdx, { images: imgs });
                                       });
                                     }} />
                                 </label>
-                                {activeGroup.images.length > 1 && (
-                                  <button type="button" onClick={() => {
-                                    const imgs = activeGroup.images.filter((_, i) => i !== imgIdx);
-                                    updateColorGroup(activeColorIdx, { images: imgs });
-                                  }} style={{ fontSize: "0.55rem", color: "#DC2626", border: "none", background: "none", cursor: "pointer", padding: "2px 0" }}>
-                                    Remove
-                                  </button>
-                                )}
                               </div>
                             );
                           })}

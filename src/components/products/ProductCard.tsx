@@ -77,7 +77,7 @@ export default function ProductCard({ product }: { product: Product }) {
             alt={`${product.name} - Back View`}
             fill
             unoptimized={true}
-            style={{ ...styles.image, opacity: 0 }}
+            style={styles.image}
             className="hover-image-back"
             sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 33vw"
           />
@@ -136,19 +136,24 @@ export default function ProductCard({ product }: { product: Product }) {
       </div>
 
       <style>{`
+        .hover-image-back {
+          opacity: 0;
+          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+        }
+        .hover-image-front {
+          opacity: 1;
+          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+        }
         .hover-parent:hover .hover-image-front {
           opacity: 0;
           transform: scale(1.05);
         }
         .hover-parent:hover .hover-image-back {
-          opacity: 1;
+          opacity: 1 !important;
           transform: scale(1.05);
         }
         .hover-parent:hover .hover-overlay {
           opacity: 1;
-        }
-        .hover-image-front, .hover-image-back {
-          transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
         }
         /* Fallback for scaled images that might look blurry */
         .hover-image-front, .hover-image-back {
