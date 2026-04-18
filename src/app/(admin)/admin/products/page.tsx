@@ -423,7 +423,7 @@ export default function AdminProductsPage() {
               </div>
 
               {/* Gallery Images */}
-              <div className="no-margin" style= {{...s.sectionTitle, fontSize: "0.75rem", borderBottom: "none", marginBottom: 10 }}>Additional Gallery Images <span style={{ fontWeight: 400, color: "#aaa" }}>(Optional)</span></div>
+              <div className="no-margin" style={{ ...s.sectionTitle, fontSize: "0.75rem", borderBottom: "none", marginBottom: 10 }}>Additional Gallery Images <span style={{ fontWeight: 400, color: "#aaa" }}>(Optional)</span></div>
               <div style={s.imageGrid}>
                 {form.imageUrls.slice(2).map((url, i) => {
                   const idx = i + 2;
@@ -589,6 +589,65 @@ export default function AdminProductsPage() {
                                       uploadFile(e.target.files[0], vKey, url => {
                                         const imgs = [...activeGroup.images];
                                         while (imgs.length <= imgIdx) imgs.push("");
+                                        imgs[imgIdx] = url;
+                                        updateColorGroup(activeColorIdx, { images: imgs });
+                                      });
+                                    }} />
+                                </label>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Additional Color Gallery */}
+                      <div style={{ marginBottom: 20 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                          <label style={{ ...s.lbl, fontSize: "0.7rem" }}>Additional Color Gallery <span style={{ fontWeight: 400, color: "#bbb" }}>(Optional)</span></label>
+                          <button type="button"
+                            onClick={() => {
+                              const imgs = [...activeGroup.images];
+                              // Fill up to index 2 if needed
+                              while(imgs.length < 2) imgs.push("");
+                              imgs.push("");
+                              updateColorGroup(activeColorIdx, { images: imgs });
+                            }}
+                            style={{ fontSize: "0.6rem", padding: "4px 8px", background: "#f5f5f5", border: "1px solid #ddd", cursor: "pointer" }}>
+                            + Add Image
+                          </button>
+                        </div>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                          {activeGroup.images.slice(2).map((imgUrl, i) => {
+                            const imgIdx = i + 2;
+                            const vKey = `variant-${activeColorIdx}-${imgIdx}`;
+                            const isUploading = uploadingImg === vKey;
+                            
+                            return (
+                              <div key={imgIdx} style={{ ...s.variantImageSlot, width: 80 }}>
+                                <div style={{ ...s.variantImagePreview, height: 60 }}>
+                                  {imgUrl ? (
+                                    <>
+                                      <img src={imgUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                      <button type="button" onClick={() => {
+                                        const imgs = activeGroup.images.filter((_, idx) => idx !== imgIdx);
+                                        updateColorGroup(activeColorIdx, { images: imgs });
+                                      }} style={s.imgRemoveBtn}>✕</button>
+                                    </>
+                                  ) : isUploading ? (
+                                    <div style={s.imgPlaceholder}><div style={s.spinner} /></div>
+                                  ) : (
+                                    <div style={s.imgPlaceholder}>
+                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                                    </div>
+                                  )}
+                                </div>
+                                <label style={{ ...s.uploadLabel, fontSize: "0.55rem", padding: "4px 0", marginTop: 4 }}>
+                                  {isUploading ? "…" : "Upload"}
+                                  <input type="file" accept="image/*" style={{ display: "none" }} disabled={isUploading}
+                                    onChange={e => {
+                                      if (!e.target.files?.[0]) return;
+                                      uploadFile(e.target.files[0], vKey, url => {
+                                        const imgs = [...activeGroup.images];
                                         imgs[imgIdx] = url;
                                         updateColorGroup(activeColorIdx, { images: imgs });
                                       });
