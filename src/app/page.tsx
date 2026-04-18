@@ -65,7 +65,7 @@ export default async function HomePage() {
             left: 0 !important;
             padding: 0 !important;
             transform: scale(1) !important;
-          }
+          } 
           .brand-value-image-container {
             height: clamp(500px, 90vh, 900px) !important;
           }
