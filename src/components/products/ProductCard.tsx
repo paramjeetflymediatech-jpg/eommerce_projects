@@ -28,7 +28,7 @@ interface Product {
 
 export default function ProductCard({ product }: { product: Product }) {
   const toggleItem = useWishlistStore((s) => s.toggleItem);
-  const productId = product.originalId || Number(product.id);
+  const productId = product.id;
   const isWishlisted = useWishlistStore((s) => s.isWishlisted(productId));
   const [mounted, setMounted] = useState(false);
   const { data: session } = useSession();
@@ -40,6 +40,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!session) {
       router.push(`/login?callbackUrl=${encodeURIComponent(`/products/${product.slug}`)}`);
       return;

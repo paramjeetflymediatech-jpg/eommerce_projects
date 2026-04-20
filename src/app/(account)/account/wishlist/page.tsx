@@ -26,9 +26,9 @@ export default function AccountWishlistPage() {
         </div>
       ) : (
         <div style={s.grid}>
-          {items.map((item: any) => (
+          {items.map((item: any, idx: number) => (
             <ProductCard 
-              key={item.id} 
+              key={item.id || `${item.slug}-${idx}`} 
               product={{
                 ...item,
                 rating: 0,

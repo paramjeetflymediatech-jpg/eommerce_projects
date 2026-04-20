@@ -110,6 +110,7 @@ export default async function HomePage() {
                 overflow: "hidden",
                 background: "#000",
                 zIndex: 1,
+                position: "relative",
               }}
             >
 
@@ -119,15 +120,13 @@ export default async function HomePage() {
                 alt={`hero-${i}`}
                 className={`w-full h-full object-cover transition-opacity duration-700 ${i === 1 ? 'opacity-95 md:opacity-50' : 'opacity-50'}`}
                 style={{
-                  width: "110%",
+                  width: "100%",
                   height: "100%",
                   position: "absolute",
-                  left: "-5%",
-                  top: 0,
+                  inset: 0,
+                  objectFit: "cover",
+                  objectPosition: "center top",
                   display: "block",
-                  transform: "scale(1.1)",
-                  maxWidth: "none",
-                  padding: "24px"
                 }}
               />
 
@@ -248,10 +247,10 @@ export default async function HomePage() {
 
       {/* <section className="section-padding" style={{ background: "#ffffff" }}> */}
       <div className="container-app">
-        <div style={{ textAlign: "center", marginBottom: "clamp(48px, 8vw, 80px)" }}>
+        <div style={{ textAlign: "center", marginBottom: "clamp(64px, 10vw, 120px)" }}>
           <p className="text-tracked" style={{ fontSize: "0.7rem", color: "#523d3dff", marginBottom: 16, fontWeight: 700 }}>Material Excellence</p>
           <h2 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", lineHeight: 1.1, marginBottom: 24 }}>Premium Quality Fabrics</h2>
-          <p style={{ fontSize: "0.95rem", color: "#000000ff", maxWidth: 800, margin: "0 auto", fontWeight: 400, marginBottom: 24 }}>
+          <p style={{ fontSize: "0.95rem", color: "#000000ff", maxWidth: 800, margin: "0 auto", fontWeight: 400, marginBottom: 0, textAlign: "justify", lineHeight: 1.7 }}>
             We use carefully selected fabrics that feel soft on the skin while ensuring durability and long-lasting wear. Every stitch reflects our commitment to excellence, giving you products that maintain their shape, comfort, and performance even after repeated use.
           </p>
         </div>

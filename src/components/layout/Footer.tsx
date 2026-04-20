@@ -91,7 +91,7 @@ export default function Footer() {
               href="https://flymediatech.com" 
               target="_blank" 
               rel="noopener noreferrer" 
-              style={{ color: "#0026ffff", textDecoration: "underline", textUnderlineOffset: "4px" }}
+              style={{ color: "#000000", textDecoration: "none", textUnderlineOffset: "4px", fontWeight: 700 }}
             >
               Fly Media Technology
             </a>

@@ -13,6 +13,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isProgrammaticScroll = useRef(false);
 
   // Reset index when images list changes (e.g. color swap)
   useEffect(() => {
@@ -25,13 +26,19 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
   const scrollToImage = (index: number) => {
     const el = document.getElementById(`prod-img-${index}`);
     if (el) {
+      isProgrammaticScroll.current = true;
       el.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
       setActiveImageIndex(index);
+      
+      // Allow manual scroll tracking to resume after smooth scroll completes
+      setTimeout(() => {
+        isProgrammaticScroll.current = false;
+      }, 500);
     }
   };
 
   const handleScroll = () => {
-    if (!scrollRef.current) return;
+    if (!scrollRef.current || isProgrammaticScroll.current) return;
     const scrollLeft = scrollRef.current.scrollLeft;
     const width = scrollRef.current.offsetWidth;
     const newIndex = Math.round(scrollLeft / width);
@@ -61,17 +68,46 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [nextImage, prevImage]);
 
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
   // Body scroll lock when lightbox is open
   useEffect(() => {
     if (isLightboxOpen) {
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     }
     return () => {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     };
   }, [isLightboxOpen]);
+
+  // Touch Swipe Handlers for Lightbox
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+    touchEndX.current = e.targetTouches[0].clientX; // Reset end position
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartX.current - touchEndX.current;
+    const threshold = 50; // minimum distance for swipe
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        nextImage();
+      } else {
+        prevImage();
+      }
+    }
+  };
 
   return (
     <div className={s.imageColumn}>
@@ -175,7 +211,13 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
           >
             ✕
           </button>
-          <div className={s.lightboxContent} onClick={(e) => e.stopPropagation()}>
+          <div 
+            className={s.lightboxContent} 
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <div className={s.lightboxImageWrapper}>
               <FallbackImage 
                 src={images[activeImageIndex]} 

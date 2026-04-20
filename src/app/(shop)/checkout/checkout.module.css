@@ -1,0 +1,367 @@
+/* Checkout Page Styles */
+
+/* ─── Layout ─────────────────────────────── */
+.outer {
+  background: #f8f8f8;
+  min-height: 100vh;
+  padding-top: 20px;
+  padding-bottom: 100px;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 48px);
+}
+
+.checkoutLayout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .checkoutLayout {
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .checkoutLayout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* ─── Steps Column ──────────────────────── */
+.stepsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ─── Step Header ───────────────────────── */
+.stepHeader {
+  background: #fff;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #eee;
+  border-bottom: none;
+  cursor: default;
+}
+
+.stepHeader.active {
+  background: #000;
+  color: #fff;
+}
+
+.stepHeader.clickable {
+  cursor: pointer;
+}
+
+.stepNum {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f0f0;
+  color: #999;
+  font-size: 0.7rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.stepNum.active {
+  background: #fff;
+  color: #000;
+}
+
+.stepNum.completed {
+  background: #000;
+  color: #fff;
+}
+
+.stepTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 0;
+  font-family: var(--font-sans);
+}
+
+.stepSubtitle {
+  margin: 4px 0 0;
+  font-size: 0.75rem;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.changeBtn {
+  background: none;
+  border: 1px solid currentColor;
+  padding: 6px 14px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* ─── Step Content ──────────────────────── */
+.stepContent {
+  background: #fff;
+  padding: 32px clamp(20px, 4vw, 32px) 40px clamp(20px, 5vw, 68px);
+  border: 1px solid #eee;
+  border-top: none;
+}
+
+@media (max-width: 480px) {
+  .stepContent {
+    padding: 24px 16px 32px;
+  }
+}
+
+/* ─── Form ──────────────────────────────── */
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+  .formGrid > div[data-span="2"] {
+    grid-column: span 1;
+  }
+}
+
+.label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #999;
+  letter-spacing: normal;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  font-size: 0.9rem;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: #000;
+}
+
+.errorText {
+  color: #ff4d4f;
+  font-size: 0.7rem;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.spanTwo {
+  grid-column: span 2;
+}
+
+@media (max-width: 640px) {
+  .spanTwo {
+    grid-column: span 1;
+  }
+}
+
+/* ─── Cart Items ───────────────────────── */
+.cartItemRow {
+  display: flex;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f8f8f8;
+}
+
+.cartImg {
+  width: 70px;
+  height: 90px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+@media (max-width: 400px) {
+  .cartImg {
+    width: 56px;
+    height: 72px;
+  }
+}
+
+/* ─── Buttons ───────────────────────────── */
+.continueBtn {
+  margin-top: 32px;
+  padding: 16px 40px;
+  display: inline-block;
+}
+
+@media (max-width: 480px) {
+  .continueBtn {
+    width: 100%;
+    padding: 18px;
+    text-align: center;
+  }
+}
+
+.payBtn {
+  width: 100%;
+  padding: 20px;
+}
+
+/* ─── Shipping / Payment Boxes ─────────── */
+.shippingChoice {
+  padding: 24px;
+  border: 2px solid #000;
+  background: #fcfcfc;
+}
+
+.paymentBox {
+  padding: 20px;
+  border: 1px solid #eee;
+  background: #f9f9f9;
+  margin-bottom: 24px;
+}
+
+/* ─── Price Column (Summary) ─────────── */
+.priceColumn {
+  position: sticky;
+  top: 120px;
+}
+
+@media (max-width: 768px) {
+  .priceColumn {
+    position: static;
+    margin-top: 24px;
+    order: 2;
+  }
+}
+
+.priceCard {
+  background: #fff;
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid #eee;
+}
+
+.priceHeader {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #000;
+  letter-spacing: normal;
+  margin-bottom: 32px;
+}
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+  color: #666;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #000;
+  margin-top: 24px;
+  padding-top: 24px;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #000;
+}
+
+.applyBtn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 0 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.secureText {
+  margin-top: 20px;
+  font-size: 0.7rem;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* ─── Failed Payment Popup ──────────────── */
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.popupContent {
+  background: #fff;
+  padding: clamp(24px, 5vw, 40px);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.popupIcon {
+  width: 60px;
+  height: 60px;
+  background: #ffebea;
+  color: #ff3b30;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0 auto 20px;
+}
+
+.popupTitle {
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-weight: 800;
+  margin: 0 0 12px;
+  font-family: var(--font-serif);
+}
+
+.popupSubtitle {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0 0 32px;
+}
+
+.popupCloseBtn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 16px;
+  width: 100%;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  cursor: pointer;
+}

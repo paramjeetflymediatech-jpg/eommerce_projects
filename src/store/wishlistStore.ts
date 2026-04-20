@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface WishlistItem {
-  id: number;
+  id: string | number;
   name: string;
   price: number;
   images: string[];
@@ -12,8 +12,8 @@ interface WishlistItem {
 interface WishlistStore {
   items: WishlistItem[];
   addItem: (product: WishlistItem) => void;
-  removeItem: (productId: number) => void;
-  isWishlisted: (productId: number) => boolean;
+  removeItem: (productId: string | number) => void;
+  isWishlisted: (productId: string | number) => boolean;
   toggleItem: (product: WishlistItem) => void;
   clearWishlist: () => void;
 }

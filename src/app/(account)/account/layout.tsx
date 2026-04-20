@@ -102,13 +102,13 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
 }
 
 const s: Record<string, React.CSSProperties> = {
-  layout: { minHeight: "100vh", background: "#fcfcfc", paddingTop: "clamp(120px, 15vh, 160px)", paddingBottom: 100 },
+  layout: { minHeight: "100vh", background: "#fcfcfc", paddingTop: 40, paddingBottom: 100 },
   container: { display: "flex", flexDirection: "column" },
   pageHeader: { marginBottom: "clamp(32px, 8vw, 64px)", borderBottom: "1px solid #eee", paddingBottom: 32 },
   title: { fontSize: "clamp(1.8rem, 5vw, 2.8rem)", fontWeight: 500, fontFamily: "var(--font-serif)", color: "#000", margin: "0 0 12px 0" },
   subtitle: { fontSize: "clamp(0.85rem, 2vw, 0.95rem)", color: "#666", fontWeight: 300, letterSpacing: "0.02em" },
   mainGrid: { display: "grid", gridTemplateColumns: "240px 1fr", gap: "clamp(32px, 5vw, 64px)" },
-  sidebar: { position: "sticky", top: 120, height: "fit-content" },
+  sidebar: { position: "sticky", top: 80, height: "fit-content" },
   nav: { display: "flex", flexDirection: "column", gap: 4, marginBottom: 32 },
   navItem: { 
     display: "flex", alignItems: "center", gap: 12, padding: "14px 20px", 
