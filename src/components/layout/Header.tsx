@@ -107,7 +107,7 @@ export default function Header() {
               />
               <span style={{ width: "1px", height: "32px", background: "#e0e0e0", display: "inline-block" }} />
               <Image
-                src="/makeinindiaa.png"
+                src="/makeinindiaa1.png"
                 alt="Make in India"
                 width={100}
                 height={72}
@@ -206,7 +206,7 @@ export default function Header() {
 
         {/* NAV */}
         <div style={{ padding: "40px 32px", flex: 1, display: "flex", flexDirection: "column" }}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
             {navLinks.map((item) => (
               <Link
                 key={item.label}
