@@ -1,18 +1,25 @@
 .layout {
   background: var(--background);
-  padding-top: 100px;
 }
 
 .hero {
-  min-height: 40vh;
+  min-height: 50vh;
   background: var(--bg-muted);
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--border-subtle);
-  padding: 60px 0;
+  padding: 40px 0;
+  overflow: hidden;
 }
 
-.heroContainer {
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.heroTextSide {
   text-align: left;
 }
 
@@ -32,6 +39,24 @@
   letter-spacing: normal;
   margin-top: 32px;
   text-transform: none;
+}
+
+.heroImageSide {
+  position: relative;
+  height: 500px;
+  overflow: hidden;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 10%;
+  transition: transform 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.heroImageSide:hover .heroImage {
+  transform: scale(1.05);
 }
 
 .section {
@@ -133,8 +158,8 @@
 }
 
 .ctaSection {
-  padding: 100px 0;
-  background: var(--bg-muted);
+  padding: 40px 0;
+  /* background: var(--bg-muted); */
   text-align: center;
 }
 
@@ -143,7 +168,7 @@
   color: var(--text-primary);
   margin-bottom: 48px;
   font-weight: 400;
-  line-height: 1.1;
+  /* line-height: 1.1; */
 }
 
 .ctaBtn {
@@ -167,6 +192,16 @@
 /* --- Responsive Breakpoints --- */
 
 @media (max-width: 1024px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .heroImageSide {
+    height: 650px;
+    order: -1;
+  }
+
   .grid {
     grid-template-columns: 1fr;
     gap: 60px;
@@ -185,12 +220,16 @@
 
 @media (max-width: 768px) {
   .layout {
-    padding-top: 80px;
+    padding-top: 1px;
   }
   
   .hero {
     min-height: 40vh;
     padding: 60px 0;
+  }
+
+  .heroImageSide {
+    height: 550px;
   }
   
   .valuesGrid {
@@ -223,6 +262,10 @@
     letter-spacing: 0.2em;
   }
   
+  .heroImageSide {
+    height: 450px;
+  }
+
   .imageSide {
     height: 300px;
   }

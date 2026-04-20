@@ -61,6 +61,18 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [nextImage, prevImage]);
 
+  // Body scroll lock when lightbox is open
+  useEffect(() => {
+    if (isLightboxOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isLightboxOpen]);
+
   return (
     <div className={s.imageColumn}>
       {/* Main Gallery Area */}

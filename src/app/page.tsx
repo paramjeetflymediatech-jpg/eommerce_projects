@@ -198,7 +198,7 @@ export default async function HomePage() {
               </h2>
               <p style={{
                 fontSize: "1rem",
-                color: "#666",
+                color: "#000000ff",
                 maxWidth: "1050px",
                 margin: "0 auto",
                 lineHeight: 1.7,
@@ -218,20 +218,23 @@ export default async function HomePage() {
         <div className="container-app">
           <div className="grid-editorial-2">
             <div style={{ animation: "fadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1)", width: "100%" }}>
-              <div style={{ position: "relative", height: "clamp(350px, 50vw, 520px)", width: "100%", overflow: "hidden" }}>
-                <Image
-                  src="/images/fashion/coats.png"
-                  alt="Luxury Fashion"
-                  fill
-                  style={{ objectFit: "cover", objectPosition: "center top" }}
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
+              <Link href="/products?category=3" style={{ display: "block", overflow: "hidden" }}>
+                <div style={{ position: "relative", height: "clamp(350px, 50vw, 520px)", width: "100%" }}>
+                  <Image
+                    src="/images/fashion/coats.png"
+                    alt="Luxury Fashion"
+                    fill
+                    style={{ objectFit: "cover", objectPosition: "center top" }}
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="hover-zoom"
+                  />
+                </div>
+              </Link>
             </div>
             <div style={{ padding: "0 4px" }}>
               <p className="text-tracked" style={{ fontSize: "0.65rem", color: "#888", marginBottom: 16, fontWeight: 700 }}>Function & Form</p>
               <h2 style={{ marginBottom: 24, lineHeight: 1.1, fontSize: "clamp(2rem, 5vw, 2.5rem)" }}>Comfort Meets Performance</h2>
-              <p style={{ fontSize: "0.95rem", color: "#444", lineHeight: 1.7, marginBottom: 32, fontWeight: 400, maxWidth: "540px", textAlign: "justify" }}>
+              <p style={{ fontSize: "0.95rem", color: "#000000ff", lineHeight: 1.7, marginBottom: 32, fontWeight: 400, maxWidth: "540px", textAlign: "justify" }}>
                 Aion Luxury combines innovation with timeless design to create apparel that adapts to your lifestyle. Our thermals provide superior insulation without bulk, while our T-shirts and lowers offer breathable comfort for all-day wear. Each product undergoes strict quality checks to ensure softness, durability, and performance. Whether you’re lounging at home, stepping out casually, or layering for colder days, our clothing supports your movement and enhances your confidence. With attention to detail and a commitment to excellence, Aion Luxury delivers clothing that works as hard as you do—without compromising on style or comfort.
               </p>
               <Link href="/about" className="btn btn-secondary" style={{ padding: "14px 40px" }}>
@@ -248,13 +251,13 @@ export default async function HomePage() {
         <div style={{ textAlign: "center", marginBottom: "clamp(48px, 8vw, 80px)" }}>
           <p className="text-tracked" style={{ fontSize: "0.7rem", color: "#523d3dff", marginBottom: 16, fontWeight: 700 }}>Material Excellence</p>
           <h2 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", lineHeight: 1.1, marginBottom: 24 }}>Premium Quality Fabrics</h2>
-          <p style={{ fontSize: "0.95rem", color: "#666", maxWidth: 800, margin: "0 auto", fontWeight: 400, marginBottom: 24 }}>
+          <p style={{ fontSize: "0.95rem", color: "#000000ff", maxWidth: 800, margin: "0 auto", fontWeight: 400, marginBottom: 24 }}>
             We use carefully selected fabrics that feel soft on the skin while ensuring durability and long-lasting wear. Every stitch reflects our commitment to excellence, giving you products that maintain their shape, comfort, and performance even after repeated use.
           </p>
         </div>
 
         <div className="grid-editorial-3">
-          <div className="editorial-item hover-zoom-container">
+          <Link href="/products?category=7" className="editorial-item hover-zoom-container" style={{ display: "block" }}>
             <Image
               src="/images/lifestyle/0C8A8609.jpg"
               alt="Parisian Style"
@@ -263,13 +266,10 @@ export default async function HomePage() {
               style={{ objectFit: "cover", objectPosition: "center top" }}
               sizes="(max-width: 1024px) 100vw, 33vw"
             />
-            {/* <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
-                <p className="text-tracked" style={{ fontSize: "0.85rem", fontWeight: 800 }}>01 / The Silhouette</p>
-              </div> */}
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
-          </div>
+          </Link>
 
-          <div className="editorial-item tall hover-zoom-container" style={{ zIndex: 10 }}>
+          <Link href="/products?category=7" className="editorial-item tall hover-zoom-container" style={{ zIndex: 10, display: "block" }}>
             <Image
               src="/images/lifestyle/0C8A8580.jpg"
               alt="The Atelier Interior"
@@ -278,13 +278,10 @@ export default async function HomePage() {
               style={{ objectFit: "cover", objectPosition: "center top" }}
               sizes="(max-width: 1024px) 100vw, 33vw"
             />
-            {/* <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
-                <p className="text-tracked" style={{ fontSize: "0.85rem", fontWeight: 800 }}>02 / The Archive</p>
-              </div> */}
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
-          </div>
+          </Link>
 
-          <div className="editorial-item hover-zoom-container">
+          <Link href="/products?category=7" className="editorial-item hover-zoom-container" style={{ display: "block" }}>
             <Image
               src="/images/lifestyle/0C8A8679.jpg"
               alt="Artisanal Detail"
@@ -293,11 +290,8 @@ export default async function HomePage() {
               style={{ objectFit: "cover", objectPosition: "center top" }}
               sizes="(max-width: 1024px) 100vw, 33vw"
             />
-            {/* <div style={{ position: "absolute", bottom: 32, left: 32, color: "#fff", zIndex: 2 }}>
-                <p className="text-tracked" style={{ fontSize: "0.85rem", fontWeight: 800 }}>03 / The Craft</p>
-              </div> */}
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)" }} />
-          </div>
+          </Link>
         </div>
       </div>
       {/* </section> */}
@@ -309,7 +303,7 @@ export default async function HomePage() {
           <div className="container-app">
             <div style={{ textAlign: "center", maxWidth: 800, margin: "0 auto 40px" }}>
               <h2 style={{ marginBottom: 20 }}>Designed for Every Season</h2>
-              <p style={{ fontSize: "1rem", color: "#666", lineHeight: 1.7, fontWeight: 300, textAlign: "justify", marginBottom: 40 }}>
+              <p style={{ fontSize: "1rem", color: "#000000ff", lineHeight: 1.7, fontWeight: 300, textAlign: "justify", marginBottom: 40 }}>
                 From lightweight T-shirts for warm days to insulating thermals for winter, our collection is built to support you year-round. Aion Luxury ensures you stay comfortable, no matter the temperature or occasion.
               </p>
             </div>
@@ -330,7 +324,7 @@ export default async function HomePage() {
             {/* 1. Brand Message: Perfect Fit */}
             <div style={{ textAlign: "center", maxWidth: 800, margin: "0 auto clamp(40px, 10vw, 10px)" }}>
               <h2 style={{ marginBottom: 20, fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)" }}>Perfect Fit for Everyone</h2>
-              <p style={{ fontSize: "1rem", color: "#666", lineHeight: 1.7, fontWeight: 300 }}>
+              <p style={{ fontSize: "1rem", color: "#000000ff", lineHeight: 1.7, fontWeight: 300 }}>
                 Our range is tailored to suit men, women, and kids with precision fits and modern designs. We focus on flexibility, comfort, and style, ensuring every piece feels made just for you.
               </p>
             </div>
@@ -369,7 +363,7 @@ export default async function HomePage() {
       <section className="section-padding">
         <div className="container-app">
           <div className="grid-editorial-2">
-            <div style={{ position: "relative" }}>
+            <Link href="/products?category=4" style={{ position: "relative", display: "block", overflow: "hidden" }}>
               <div className="brand-value-image-container" style={{ position: "relative", height: "clamp(400px, 80vh, 650px)", width: "100%", zIndex: 2 }}>
                 <Image
                   src="/images/fashion/hero.png"
@@ -377,15 +371,16 @@ export default async function HomePage() {
                   fill
                   style={{ objectFit: "cover", objectPosition: "center top" }}
                   sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="hover-zoom"
                 />
               </div>
-            </div>
+            </Link>
             <div style={{ paddingRight: "4vw" }}>
               <p className="text-tracked" style={{ fontSize: "0.75rem", color: "#888", marginBottom: 24, fontWeight: 700 }}>Brand Value</p>
               <h2 style={{ fontSize: "clamp(1.5rem, 5vw, 2rem)", marginBottom: 32, letterSpacing: "-0.04em" }}>
                 Why Choose Aion Luxury
               </h2>
-              <p style={{ fontSize: "1rem", lineHeight: 1.7, color: "#444", marginBottom: 40, fontWeight: 300, maxWidth: "500px", textAlign: "justify" }}>
+              <p style={{ fontSize: "1rem", lineHeight: 1.7, color: "#000000ff", marginBottom: 40, fontWeight: 300, maxWidth: "500px", textAlign: "justify" }}>
                 Aion Luxury stands apart by combining premium craftsmanship with everyday practicality. Our focus on quality materials, refined design, and customer satisfaction ensures that every product delivers value beyond expectations. We prioritize comfort without compromising on style, offering versatile pieces that seamlessly fit into your lifestyle. With a wide range of options for men, women, and kids, we bring convenience and consistency to your wardrobe. Our commitment to innovation, durability, and affordability makes Aion Luxury your trusted choice for essentials that last longer and feel better—every time you wear them.
               </p>
               <Link href="/products" style={{
@@ -408,23 +403,23 @@ export default async function HomePage() {
         <div className="container-app">
           <div style={{ textAlign: "center", marginBottom: 64 }}>
             <h2 style={{ marginBottom: 24, fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)" }}>Shop Smart, Dress Better</h2>
-            <p style={{ fontSize: "1.05rem", color: "#666", maxWidth: "800px", margin: "0 auto", lineHeight: 1.7, fontWeight: 300 }}>
+            <p style={{ fontSize: "1.05rem", color: "#000000ff", maxWidth: "800px", margin: "0 auto", lineHeight: 1.7, fontWeight: 300 }}>
               Upgrade your wardrobe with essentials that blend luxury and practicality. Aion Luxury makes it easy to find stylish, comfortable, and reliable clothing for every day. Experience the difference today.
             </p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(340px, 100%), 1fr))", gap: 16 }}>
-            <div style={{ position: "relative", height: 600 }}>
-              <Image src="/images/categories/coats.png" alt="Outerwear" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" />
-              <div style={{ position: "absolute", bottom: 40, left: 40, color: "#fff" }}>
+            <Link href="/products" style={{ position: "relative", height: 600, display: "block", overflow: "hidden" }}>
+              <Image src="/images/categories/coats.png" alt="Outerwear" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" className="hover-zoom" />
+              <div style={{ position: "absolute", bottom: 40, left: 80, color: "#000000ff" }}>
                 <p className="text-tracked" style={{ fontSize: "0.85rem", fontWeight: 700 }}>01 / Architectural Outerwear</p>
               </div>
-            </div>
-            <div style={{ position: "relative", height: 600 }}>
-              <Image src="/images/fashion/accessories.png" alt="Accessories" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" />
-              <div style={{ position: "absolute", bottom: 40, left: 40, color: "#fff" }}>
+            </Link>
+            <Link href="/products" style={{ position: "relative", height: 600, display: "block", overflow: "hidden" }}>
+              <Image src="/images/fashion/accessories.png" alt="Accessories" fill style={{ objectFit: "cover" }} sizes="(max-width: 768px) 100vw, 50vw" className="hover-zoom" />
+              <div style={{ position: "absolute", bottom: 40, left: 80, color: "#000000ff" }}>
                 <p className="text-tracked" style={{ fontSize: "0.85rem", fontWeight: 700 }}>02 / Curated Accessories</p>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </section>

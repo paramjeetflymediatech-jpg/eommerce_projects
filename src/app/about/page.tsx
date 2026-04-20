@@ -7,9 +7,18 @@ export default function AboutPage() {
     <div className={styles.layout}>
       {/* Hero Section */}
       <section className={styles.hero}>
-        <div className={`container-app ${styles.heroContainer}`}>
-          <h1 className={styles.heroTitle}>A New Era <br/> Of Attire</h1>
-          <p className={styles.heroSubtitle}>AION LUXURY: REDEFINING THE MODERN WARDROBE SINCE 2024</p>
+        <div className={`container-app ${styles.heroGrid}`}>
+          <div className={styles.heroTextSide}>
+            <h1 className={styles.heroTitle}>A New Era <br/> Of Attire</h1>
+            <p className={styles.heroSubtitle}>AION LUXURY: REDEFINING THE MODERN WARDROBE SINCE 2024</p>
+          </div>
+          <div className={styles.heroImageSide}>
+            <img 
+              src="/images/story-hero.png" 
+              alt="Luxury Fashion Hero" 
+              className={styles.heroImage}
+            />
+          </div>
         </div>
       </section>
 

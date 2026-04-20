@@ -411,7 +411,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -436,8 +438,8 @@
 
 .closeButton {
   position: absolute;
-  top: 30;
-  right: 30;
+  top: 32px;
+  right: 32px;
   background: none;
   border: none;
   font-size: 2rem;
@@ -458,7 +460,7 @@
 
 .lightboxCounter {
   position: absolute;
-  bottom: 30;
+  bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 0.8rem;

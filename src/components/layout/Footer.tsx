@@ -10,7 +10,7 @@ export default function Footer() {
       style={{
         background: "#ffffff",
         borderTop: "1px solid #f5f5f5",
-        padding: "clamp(60px, 8vw, 80px) 0 clamp(30px, 5vw, 50px)",
+        padding: "24px 0",
       }}
     >
       <div className="container-app">
@@ -104,11 +104,11 @@ export default function Footer() {
           display: grid;
           grid-template-columns: 1.5fr 1fr 1fr 1fr;
           gap: 60px;
-          margin-bottom: 80px;
+          margin-bottom: 40px;
         }
         .footer-bottom {
           border-top: 1px solid #f5f5f5;
-          padding-top: 40px;
+          padding-top: 24px;
           display: flex;
           justify-content: space-between;
           align-items: center;
