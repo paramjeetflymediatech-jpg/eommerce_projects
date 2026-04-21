@@ -108,7 +108,7 @@ export default function RegisterPage() {
               id="reg-email"
               required
               type="email"
-              placeholder="you@example.com"
+              placeholder="Enter your email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
               style={styles.input}

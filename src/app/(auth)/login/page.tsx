@@ -47,7 +47,7 @@ function LoginForm() {
           <img src="/logo.png" alt="Aion Luxury" style={s.visualLogo} />
           <h2 style={s.visualSlogan}>The Atelier of Modern Elegance</h2>
           <div style={s.aestheticDivider} />
-          <p style={s.visualCreds}>Standardized Excellence since 1994</p>
+          {/* <p style={s.visualCreds}>Standardized Excellence since 1994</p> */}
         </div>
       </div>
 
@@ -72,7 +72,7 @@ function LoginForm() {
               <input
                 required
                 type="email"
-                placeholder="email@aionluxury.com"
+                placeholder="Enter your email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 style={s.input}
@@ -81,8 +81,8 @@ function LoginForm() {
 
             <div style={s.field}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <label style={s.label}>Security Code</label>
-                <Link href="/forgot-password" style={s.forgotLink}>Security Help?</Link>
+                <label style={s.label}>Password</label>
+                <Link href="/forgot-password" style={s.forgotLink}>Forgot Password?</Link>
               </div>
               <div style={{ position: "relative" }}>
                 <input
