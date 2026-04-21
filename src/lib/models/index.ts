@@ -11,6 +11,7 @@ import Address from "./Address";
 import WishlistItem from "./WishlistItem";
 import Migration from "./Migration";
 import ProductVariant from "./ProductVariant";
+import Coupon from "./Coupon";
 
 // ── Associations ─────────────────────────────────────────────────────────────
 
@@ -116,5 +117,6 @@ export {
   WishlistItem,
   Migration,
   ProductVariant,
+  Coupon,
 };
 

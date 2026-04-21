@@ -38,9 +38,13 @@ export async function POST(req: NextRequest) {
     await Address.update({ isDefault: false }, { where: { userId } });
   }
 
-  // If this is the first address, make it default automatically
+  // Limit to 2 addresses
   const count = await Address.count({ where: { userId } });
-  const shouldBeDefault = isDefault || count === 0;
+  if (count >= 2) {
+    return apiError("Limit reached. You can only save up to 2 addresses.", 400);
+  }
+
+  const shouldBeDefault = count === 0 || isDefault;
 
   const address = await Address.create({
     userId,

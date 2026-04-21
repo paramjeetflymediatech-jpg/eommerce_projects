@@ -18,13 +18,18 @@ function CheckoutContent() {
   const [loading, setLoading] = useState(false);
   const [showFailedPopup, setShowFailedPopup] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
-  const [discountCode, setDiscountCode] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<any>(null);
+  const [couponError, setCouponError] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
   
   const [form, setForm] = useState({ 
-    name: "", email: "", street: "", city: "", state: "", zip: "", country: "US", phone: "" 
+    name: "", email: "", street: "", city: "", state: "", zip: "", country: "IN", phone: "+91" 
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
+  const [loadingAddresses, setLoadingAddresses] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -49,6 +54,45 @@ function CheckoutContent() {
       }));
     }
   }, [session]);
+
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      if (status === "authenticated") {
+        setLoadingAddresses(true);
+        try {
+          const res = await fetch("/api/addresses");
+          const data = await res.json();
+          if (res.ok) {
+            setSavedAddresses(data.addresses || []);
+            // Auto-select default if form is empty
+            const def = data.addresses.find((a: any) => a.isDefault);
+            if (def && !form.street) {
+              handleSelectAddress(def);
+            }
+          }
+        } catch (err) {
+          console.error("Failed to fetch addresses:", err);
+        } finally {
+          setLoadingAddresses(false);
+        }
+      }
+    };
+    fetchAddresses();
+  }, [status]);
+
+  const handleSelectAddress = (addr: any) => {
+    setForm({
+      name: addr.name || form.name,
+      email: form.email, // keep session email
+      street: addr.street,
+      city: addr.city,
+      state: addr.state,
+      zip: addr.zip,
+      country: addr.country,
+      phone: addr.phone.startsWith("+91") ? addr.phone : "+91" + addr.phone.replace(/\D/g, '').slice(-10),
+    });
+    setErrors({});
+  };
 
   useEffect(() => {
     if (mounted && items.length === 0 && !loading) {
@@ -76,7 +120,7 @@ function CheckoutContent() {
     }
 
     if (!form.phone.trim()) newErrors.phone = "Phone number is required";
-    else if (!/^\d{10,15}$/.test(form.phone.trim())) newErrors.phone = "Please enter a valid 10-15 digit phone number";
+    else if (!/^\+91\d{10}$/.test(form.phone.trim())) newErrors.phone = "Phone must be +91 followed by 10 digits";
 
     if (!form.street.trim()) newErrors.street = "Shipping address is required";
     else if (form.street.trim().length < 5) newErrors.street = "Please enter a complete, real address";
@@ -99,6 +143,33 @@ function CheckoutContent() {
     }
   };
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setApplyingCoupon(true);
+    setCouponError("");
+    try {
+      const res = await fetch("/api/coupons/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: couponCode, subtotal }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAppliedCoupon(data);
+        setDiscountAmount(data.discountAmount);
+        setCouponError("");
+      } else {
+        setCouponError(data.error || "Invalid coupon");
+        setAppliedCoupon(null);
+        setDiscountAmount(0);
+      }
+    } catch (err) {
+      setCouponError("Failed to validate coupon");
+    } finally {
+      setApplyingCoupon(false);
+    }
+  };
+
   const handlePlaceOrder = async () => {
     setLoading(true);
     try {
@@ -112,6 +183,7 @@ function CheckoutContent() {
             quantity: i.quantity 
           })),
           shippingAddress: { ...form },
+          couponCode: appliedCoupon?.code || null,
         }),
       });
       const data = await res.json();
@@ -204,6 +276,43 @@ function CheckoutContent() {
               <StepHeader num={2} title="Information" subtitle={form.name ? `${form.name} (${form.email})` : ""} isCompleted={activeStep > 2} />
               {activeStep === 2 && (
                 <div className={s.stepContent}>
+                  
+                  {/* Saved Addresses Section */}
+                  {savedAddresses.length > 0 && (
+                    <div style={{ marginBottom: 32, paddingBottom: 24, borderBottom: "1px solid #f0f0f0" }}>
+                      <h4 style={{ fontSize: "0.85rem", fontWeight: 700, marginBottom: 16, color: "#111" }}>
+                        Saved Addresses Found ({savedAddresses.length})
+                      </h4>
+                      <div style={{ display: "flex", gap: 12, overflowX: "auto", paddingBottom: 8 }}>
+                        {savedAddresses.map((addr) => (
+                          <div 
+                            key={addr.id}
+                            onClick={() => handleSelectAddress(addr)}
+                            style={{ 
+                              flexShrink: 0,
+                              width: 240,
+                              padding: 16,
+                              border: "1px solid",
+                              borderColor: form.street === addr.street ? "#000" : "#eee",
+                              background: form.street === addr.street ? "#fafafa" : "#fff",
+                              cursor: "pointer",
+                              fontSize: "0.8rem",
+                              position: "relative"
+                            }}
+                          >
+                            {form.street === addr.street && (
+                              <div style={{ position: "absolute", top: 8, right: 8, color: "#2D9E67", fontWeight: 700 }}>✓</div>
+                            )}
+                            <div style={{ fontWeight: 700, marginBottom: 4 }}>{addr.name}</div>
+                            <div style={{ color: "#666", lineHeight: 1.4, height: 44, overflow: "hidden" }}>{addr.street}</div>
+                            <div style={{ color: "#666" }}>{addr.city}, {addr.state} {addr.zip}</div>
+                            {addr.isDefault && <div style={{ marginTop: 8, fontSize: "0.7rem", color: "#888", fontStyle: "italic" }}>Default Address</div>}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <div className={s.formGrid}>
                     <div className={s.spanTwo}>
                       <label className={s.label}>Full Name <span style={{ color: "#ff4d4f" }}>*</span></label>
@@ -231,19 +340,22 @@ function CheckoutContent() {
                     </div>
                     <div>
                       <label className={s.label}>Phone Number <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <input 
-                        required 
-                        maxLength={15}
-                        className={s.input}
-                        style={{ borderColor: errors.phone ? "#ff4d4f" : "#e5e7eb" }} 
-                        value={form.phone} 
-                        onChange={e => { 
-                          const numericValue = e.target.value.replace(/\D/g, '');
-                          setForm({...form, phone: numericValue}); 
-                          if(errors.phone) setErrors({...errors, phone: ""}); 
-                        }} 
-                        placeholder="Enter your phone number" 
-                      />
+                      <div style={{ position: "relative" }}>
+                        <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: "0.95rem", color: "#000", fontWeight: 600 }}>+91</span>
+                        <input 
+                          required 
+                          maxLength={10}
+                          className={s.input}
+                          style={{ borderColor: errors.phone ? "#ff4d4f" : "#e5e7eb", paddingLeft: "45px" }} 
+                          value={form.phone.replace("+91", "")} 
+                          onChange={e => { 
+                            const numericValue = e.target.value.replace(/\D/g, '').slice(0, 10);
+                            setForm({...form, phone: "+91" + numericValue}); 
+                            if(errors.phone) setErrors({...errors, phone: ""}); 
+                          }} 
+                          placeholder="9876543210" 
+                        />
+                      </div>
                       {errors.phone && <p className={s.errorText}>{errors.phone}</p>}
                     </div>
                     <div className={s.spanTwo}>
@@ -340,12 +452,36 @@ function CheckoutContent() {
                 <div style={{ display: "flex", gap: 8 }}>
                   <input 
                     className={s.input}
-                    value={discountCode} 
-                    onChange={e => setDiscountCode(e.target.value)} 
+                    style={{ borderColor: couponError ? "#ff4d4f" : appliedCoupon ? "#2D9E67" : "#e5e7eb" }}
+                    value={couponCode} 
+                    onChange={e => setCouponCode(e.target.value.toUpperCase())} 
                     placeholder="Enter code" 
+                    disabled={appliedCoupon || applyingCoupon}
                   />
-                  <button className={s.applyBtn} onClick={() => setDiscountAmount(0)}>Apply</button>
+                  {appliedCoupon ? (
+                    <button 
+                      className={s.applyBtn} 
+                      style={{ background: "#f5f5f5", color: "#666" }}
+                      onClick={() => {
+                        setAppliedCoupon(null);
+                        setDiscountAmount(0);
+                        setCouponCode("");
+                      }}
+                    >
+                      Remove
+                    </button>
+                  ) : (
+                    <button 
+                      className={s.applyBtn} 
+                      disabled={applyingCoupon || !couponCode}
+                      onClick={handleApplyCoupon}
+                    >
+                      {applyingCoupon ? "..." : "Apply"}
+                    </button>
+                  )}
                 </div>
+                {couponError && <p className={s.errorText} style={{ marginTop: 4 }}>{couponError}</p>}
+                {appliedCoupon && <p style={{ color: "#2D9E67", fontSize: "0.75rem", fontWeight: 600, marginTop: 4 }}>✓ Coupon applied!</p>}
               </div>
 
               <div className={s.priceRow}>

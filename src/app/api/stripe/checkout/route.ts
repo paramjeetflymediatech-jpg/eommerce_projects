@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { items, shippingAddress } = body;
+  const { items, shippingAddress, couponCode } = body;
 
   if (!items?.length) return apiError("No items in cart");
 
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
   // Fetch products and build line items
   const lineItems = [];
-  let orderTotal = 0;
+  let subtotal = 0;
 
   for (const item of items) {
     const product = await Product.findByPk(item.productId);
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
     const price = variant?.price ?? product.price;
     const itemTotal = Number(price) * item.quantity;
-    orderTotal += itemTotal;
+    subtotal += itemTotal;
 
     lineItems.push({
       price_data: {
@@ -71,10 +71,55 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // ─── Apply Coupon ────────────────────────────────────────────────────────
+  let discountAmount = 0;
+  let validatedCoupon = null;
+  if (couponCode) {
+    const { Coupon } = await import("@/lib/models");
+    validatedCoupon = await Coupon.findOne({
+      where: { code: couponCode.toUpperCase(), isActive: true }
+    });
+
+    if (validatedCoupon) {
+      // Basic validation (duplicated from validate route for security)
+      const isExpired = validatedCoupon.expiryDate && new Date(validatedCoupon.expiryDate) < new Date();
+      const limitReached = validatedCoupon.usageLimit && validatedCoupon.usedCount >= validatedCoupon.usageLimit;
+      const minAmountMet = subtotal >= Number(validatedCoupon.minOrderAmount);
+
+      if (!isExpired && !limitReached && minAmountMet) {
+        if (validatedCoupon.discountType === "PERCENTAGE") {
+          discountAmount = (subtotal * Number(validatedCoupon.discountValue)) / 100;
+          if (validatedCoupon.maxDiscountAmount && discountAmount > Number(validatedCoupon.maxDiscountAmount)) {
+            discountAmount = Number(validatedCoupon.maxDiscountAmount);
+          }
+        } else {
+          discountAmount = Number(validatedCoupon.discountValue);
+        }
+        discountAmount = Math.min(discountAmount, subtotal);
+      }
+    }
+  }
+
+  // Calculate final totals for Stripe
+  // We'll apply the discount proportionally to all items to keep line items matched
+  const discountFactor = subtotal > 0 ? (subtotal - discountAmount) / subtotal : 0;
+  
+  const finalLineItems = lineItems.map(item => ({
+    ...item,
+    price_data: {
+      ...item.price_data,
+      unit_amount: Math.round(item.price_data.unit_amount * discountFactor),
+    }
+  }));
+
+  // Calculate shipping/tax/etc if needed (based on the original subtotal logic in the frontend)
+  // For simplicity, we just use the line items.
+  const orderTotal = subtotal + (subtotal >= 2500 ? 0 : 50) + (subtotal * 0.02) + (subtotal * 0.05) - discountAmount;
+
   // Create Stripe checkout session
   const checkoutSession = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
-    line_items: lineItems,
+    line_items: finalLineItems,
     mode: "payment",
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout?failed=true`,
@@ -93,7 +138,14 @@ export async function POST(req: NextRequest) {
       total: orderTotal,
       shippingAddress: shippingAddress,
       stripeSessionId: checkoutSession.id,
+      couponCode: validatedCoupon?.code || undefined,
+      discountAmount: discountAmount,
     });
+
+    // Update coupon usage count if applied
+    if (validatedCoupon) {
+      await validatedCoupon.increment("usedCount");
+    }
 
     // Create OrderItems
     for (const item of items) {

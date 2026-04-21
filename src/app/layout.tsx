@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "./providers";
 import StorefrontLayout from "@/components/layout/StorefrontLayout";
+import ScrollToTop from "@/components/common/ScrollToTop";
 
 const appName = process.env.NEXT_PUBLIC_APP_NAME || "Aion Luxury";
 const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body suppressHydrationWarning>
+        <ScrollToTop />
         <Providers>
           <StorefrontLayout>{children}</StorefrontLayout>
         </Providers>

@@ -203,9 +203,9 @@ export default function Header() {
             ✕
           </button>
         </div>
-
-        {/* NAV */}
-        <div style={{ padding: "40px 32px", flex: 1, display: "flex", flexDirection: "column" }}>
+        
+        {/* NAV SCROLLABLE */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "40px 32px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
             {navLinks.map((item) => (
               <Link
@@ -224,73 +224,100 @@ export default function Header() {
               </Link>
             ))}
           </div>
+        </div>
 
-          <div style={{ marginTop: "auto", borderTop: "1px solid #f5f5f5", paddingTop: "32px" }}>
-            {session ? (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <p style={{ fontSize: "0.85rem", color: "#888", margin: 0 }}>
-                  Logged in as <span style={{ color: "#000", fontWeight: 600 }}>{session.user?.name}</span>
-                </p>
-                <div style={{ display: "flex", gap: "24px" }}>
-                  <Link
-                    href={session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account"}
-                    onClick={() => setMobileOpen(false)}
-                    style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", textDecoration: "none", color: "#000" }}
-                  >
-                    {session?.user?.role === "ADMIN" ? "Admin Portal" : "My Account"}
-                  </Link>
-                  <button
-                    onClick={() => signOut()}
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "#888",
-                      fontSize: "0.85rem",
-                      fontWeight: 700,
-                      letterSpacing: "normal",
-                      padding: 0
-                    }}
-                  >
-                    Logout
-                  </button>
-                </div>
+        {/* DRAWER FOOTER (STUCK TO BOTTOM) */}
+        <div style={{ padding: "32px", borderTop: "1px solid #f5f5f5", background: "#fff" }}>
+          {session ? (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+              <div style={{ 
+                width: 60, 
+                height: 60, 
+                borderRadius: "50%", 
+                overflow: "hidden", 
+                background: "#f0f0f0", 
+                border: "1px solid #eee",
+                display: "flex", 
+                alignItems: "center", 
+                justifyContent: "center"
+              }}>
+                {session.user.avatar || session.user.image ? (
+                  <img 
+                    src={(session.user.avatar || session.user.image) as string} 
+                    alt="User" 
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                  />
+                ) : (
+                  <span style={{ fontSize: "1.5rem", fontWeight: 700, color: "#000" }}>
+                    {(session.user?.name || "U")[0].toUpperCase()}
+                  </span>
+                )}
               </div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <Link
-                  href="/login"
-                  onClick={() => setMobileOpen(false)}
-                  style={{
-                    fontSize: "0.85rem",
-                    fontWeight: 700,
-                    letterSpacing: "normal",
-                    textDecoration: "none",
-                    color: "#000",
-                    background: "#f5f5f5",
-                    padding: "16px",
-                    textAlign: "center"
-                  }}
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setMobileOpen(false)}
-                  style={{
-                    fontSize: "0.85rem",
-                    fontWeight: 700,
-                    letterSpacing: "normal",
-                    textDecoration: "none",
-                    color: "#888",
-                    textAlign: "center"
-                  }}
-                >
-                  Create Account
-                </Link>
-              </div>
-            )}
-          </div>
+              <p style={{ 
+                fontSize: "0.85rem", 
+                color: "#111", 
+                fontWeight: 500, 
+                margin: 0, 
+                textAlign: "center",
+                wordBreak: "break-all"
+              }}>
+                {session?.user?.email}
+              </p>
+              <button
+                onClick={() => signOut()}
+                style={{
+                  background: "#000",
+                  color: "#fff",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "0.85rem",
+                  fontWeight: 700,
+                  padding: "16px",
+                  width: "100%",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  borderRadius: "2px"
+                }}
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                style={{
+                  fontSize: "0.85rem",
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  color: "#fff",
+                  background: "#000",
+                  padding: "16px",
+                  textAlign: "center",
+                  borderRadius: "2px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em"
+                }}
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/register"
+                onClick={() => setMobileOpen(false)}
+                style={{
+                  fontSize: "0.8rem",
+                  fontWeight: 700,
+                  textDecoration: "none",
+                  color: "#888",
+                  textAlign: "center",
+                  padding: "8px"
+                }}
+              >
+                Create Account
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
@@ -315,3 +342,4 @@ export default function Header() {
     </>
   );
 }
+

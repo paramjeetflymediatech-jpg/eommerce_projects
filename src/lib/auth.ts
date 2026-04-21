@@ -86,7 +86,7 @@ export const authOptions = {
       
       return true;
     },
-    async jwt({ token, user }: { token: any; user: any }) {
+    async jwt({ token, user, trigger, session }: { token: any; user: any; trigger?: string; session?: any }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
@@ -108,6 +108,13 @@ export const authOptions = {
           console.error("Failed to save JWT to DB:", e);
         }
       }
+
+      // Handle session updates (e.g., name/avatar change)
+      if (trigger === "update" && session) {
+        if (session.name) token.name = session.name;
+        if (session.avatar) token.avatar = session.avatar;
+      }
+
       return token;
     },
     async session({ session, token }: { session: any; token: any }) {

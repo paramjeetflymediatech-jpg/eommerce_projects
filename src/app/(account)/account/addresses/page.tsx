@@ -14,7 +14,7 @@ interface Address {
   isDefault: boolean;
 }
 
-const emptyForm = { name: "", street: "", city: "", state: "", zip: "", country: "IN", phone: "" };
+const emptyForm = { name: "", street: "", city: "", state: "", zip: "", country: "IN", phone: "+91" };
 
 export default function AddressesPage() {
   const { data: session } = useSession();
@@ -46,6 +46,10 @@ export default function AddressesPage() {
   }, []);
 
   const openAdd = () => {
+    if (addresses.length >= 2) {
+      setMsg({ text: "You can only save up to 2 addresses.", type: "error" });
+      return;
+    }
     setForm(emptyForm);
     setEditId(null);
     setMsg({ text: "", type: "" });
@@ -68,8 +72,20 @@ export default function AddressesPage() {
   };
 
   const handleSave = async () => {
-    if (!form.name || !form.street || !form.city || !form.state || !form.zip || !form.phone) {
-      setMsg({ text: "All fields are required.", type: "error" });
+    if (!form.name.trim()) {
+      setMsg({ text: "Full Name is required.", type: "error" });
+      return;
+    }
+    if (!/^\+91\d{10}$/.test(form.phone.trim())) {
+      setMsg({ text: "Phone must be +91 followed by 10 digits.", type: "error" });
+      return;
+    }
+    if (!/^\d{6}$/.test(form.zip.trim())) {
+      setMsg({ text: "Please enter a valid 6-digit Pincode.", type: "error" });
+      return;
+    }
+    if (!form.street.trim() || !form.city.trim() || !form.state.trim()) {
+      setMsg({ text: "All fields marked with * are required.", type: "error" });
       return;
     }
     setSaving(true);
@@ -128,9 +144,19 @@ export default function AddressesPage() {
         </div>
         <button
           onClick={openAdd}
-          style={{ background: "#000", color: "#fff", border: "none", padding: "12px 24px", fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer" }}
+          disabled={addresses.length >= 2}
+          style={{ 
+            background: addresses.length >= 2 ? "#ccc" : "#000", 
+            color: "#fff", 
+            border: "none", 
+            padding: "12px 24px", 
+            fontSize: "0.85rem", 
+            fontWeight: 700, 
+            letterSpacing: "normal", 
+            cursor: addresses.length >= 2 ? "not-allowed" : "pointer" 
+          }}
         >
-          + Add New
+          {addresses.length >= 2 ? "Limit Reached" : "+ Add New"}
         </button>
       </div>
 
@@ -163,7 +189,19 @@ export default function AddressesPage() {
             </div>
             <div>
               <label style={s.label}>Phone *</label>
-              <input style={s.input} value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
+              <div style={{ position: "relative" }}>
+                <span style={{ position: "absolute", left: 0, top: 12, fontSize: "0.9rem", color: "#000", fontWeight: 700 }}>+91</span>
+                <input 
+                  style={{ ...s.input, paddingLeft: 30 }} 
+                  value={form.phone.replace("+91", "")} 
+                  maxLength={10}
+                  onChange={e => {
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setForm({ ...form, phone: "+91" + val });
+                  }} 
+                  placeholder="9876543210"
+                />
+              </div>
             </div>
             <div>
               <label style={s.label}>Pincode *</label>

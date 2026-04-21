@@ -58,10 +58,10 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                 );
               })}
             </nav>
-            <div style={s.sidebarInfo}>
+            <div style={s.sidebarInfo} className="desktop-sidebar-info">
               <p style={s.userEmail}>{session?.user?.email}</p>
-              <button 
-                onClick={() => router.push("/api/auth/signout")} 
+              <button
+                onClick={() => router.push("/api/auth/signout")}
                 style={s.logoutBtn}
               >
                 Sign Out
@@ -70,17 +70,32 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           </aside>
 
           {/* Main Account Content */}
-          <main style={s.content}>
+          <main style={s.content} className="account-content-area">
             {children}
           </main>
+
+          {/* Mobile Only Footer Info (Sign Out) */}
+          <div style={s.sidebarInfo} className="mobile-footer-info">
+            <p style={s.userEmail}>{session?.user?.email || "amandeepkumar.flymediatech@gmail.com"}</p>
+            <button
+              onClick={() => router.push("/api/auth/signout")}
+              style={s.logoutBtn}
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
       </div>
 
       <style>{`
+        .mobile-footer-info {
+          display: none;
+        }
         @media (max-width: 991px) {
           .account-main-grid {
-            grid-template-columns: 1fr !important;
-            gap: 48px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 32px !important;
           }
           .account-sidebar {
             position: relative !important;
@@ -88,12 +103,19 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           }
           .account-nav {
             display: grid !important;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)) !important;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
             gap: 8px !important;
-            margin-bottom: 32px !important;
           }
-          .account-sidebar-info {
+          .desktop-sidebar-info {
             display: none !important;
+          }
+          .mobile-footer-info {
+            display: block !important;
+            margin-top: 24px;
+            order: 99;
+          }
+          .account-content-area {
+            order: 2;
           }
         }
       `}</style>
@@ -110,8 +132,8 @@ const s: Record<string, React.CSSProperties> = {
   mainGrid: { display: "grid", gridTemplateColumns: "240px 1fr", gap: "clamp(32px, 5vw, 64px)" },
   sidebar: { position: "sticky", top: 80, height: "fit-content" },
   nav: { display: "flex", flexDirection: "column", gap: 4, marginBottom: 32 },
-  navItem: { 
-    display: "flex", alignItems: "center", gap: 12, padding: "14px 20px", 
+  navItem: {
+    display: "flex", alignItems: "center", gap: 12, padding: "14px 20px",
     textDecoration: "none", fontSize: "0.9rem", transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
     letterSpacing: "normal"
   },
@@ -119,9 +141,9 @@ const s: Record<string, React.CSSProperties> = {
   navLabel: { transition: "transform 0.2s" },
   sidebarInfo: { padding: "20px", background: "#fff", border: "1px solid #eee" },
   userEmail: { fontSize: "0.75rem", color: "#888", marginBottom: 12, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis" },
-  logoutBtn: { 
-    width: "100%", padding: "10px", background: "#000", color: "#fff", border: "none", 
-    fontSize: "0.8rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer" 
+  logoutBtn: {
+    width: "100%", padding: "10px", background: "#000", color: "#fff", border: "none",
+    fontSize: "0.8rem", fontWeight: 700, letterSpacing: "normal", cursor: "pointer"
   },
   content: { background: "#fff", border: "1px solid #eee", padding: "clamp(24px, 5vw, 48px)", boxShadow: "0 1px 3px rgba(0,0,0,0.02)" },
   center: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontStyle: "italic", color: "#888" },
