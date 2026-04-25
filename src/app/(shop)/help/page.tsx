@@ -10,9 +10,9 @@ export default function HelpPage() {
     { q: "How do I track my order?", a: "Once your order has shipped, you will receive an email with a tracking number and a link to track your package." },
     { q: "What payment methods do you accept?", a: "We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and Google Pay." },
     { q: "Can I change or cancel my order?", a: "To ensure fast delivery, we process orders quickly. You can change or cancel your order within 30 minutes of placing it." },
-    { q: "Do you ship internationally?", a: "Yes! We ship to over 50 countries worldwide. International shipping rates and delivery times vary by location." },
+    { q: "Do you ship internationally?", a: "Currently, we may offer international shipping depending on the destination. Delivery timelines and charges vary. See our Shipping Policy for details." },
     { q: "How do I use a discount code?", a: "Add your desired items to the cart and proceed to checkout. On the checkout page, enter your code in the 'Discount Code' field and click 'Apply'." },
-    { q: "What is your return policy?", a: "We offer a 30-day hassle-free return policy. See our full Return Policy page for details." },
+    { q: "What is your return policy?", a: "We offer a 7-day return policy for unused and unworn items in original packaging. See our full Refund & Return Policy page for details." },
   ];
 
   return (

@@ -249,6 +249,46 @@ export async function sendOrderStatusUpdateEmail(email: string, order: any) {
   });
 }
 
+export async function sendContactInquiryEmail(data: any) {
+  const content = `
+    <h1>New Contact Inquiry</h1>
+    <p>You have received a new message from the contact form.</p>
+    <div style="background-color: #f3f4f6; border-radius: 8px; padding: 24px; margin: 32px 0; border: 1px solid #e5e7eb;">
+      <p style="margin: 0 0 8px;"><strong>From:</strong> ${data.firstName} ${data.lastName} (${data.email})</p>
+      <p style="margin: 0 0 8px;"><strong>Subject:</strong> ${data.subject}</p>
+      <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; white-space: pre-wrap; color: #374151;">
+        ${data.message}
+      </div>
+    </div>
+    <p style="font-size: 13px; color: #6b7280; margin-top: 32px;">This inquiry was sent from the Aion Luxury contact page.</p>
+  `;
+  await transporter.sendMail({
+    from: emailFrom,
+    to: "honey.sood1987@gmail.com",
+    subject: `New Inquiry: ${data.subject}`,
+    html: baseEmailLayout(content, `New message from ${data.firstName} ${data.lastName}`),
+  });
+}
+
+export async function sendContactConfirmationEmail(email: string, name: string) {
+  const content = `
+    <h1>Message Received</h1>
+    <p>Hello ${name},</p>
+    <p>Thank you for reaching out to Aion Luxury. We have received your inquiry and our team will get back to you as soon as possible.</p>
+    <p>In the meantime, feel free to explore our latest collections.</p>
+    <div style="text-align: center; margin: 40px 0;">
+      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}" class="btn">Explore Collections</a>
+    </div>
+    <p>Best regards,<br/>The Aion Luxury Team</p>
+  `;
+  await transporter.sendMail({
+    from: emailFrom,
+    to: email,
+    subject: "We've received your message | Aion Luxury",
+    html: baseEmailLayout(content, "We've received your inquiry and will get back to you shortly."),
+  });
+}
+
 /**
  * Helpers
  */

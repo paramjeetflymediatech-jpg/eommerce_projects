@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Refund & Return Policy | Aion Luxury",
-  description: "Learn about our hassle-free refund and return process at Aion Luxury.",
+  title: "Shipping Policy | Aion Luxury",
+  description: "Learn about our shipping process, timelines, and terms at Aion Luxury.",
 };
 
-export default function ReturnsPage() {
+export default function ShippingPage() {
   return (
     <div className="container-app section-padding animate-fade">
       <div style={{ maxWidth: 850, margin: "0 auto" }}>
@@ -17,7 +17,7 @@ export default function ReturnsPage() {
             fontWeight: 400,
             letterSpacing: "-0.03em"
           }}>
-            Refund & Return Policy
+            Shipping Policy
           </h1>
           <div style={{ 
             height: 1, 
@@ -32,7 +32,7 @@ export default function ReturnsPage() {
             maxWidth: "600px",
             margin: "0 auto"
           }}>
-            At Aion Luxury, customer satisfaction is our priority. If you are not completely satisfied with your purchase, we offer a hassle-free return and refund process.
+            At Aion Luxury, we are committed to delivering your orders quickly, safely, and efficiently. Our goal is to provide a seamless delivery experience.
           </p>
         </header>
 
@@ -54,7 +54,7 @@ export default function ReturnsPage() {
               1. Overview
             </h2>
             <p>
-              We strive to ensure every piece you receive from Aion Luxury meets our highest standards. However, if you're not entirely happy with your order, we are here to assist you with returns or exchanges subject to the terms below.
+              This Shipping Policy outlines our commitment to excellence in logistics. From the moment you place an order to its arrival at your doorstep, we prioritize care and precision.
             </p>
           </section>
 
@@ -66,33 +66,12 @@ export default function ReturnsPage() {
               color: "var(--text-primary)",
               fontFamily: "var(--font-heading)"
             }}>
-              2. Return Eligibility
+              2. Order Processing
             </h2>
-            <p style={{ marginBottom: 20 }}>You may request a return or exchange under the following conditions:</p>
             <ul style={{ listStyle: "none", paddingLeft: 0, display: "grid", gap: 12 }}>
-              <li>• The product must be unused, unworn, and unwashed</li>
-              <li>• The item must be in its original packaging with all tags intact</li>
-              <li>• The return request must be made within <strong>7 days</strong> of delivery</li>
-              <li>• The product should not be damaged or altered in any way</li>
-            </ul>
-            <p style={{ marginTop: 20, fontStyle: "italic" }}>Items that do not meet these conditions will not be eligible for return.</p>
-          </section>
-
-          <section>
-            <h2 style={{ 
-              fontSize: "1.8rem", 
-              fontWeight: 500, 
-              marginBottom: 24, 
-              color: "var(--text-primary)",
-              fontFamily: "var(--font-heading)"
-            }}>
-              3. Non-Returnable Items
-            </h2>
-            <p style={{ marginBottom: 20 }}>The following items are not eligible for return or refund:</p>
-            <ul style={{ listStyle: "none", paddingLeft: 0, display: "grid", gap: 12 }}>
-              <li>• Innerwear or thermal wear if opened or used (for hygiene reasons)</li>
-              <li>• Products purchased during clearance or sale (unless defective)</li>
-              <li>• Gift cards or promotional items</li>
+              <li>• All orders are processed within <strong>1–2 business days</strong> after confirmation.</li>
+              <li>• Orders placed on weekends or public holidays will be processed on the next working day.</li>
+              <li>• You will receive a confirmation email and tracking details once your order is shipped.</li>
             </ul>
           </section>
 
@@ -104,31 +83,12 @@ export default function ReturnsPage() {
               color: "var(--text-primary)",
               fontFamily: "var(--font-heading)"
             }}>
-              4. Return Process
-            </h2>
-            <p style={{ marginBottom: 20 }}>To initiate a return:</p>
-            <ol style={{ paddingLeft: 20, display: "grid", gap: 16 }}>
-              <li>Contact our customer support team with your order details.</li>
-              <li>Share the reason for return along with product images (if required).</li>
-              <li>Once approved, we will arrange a pickup or provide return instructions.</li>
-              <li>Ensure the product is securely packed to avoid damage during transit.</li>
-            </ol>
-          </section>
-
-          <section>
-            <h2 style={{ 
-              fontSize: "1.8rem", 
-              fontWeight: 500, 
-              marginBottom: 24, 
-              color: "var(--text-primary)",
-              fontFamily: "var(--font-heading)"
-            }}>
-              5. Refund Policy
+              3. Shipping Timelines
             </h2>
             <ul style={{ listStyle: "none", paddingLeft: 0, display: "grid", gap: 12 }}>
-              <li>• Refunds will be processed only after the returned product passes quality inspection.</li>
-              <li>• Once approved, refunds will be credited to the original payment method within <strong>5–7 business days</strong>.</li>
-              <li>• In case of Cash on Delivery (COD) orders, refunds may be processed via bank transfer or store credit.</li>
+              <li>• <strong>Standard Delivery:</strong> 3–7 business days</li>
+              <li>• Delivery timelines may vary depending on your location and courier service availability.</li>
+              <li>• Remote or rural areas may require additional delivery time.</li>
             </ul>
           </section>
 
@@ -140,12 +100,51 @@ export default function ReturnsPage() {
               color: "var(--text-primary)",
               fontFamily: "var(--font-heading)"
             }}>
-              6. Exchange Policy
+              4. Shipping Charges
+            </h2>
+            <p>Shipping charges (if applicable) will be calculated and displayed at checkout. Free shipping may be offered on selected products or during promotional campaigns.</p>
+          </section>
+
+          <section>
+            <h2 style={{ 
+              fontSize: "1.8rem", 
+              fontWeight: 500, 
+              marginBottom: 24, 
+              color: "var(--text-primary)",
+              fontFamily: "var(--font-heading)"
+            }}>
+              5. Order Tracking
+            </h2>
+            <p>Once your order is shipped, you will receive a tracking link via email or SMS. You can use this link to track your shipment in real time through our courier partner's portal.</p>
+          </section>
+
+          <section>
+            <h2 style={{ 
+              fontSize: "1.8rem", 
+              fontWeight: 500, 
+              marginBottom: 24, 
+              color: "var(--text-primary)",
+              fontFamily: "var(--font-heading)"
+            }}>
+              6. Delivery Partners
+            </h2>
+            <p>We work with trusted courier partners to ensure safe and timely delivery. However, Aion Luxury is not responsible for delays caused by courier services or unforeseen circumstances such as weather conditions or strikes.</p>
+          </section>
+
+          <section>
+            <h2 style={{ 
+              fontSize: "1.8rem", 
+              fontWeight: 500, 
+              marginBottom: 24, 
+              color: "var(--text-primary)",
+              fontFamily: "var(--font-heading)"
+            }}>
+              7. Delivery Attempts
             </h2>
             <ul style={{ listStyle: "none", paddingLeft: 0, display: "grid", gap: 12 }}>
-              <li>• Exchanges are subject to product availability.</li>
-              <li>• If the requested size or item is unavailable, a refund or store credit will be provided.</li>
-              <li>• Exchange requests must also be made within 7 days of delivery.</li>
+              <li>• Our courier partners will make multiple delivery attempts.</li>
+              <li>• If delivery fails due to an incorrect address or unavailability, the package may be returned to us.</li>
+              <li>• Additional shipping charges may apply for re-delivery.</li>
             </ul>
           </section>
 
@@ -157,9 +156,9 @@ export default function ReturnsPage() {
               color: "var(--text-primary)",
               fontFamily: "var(--font-heading)"
             }}>
-              7. Damaged or Incorrect Products
+              8. Address & Contact Details
             </h2>
-            <p>If you receive a damaged, defective, or incorrect item, please notify us within <strong>48 hours</strong> of delivery. Share clear images or videos as proof. We will arrange a replacement or full refund at no additional cost.</p>
+            <p>Customers are responsible for providing accurate shipping details. Aion Luxury will not be liable for delays or losses due to incorrect or incomplete address information.</p>
           </section>
 
           <section>
@@ -170,9 +169,9 @@ export default function ReturnsPage() {
               color: "var(--text-primary)",
               fontFamily: "var(--font-heading)"
             }}>
-              8. Shipping Charges
+              9. Damaged or Missing Packages
             </h2>
-            <p>Return shipping may be free or chargeable depending on location and reason for return. Original shipping charges (if any) are non-refundable unless the return is due to our error.</p>
+            <p>If your order arrives damaged or incomplete, please notify us within <strong>48 hours</strong> of delivery. Share relevant images or details for verification, and we will assist you with a replacement or resolution.</p>
           </section>
 
           <section>
@@ -183,9 +182,9 @@ export default function ReturnsPage() {
               color: "var(--text-primary)",
               fontFamily: "var(--font-heading)"
             }}>
-              9. Cancellation Policy
+              10. International Shipping
             </h2>
-            <p>Orders can be cancelled before they are shipped. Once shipped, orders cannot be cancelled and must go through the return process.</p>
+            <p>Currently, international shipping availability and charges vary based on destination. Additional customs duties or taxes may apply and must be borne by the customer. Please contact us for specific international inquiries.</p>
           </section>
 
           <section style={{ 
@@ -201,12 +200,12 @@ export default function ReturnsPage() {
               color: "var(--text-primary)",
               fontFamily: "var(--font-heading)"
             }}>
-              10. Contact Us
+              11. Contact Us
             </h2>
             <p style={{ marginBottom: 32 }}>
-              For return or refund assistance, please reach out to our customer support team. We are here to help ensure a smooth experience.
+              For any shipping-related queries or assistance, please reach out to our customer support team.
             </p>
-            <a href="/contact" className="btn btn-primary">Start a Return</a>
+            <a href="/contact" className="btn btn-primary">Contact Support</a>
           </section>
         </div>
       </div>
