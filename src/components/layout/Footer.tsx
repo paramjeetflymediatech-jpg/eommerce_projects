@@ -53,7 +53,7 @@ export default function Footer() {
           {[
             { title: "Collections", links: [{ label: "All Items", href: "/products" }, { label: "New Arrivals", href: "/products" }, { label: "Featured Items", href: "/products" }, { label: "Limited Sale", href: "/products" }] },
             { title: "The Brand", links: [{ label: "Our Story", href: "/about" }, { label: "Design Philosophy", href: "/about" }, { label: "Craftsmanship", href: "/" }, { label: "Contact Us", href: "/contact" }] },
-            { title: "Concierge", links: [{ label: "Shipping Policy", href: "/shipping-policy" }, { label: "Returns & Refunds", href: "/returns" }, { label: "Privacy Policy", href: "/privacy" }, { label: "Track Your Order", href: "/track" }] },
+            { title: "Concierge", links: [{ label: "Shipping Policy", href: "/shipping-policy" }, { label: "Returns & Refunds", href: "/returns" }, { label: "Privacy Policy", href: "/privacy" }, { label: "Terms & Conditions", href: "/terms" }, { label: "Track Your Order", href: "/track" }] },
           ].map((col) => (
             <div key={col.title} className="footer-nav-col">
               <h4 style={{ 

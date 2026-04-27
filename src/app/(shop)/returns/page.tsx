@@ -144,8 +144,8 @@ export default function ReturnsPage() {
             </h2>
             <ul style={{ listStyle: "none", paddingLeft: 0, display: "grid", gap: 12 }}>
               <li>• Exchanges are subject to product availability.</li>
-              <li>• If the requested size or item is unavailable, a refund or store credit will be provided.</li>
-              <li>• Exchange requests must also be made within 7 days of delivery.</li>
+              <li>• If the requested size or item is unavailable, a refund or instant store credit will be provided.</li>
+              <li>• We will deliver the exchange product within 5-7 days.</li>
             </ul>
           </section>
 
