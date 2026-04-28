@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import styles from "./about.module.css";
+import styles from "./ourstory.module.css";
 
 export default function AboutPage() {
   return (

@@ -238,7 +238,7 @@ export default async function HomePage() {
               <p style={{ fontSize: "0.95rem", color: "#000000ff", lineHeight: 1.7, marginBottom: 32, fontWeight: 400, maxWidth: "540px", textAlign: "justify" }}>
                 Aion Luxury combines innovation with timeless design to create apparel that adapts to your lifestyle. Our thermals provide superior insulation without bulk, while our T-shirts and lowers offer breathable comfort for all-day wear. Each product undergoes strict quality checks to ensure softness, durability, and performance. Whether you’re lounging at home, stepping out casually, or layering for colder days, our clothing supports your movement and enhances your confidence. With attention to detail and a commitment to excellence, Aion Luxury delivers clothing that works as hard as you do—without compromising on style or comfort.
               </p>
-              <Link href="/about" className="btn btn-secondary" style={{ padding: "14px 40px" }}>
+              <Link href="/ourstory" className="btn btn-secondary" style={{ padding: "14px 40px" }}>
                 Our Story
               </Link>
             </div>

@@ -25,7 +25,7 @@ export default function Header() {
 
   const navLinks = [
     { label: "Shop All", href: "/products" },
-    { label: "Story", href: "/about" },
+    { label: "Story", href: "/ourstory" },
     { label: "Stores", href: "/" },
     { label: "Track Order", href: "/track" },
     { label: "Account", href: session?.user?.role === "ADMIN" ? "/admin/dashboard" : "/account" },
