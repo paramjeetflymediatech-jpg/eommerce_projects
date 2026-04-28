@@ -58,13 +58,13 @@ export default function CategorySlider({ categories }: CategorySliderProps) {
       clearInterval(interval);
     };
   }, [categories]);
-console.log(categories,'before')
+  const displayCategories = [...categories];
 
-  if (categories.length > 0) {
-    const index = categories.findIndex(item => item.id === 5);
+  if (displayCategories.length > 0) {
+    const index = displayCategories.findIndex(item => item.id === 5 || String(item.id) === "5");
     if (index !== -1) {
-      const [item] = categories.splice(index, 1); // remove item
-      categories.splice(2, 0, item); // insert at index 2
+      const [item] = displayCategories.splice(index, 1); // remove item
+      displayCategories.splice(2, 0, item); // insert at index 2
     }
   }
 console.log(categories, 'after')
@@ -114,7 +114,7 @@ console.log(categories, 'after')
         style={styles.slider}
         className="hide-scrollbar"
       >
-        {categories.map((cat) => (
+        {displayCategories.map((cat) => (
           <div key={cat.id} style={styles.item} className="slider-item">
             <Link
               href={`/products?category=${cat.id}`}
