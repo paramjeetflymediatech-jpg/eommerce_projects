@@ -20,6 +20,16 @@ export async function GET() {
       order: [["name", "ASC"]],
     });
 
+    if (categories.length > 0) {
+      const index = categories.findIndex(item => item.id === 5 || String(item.id) === "5");
+      if (index !== -1) {
+        const [item] = categories.splice(index, 1); // remove item
+        console.log(item, 'item')
+        categories.splice(2, 0, item); // insert at index 2
+        console.log(categories, 'categories')
+      }
+    }
+
     // Add product counts
     const counts = await Product.findAll({
       attributes: ["categoryId", [sequelize.fn("COUNT", sequelize.col("id")), "count"]],

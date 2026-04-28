@@ -58,16 +58,7 @@ export default function CategorySlider({ categories }: CategorySliderProps) {
       clearInterval(interval);
     };
   }, [categories]);
-  const displayCategories = [...categories];
-
-  if (displayCategories.length > 0) {
-    const index = displayCategories.findIndex(item => item.id === 5 || String(item.id) === "5");
-    if (index !== -1) {
-      const [item] = displayCategories.splice(index, 1); // remove item
-      displayCategories.splice(2, 0, item); // insert at index 2
-    }
-  }
-console.log(categories, 'after')
+  
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const firstItem = scrollRef.current.querySelector(".slider-item");
@@ -114,7 +105,7 @@ console.log(categories, 'after')
         style={styles.slider}
         className="hide-scrollbar"
       >
-        {displayCategories.map((cat) => (
+        {categories.map((cat) => (
           <div key={cat.id} style={styles.item} className="slider-item">
             <Link
               href={`/products?category=${cat.id}`}
