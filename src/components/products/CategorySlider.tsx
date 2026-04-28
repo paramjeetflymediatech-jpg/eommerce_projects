@@ -123,10 +123,10 @@ export default function CategorySlider({ categories }: CategorySliderProps) {
                 />
               </div>
               <div style={styles.overlay}>
-                <div style={{ color: "#fff" }}>
-                  <p className="text-tracked" style={styles.tagline}>Luxury at Its Best” (or a similar premium alternative </p>
+                <div style={{ color: "#ffffffff",backgroundColor: "rgba(126, 120, 120, 0.3)", padding:"10px 20px" }}>
+                  <p className="text-tracked" style={styles.title}>Luxury at Its Best or a similar premium alternative </p>
                   <h3 style={styles.title}>{cat.name}</h3>
-                  <h3 style={styles.title}> One of its kind, Adjustable & Reversible Thermals
+                  <h3 style={styles.tagline}> One of its kind, Adjustable & Reversible Thermals
 </h3>
                 </div>
               </div>
@@ -201,16 +201,16 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "clamp(32px, 4vw, 60px)",
   },
   tagline: {
-    fontSize: "0.6rem",
-    fontWeight: 700,
+    fontSize: "1rem",
+    // fontWeight: 700,
     marginBottom: 8,
-    opacity: 0.7,
-    textTransform: "uppercase",
+    opacity: 0.9,
+    // textTransform: "uppercase",
   },
   title: {
-    fontSize: "1.8rem",
+    fontSize: "1.5rem",
     letterSpacing: "normal",
-    fontWeight: 500,
+    // fontWeight: 700,
   },
   navBtn: {
     position: "absolute",
