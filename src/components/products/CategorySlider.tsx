@@ -208,7 +208,7 @@ const styles: Record<string, React.CSSProperties> = {
     // textTransform: "uppercase",
   },
   title: {
-    fontSize: "1.5rem",
+    fontSize: "1rem",
     letterSpacing: "normal",
     // fontWeight: 700,
   },
