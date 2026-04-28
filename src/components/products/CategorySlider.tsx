@@ -58,7 +58,7 @@ export default function CategorySlider({ categories }: CategorySliderProps) {
       clearInterval(interval);
     };
   }, [categories]);
-  
+
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const firstItem = scrollRef.current.querySelector(".slider-item");
@@ -124,8 +124,10 @@ export default function CategorySlider({ categories }: CategorySliderProps) {
               </div>
               <div style={styles.overlay}>
                 <div style={{ color: "#fff" }}>
-                  <p className="text-tracked" style={styles.tagline}>Discovery</p>
+                  <p className="text-tracked" style={styles.tagline}>Luxury at Its Best” (or a similar premium alternative </p>
                   <h3 style={styles.title}>{cat.name}</h3>
+                  <h3 style={styles.title}> One of its kind, Adjustable & Reversible Thermals
+</h3>
                 </div>
               </div>
             </Link>
