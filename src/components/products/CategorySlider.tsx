@@ -123,11 +123,10 @@ export default function CategorySlider({ categories }: CategorySliderProps) {
                 />
               </div>
               <div style={styles.overlay}>
-                <div style={{ color: "#ffffffff",backgroundColor: "rgba(126, 120, 120, 0.3)", padding:"10px 20px" }}>
-                  <p className="text-tracked" style={styles.title}>Luxury at Its Best or a similar premium alternative </p>
-                  <h3 style={styles.title}>{cat.name}</h3>
-                  <h3 style={styles.tagline}> One of its kind, Adjustable & Reversible Thermals
-</h3>
+                <div style={{ color: "#ffffff", backgroundColor: "rgba(20, 20, 20, 0.45)", padding: "24px", borderRadius: "12px", backdropFilter: "blur(8px)", width: "100%", border: "1px solid rgba(255, 255, 255, 0.15)", boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)" }}>
+                  <h3 style={{ fontSize: "1.85rem", fontWeight: "700", marginBottom: "8px", letterSpacing: "0.5px", textShadow: "0 2px 4px rgba(0,0,0,0.5)", lineHeight: "1.2" }}>{cat.name}</h3>
+                  <p className="text-tracked" style={{ fontSize: "0.95rem", fontWeight: "600", color: "#e2e8f0", marginBottom: "8px", textShadow: "0 1px 2px rgba(0,0,0,0.5)", textTransform: "uppercase", letterSpacing: "2px" }}>Luxury at Its Best</p>
+                  <p style={{ fontSize: "1.05rem", color: "#f8fafc", opacity: 0.9, fontWeight: "400", lineHeight: "1.5", textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}>One of its kind, Adjustable & Reversible Thermals</p>
                 </div>
               </div>
             </Link>
@@ -208,7 +207,7 @@ const styles: Record<string, React.CSSProperties> = {
     // textTransform: "uppercase",
   },
   title: {
-    fontSize: "1rem",
+    fontSize: "1.3rem",
     letterSpacing: "normal",
     // fontWeight: 700,
   },
