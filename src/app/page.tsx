@@ -24,6 +24,7 @@ async function getFeaturedProducts() {
 async function getCategories() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/categories`, { next: { revalidate: 300 } });
+    console.log(res, 'res')
     if (!res.ok) return [];
     const data = await res.json();
     return data.categories || [];

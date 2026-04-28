@@ -19,6 +19,7 @@ export async function GET() {
       ],
       order: [["name", "ASC"]],
     });
+    console.log(categories, 'categories')
 
     if (categories.length > 0) {
       const index = categories.findIndex(item => item.id === 5 || String(item.id) === "5");
