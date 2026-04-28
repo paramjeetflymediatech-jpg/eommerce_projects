@@ -58,7 +58,16 @@ export default function CategorySlider({ categories }: CategorySliderProps) {
       clearInterval(interval);
     };
   }, [categories]);
+console.log(categories,'before')
 
+  if (categories.length > 0) {
+    const index = categories.findIndex(item => item.id === 5);
+    if (index !== -1) {
+      const [item] = categories.splice(index, 1); // remove item
+      categories.splice(2, 0, item); // insert at index 2
+    }
+  }
+console.log(categories, 'after')
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const firstItem = scrollRef.current.querySelector(".slider-item");
