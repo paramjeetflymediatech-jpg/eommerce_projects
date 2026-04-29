@@ -17,19 +17,11 @@ export async function GET() {
           include: [{ model: Category, as: "children" }],
         },
       ],
-      order: [["name", "ASC"]],
+      order: [["id", "ASC"]],
     });
     console.log(categories, 'categoriesffff')
 
-    if (categories.length > 0) {
-      const index = categories.findIndex(item => item.id === 5 || String(item.id) === "5");
-      if (index !== -1) {
-        const [item] = categories.splice(index, 1); // remove item
-        console.log(item, 'item')
-        categories.splice(2, 0, item); // insert at index 2
-        console.log(categories, 'categorises')
-      }
-    }
+
 
     // Add product counts
     const counts = await Product.findAll({

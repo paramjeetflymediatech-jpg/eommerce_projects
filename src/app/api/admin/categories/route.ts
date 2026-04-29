@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
       include: [{ model: Category, as: "children" }],
       limit: getAll ? undefined : limit,
       offset: getAll ? undefined : offset,
-      order: [["name", "ASC"]],
+      order: [["id", "ASC"]],
     });
 
     return apiResponse({ 
