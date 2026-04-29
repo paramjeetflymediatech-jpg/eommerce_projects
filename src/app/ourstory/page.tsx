@@ -10,7 +10,7 @@ export default function AboutPage() {
         <div className={`container-app ${styles.heroGrid}`}>
           <div className={styles.heroTextSide}>
             <h1 className={styles.heroTitle}>A New Era <br/> Of Attire</h1>
-            <p className={styles.heroSubtitle}>AION LUXURY: REDEFINING THE MODERN WARDROBE SINCE 1992 FROM 2024</p>
+            <p className={styles.heroSubtitle}>AION LUXURY: REDEFINING THE MODERN WARDROBE SINCE 1992</p>
           </div>
           <div className={styles.heroImageSide}>
             <img 
