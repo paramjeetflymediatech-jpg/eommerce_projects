@@ -24,6 +24,7 @@ function CheckoutContent() {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("PHONEPE");
+  const [isRedirecting, setIsRedirecting] = useState(false);
   
   const [form, setForm] = useState({ 
     name: session?.user?.name || "", 
@@ -35,12 +36,21 @@ function CheckoutContent() {
   const [loadingAddresses, setLoadingAddresses] = useState(false);
 
   useEffect(() => {
+    // Check if user is returning from a cancelled/back-button payment
+    const pendingPayment = sessionStorage.getItem("pending_payment");
+    if (pendingPayment === "true") {
+      setIsRedirecting(true);
+      sessionStorage.removeItem("pending_payment");
+      router.replace("/checkout/failed");
+      return;
+    }
+
     setMounted(true);
     if (failedParam) {
       setShowFailedPopup(true);
       window.history.replaceState(null, "", window.location.pathname);
     }
-  }, [failedParam]);
+  }, [failedParam, router]);
 
   useEffect(() => {
     if (mounted && status === "unauthenticated") {
@@ -103,6 +113,7 @@ function CheckoutContent() {
     }
   }, [mounted, items, loading, router]);
 
+  if (isRedirecting) return null;
   if (!mounted || (items.length === 0 && !loading)) return null;
 
   const subtotal = getTotal();
@@ -192,6 +203,7 @@ function CheckoutContent() {
       });
       const data = await res.json();
       if (data.url) {
+        sessionStorage.setItem("pending_payment", "true");
         window.location.href = data.url;
       } else if (data.success) {
         clearCart();
