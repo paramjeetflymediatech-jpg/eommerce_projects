@@ -52,8 +52,8 @@ function CheckoutContent() {
     if (session?.user) {
       setForm(prev => ({ 
         ...prev, 
-        name: session.user?.name || prev.name, 
-        email: session.user?.email || prev.email 
+        name: prev.name || session.user?.name || "", 
+        email: prev.email || session.user?.email || "" 
       }));
     }
   }, [session]);
@@ -116,7 +116,9 @@ function CheckoutContent() {
     if (!form.name.trim()) newErrors.name = "Full name is required";
     else if (!/^[a-zA-Z\s\-']{2,50}$/.test(form.name.trim())) newErrors.name = "Please enter a valid, real name";
 
-    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(form.email)) {
+    if (!form.email.trim()) {
+      newErrors.email = "Email address is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(form.email)) {
       newErrors.email = "Please enter a genuine email address";
     }
 
@@ -352,9 +354,9 @@ function CheckoutContent() {
                       {errors.name && <p className={s.errorText}>{errors.name}</p>}
                     </div>
                     <div>
-                      <label className={s.label}>Email Address <span style={{ color: "#888", fontSize: "0.8em" }}>(Optional)</span></label>
+                      <label className={s.label}>Email Address <span style={{ color: "#ff4d4f" }}>*</span></label>
                       <input 
-                        type="email" 
+                        required 
                         maxLength={100}
                         readOnly={!!session?.user?.email}
                         className={s.input}

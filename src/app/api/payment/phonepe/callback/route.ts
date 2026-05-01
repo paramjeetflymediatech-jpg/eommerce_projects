@@ -8,7 +8,7 @@ async function ensureDB() {
 
 async function handleCallback(req: NextRequest, isGet: boolean) {
   await ensureDB();
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin).replace(/\/$/, "");
 
   try {
     let transactionId: string | null = null;

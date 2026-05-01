@@ -81,7 +81,8 @@ export async function POST(req: NextRequest) {
   }
 
   // Free shipping as requested
-  const orderTotal = subtotal + 0 + (subtotal * 0.02) + (subtotal * 0.05) - discountAmount;
+  // Total is subtotal minus discount (Shipping is FREE, no duties/taxes)
+  const orderTotal = subtotal - discountAmount;
 
   try {
     const order = await Order.create({
@@ -142,7 +143,7 @@ export async function POST(req: NextRequest) {
       // Store the transaction ID in the order
       await order.update({ stripeSessionId: merchantTransactionId });
 
-       const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+       const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
       const redirectUrl = `${appUrl}/api/payment/phonepe/callback?merchantOrderId=${merchantTransactionId}`;
 
       const request = StandardCheckoutPayRequest.builder()
