@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { ensureDB, Order, OrderItem, Product, User } from "@/lib/models";
 import { formatPrice } from "@/lib/utils";
 import PrintButton from "@/components/orders/PrintButton";
+import Image from "next/image";
 
 export const metadata: Metadata = { title: "Invoice | Aion Luxury" };
 
@@ -54,7 +55,23 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
         {/* Header */}
         <header style={styles.header}>
           <div style={styles.brand}>
-            <h1 style={styles.logo}>{appName}</h1>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+              <Image 
+                src="/logo.png" 
+                alt={appName} 
+                width={180} 
+                height={50} 
+                style={{ height: "45px", width: "auto" }}
+              />
+              <div style={{ width: "1px", height: "30px", background: "#eee" }} />
+              <Image 
+                src="/makeinindiaa1.png" 
+                alt="Make in India" 
+                width={80} 
+                height={50} 
+                style={{ height: "40px", width: "auto" }}
+              />
+            </div>
             <p style={styles.tagline}>Premium Online Showroom</p>
           </div>
           <div style={styles.meta}>
@@ -144,17 +161,38 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
           .no-print { display: none !important; }
-          body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
-          div[style*="invoicePage"] { padding: 0 !important; background: #fff !important; }
+          @page { 
+            margin: 0; 
+            size: auto;
+          }
+          body { 
+            background: #fff !important; 
+            margin: 0 !important; 
+            padding: 0 !important; 
+          }
+          div[style*="invoicePage"] { 
+            padding: 15mm !important; 
+            background: #fff !important; 
+            min-height: 0 !important;
+          }
           div[style*="invoiceContainer"] { 
             box-shadow: none !important; 
             border: none !important; 
             width: 100% !important; 
             max-width: 100% !important; 
             margin: 0 !important; 
-            padding: 20px !important; 
+            padding: 0 !important; 
           }
-          @page { margin: 15mm; }
+          header[style*="header"] { margin-bottom: 20px !important; }
+          div[style*="divider"] { margin: 20px 0 !important; }
+          section[style*="addressGrid"] { margin-bottom: 30px !important; gap: 30px !important; }
+          table[style*="table"] { margin-bottom: 30px !important; }
+          footer[style*="footer"] { margin-top: 0 !important; }
+          div[style*="notes"] { margin-top: 40px !important; }
+          
+          /* Prevent page breaks */
+          tr { page-break-inside: avoid; }
+          footer { page-break-after: avoid; }
         }
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
       `}} />

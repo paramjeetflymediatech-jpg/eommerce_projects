@@ -122,6 +122,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (paymentMethod === "COD") {
+      await order.update({ status: "PROCESSING" });
       return apiResponse({ success: true, orderId: order.id });
     } else {
       // PhonePe V2 Integration using Official SDK

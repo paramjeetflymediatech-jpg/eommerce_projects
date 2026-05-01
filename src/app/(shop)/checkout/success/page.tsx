@@ -1,6 +1,6 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
@@ -12,10 +12,9 @@ function CheckoutSuccessContent() {
   const orderId = searchParams.get("orderId");
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   useEffect(() => {
-    clearCart();
-    
+    sessionStorage.removeItem("pending_payment");
     const fetchOrder = async () => {
       try {
         let url = "";
@@ -29,7 +28,14 @@ function CheckoutSuccessContent() {
           const res = await fetch(url);
           const data = await res.json();
           if (data.success) {
-            setOrder(data.order);
+            // ONLY clear cart if the order is actually placed/paid (NOT pending)
+            if (data.order.status !== "PENDING") {
+              setOrder(data.order);
+              clearCart();
+            } else {
+              // Loophole prevention: If user manually navigates here while order is pending, send them back
+              router.push("/checkout?failed=true");
+            }
           }
         }
       } catch (err) {
@@ -40,7 +46,7 @@ function CheckoutSuccessContent() {
     };
 
     fetchOrder();
-  }, [sessionId, orderId, clearCart]);
+  }, [sessionId, orderId, clearCart, router]);
 
   return (
     <div style={{

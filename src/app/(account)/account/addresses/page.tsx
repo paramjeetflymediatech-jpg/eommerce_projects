@@ -199,7 +199,7 @@ export default function AddressesPage() {
                     const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                     setForm({ ...form, phone: "+91" + val });
                   }} 
-                  placeholder="9876543210"
+                  placeholder="Enter phone number"
                 />
               </div>
             </div>

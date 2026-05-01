@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 function VerifyOtpForm() {
   const router = useRouter();
@@ -70,8 +71,25 @@ function VerifyOtpForm() {
         setLoading(false);
         return;
       }
-      setSuccess("Email verified successfully! Redirecting to login...");
-      setTimeout(() => router.push("/login"), 2000);
+      setSuccess("Email verified successfully! Logging you in...");
+      
+      // Auto-login using stored password
+      const password = sessionStorage.getItem("signup_password");
+      if (password) {
+        const result = await signIn("credentials", {
+          redirect: false,
+          email,
+          password
+        });
+        sessionStorage.removeItem("signup_password");
+        if (result?.ok) {
+          router.push("/account");
+          return;
+        }
+      }
+      
+      // Fallback if auto-login fails
+      setTimeout(() => router.push("/login"), 1500);
     } catch {
       setError("Something went wrong. Please try again.");
       setLoading(false);

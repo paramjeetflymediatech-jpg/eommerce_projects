@@ -55,7 +55,7 @@ async function handleCallback(req: NextRequest, isGet: boolean) {
             return NextResponse.redirect(`${appUrl}/checkout/success?orderId=${order.id}`);
           } else {
             console.warn("PhonePe Payment not completed:", response);
-            return NextResponse.redirect(`${appUrl}/checkout?failed=true`);
+            return NextResponse.redirect(`${appUrl}/checkout/failed`);
           }
         }
       } catch (sdkError: any) {
@@ -63,10 +63,10 @@ async function handleCallback(req: NextRequest, isGet: boolean) {
       }
     }
     
-    return NextResponse.redirect(`${appUrl}/checkout?failed=true`);
+    return NextResponse.redirect(`${appUrl}/checkout/failed`);
   } catch (err) {
     console.error("PhonePe callback error:", err);
-    return NextResponse.redirect(`${appUrl}/checkout?failed=true`);
+    return NextResponse.redirect(`${appUrl}/checkout/failed`);
   }
 }
 

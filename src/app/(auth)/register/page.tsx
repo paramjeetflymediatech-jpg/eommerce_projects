@@ -53,6 +53,8 @@ function RegisterForm() {
         setLoading(false);
         return;
       }
+      // Temporarily store password for auto-login after OTP verification
+      sessionStorage.setItem("signup_password", form.password);
       router.push(`/verify-otp?email=${encodeURIComponent(form.email)}`);
     } catch {
       setError("Something went wrong. Please try again.");

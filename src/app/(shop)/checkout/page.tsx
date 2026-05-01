@@ -13,7 +13,7 @@ function CheckoutContent() {
   const { items, getTotal, clearCart, updateQuantity, removeItem } = useCartStore();
   const searchParams = useSearchParams();
   const failedParam = searchParams.get("failed") === "true";
-  
+
   const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showFailedPopup, setShowFailedPopup] = useState(false);
@@ -24,33 +24,31 @@ function CheckoutContent() {
   const [discountAmount, setDiscountAmount] = useState(0);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("PHONEPE");
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  
-  const [form, setForm] = useState({ 
-    name: session?.user?.name || "", 
-    email: session?.user?.email || "", 
-    street: "", city: "", state: "", zip: "", country: "IN", phone: "+91" 
+
+  const [form, setForm] = useState({
+    name: session?.user?.name || "",
+    email: session?.user?.email || "",
+    street: "", city: "", state: "", zip: "", country: "IN", phone: "+91"
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+
     // Check if user is returning from a cancelled/back-button payment
     const pendingPayment = sessionStorage.getItem("pending_payment");
     if (pendingPayment === "true") {
-      setIsRedirecting(true);
       sessionStorage.removeItem("pending_payment");
-      router.replace("/checkout/failed");
-      return;
+      router.push("/checkout/failed");
     }
 
-    setMounted(true);
     if (failedParam) {
       setShowFailedPopup(true);
       window.history.replaceState(null, "", window.location.pathname);
     }
-  }, [failedParam, router]);
+  }, [failedParam]);
 
   useEffect(() => {
     if (mounted && status === "unauthenticated") {
@@ -60,10 +58,10 @@ function CheckoutContent() {
 
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
-      setForm(prev => ({ 
-        ...prev, 
-        name: prev.name || session.user?.name || "", 
-        email: prev.email || session.user?.email || "" 
+      setForm(prev => ({
+        ...prev,
+        name: prev.name || session.user?.name || "",
+        email: prev.email || session.user?.email || ""
       }));
     }
   }, [session, status]);
@@ -113,7 +111,6 @@ function CheckoutContent() {
     }
   }, [mounted, items, loading, router]);
 
-  if (isRedirecting) return null;
   if (!mounted || (items.length === 0 && !loading)) return null;
 
   const subtotal = getTotal();
@@ -143,7 +140,7 @@ function CheckoutContent() {
     else if (!/^[a-zA-Z\s\-']{2,50}$/.test(form.city.trim())) newErrors.city = "Please enter a valid city name";
 
     if (!form.state.trim()) newErrors.state = "State is required";
-    
+
     if (!form.zip.trim()) newErrors.zip = "ZIP code is required";
     else if (!/^[0-9a-zA-Z\s\-]{3,12}$/.test(form.zip.trim())) newErrors.zip = "Please enter a genuine ZIP/postal code";
 
@@ -191,10 +188,10 @@ function CheckoutContent() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          items: items.map((i) => ({ 
-            productId: i.product.id, 
+          items: items.map((i) => ({
+            productId: i.product.id,
             variantId: i.variant?.id,
-            quantity: i.quantity 
+            quantity: i.quantity
           })),
           shippingAddress: { ...form },
           couponCode: appliedCoupon?.code || null,
@@ -203,6 +200,11 @@ function CheckoutContent() {
       });
       const data = await res.json();
       if (data.url) {
+        // Inject /checkout/failed into history so browser back goes there
+        window.history.pushState(null, "", "/checkout/failed");
+        // Maintain current page state in case of redirect delay
+        window.history.pushState(null, "", window.location.pathname + window.location.search);
+        
         sessionStorage.setItem("pending_payment", "true");
         window.location.href = data.url;
       } else if (data.success) {
@@ -268,10 +270,10 @@ function CheckoutContent() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                     {items.map((item) => (
                       <div key={`${item.product.id}-${item.variant?.id ?? 'no-variant'}`} className={s.cartItemRow}>
-                        <img 
-                          src={item.variant?.images?.[0] || item.product.images?.[0] || ""} 
-                          alt="" 
-                          className={s.cartImg} 
+                        <img
+                          src={item.variant?.images?.[0] || item.product.images?.[0] || ""}
+                          alt=""
+                          className={s.cartImg}
                         />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <h4 style={{ fontSize: "0.9rem", fontWeight: 700, margin: "0 0 6px" }}>{item.product.name}</h4>
@@ -281,7 +283,7 @@ function CheckoutContent() {
                             </p>
                           )}
                           <div className={s.qtyWrapper}>
-                            <button 
+                            <button
                               className={s.qtyBtn}
                               onClick={() => {
                                 if (item.quantity > 1) {
@@ -294,7 +296,7 @@ function CheckoutContent() {
                               −
                             </button>
                             <span className={s.qtyValue}>{item.quantity}</span>
-                            <button 
+                            <button
                               className={s.qtyBtn}
                               onClick={() => updateQuantity(item.product.id, item.variant?.id || undefined, item.quantity + 1)}
                             >
@@ -322,7 +324,7 @@ function CheckoutContent() {
               <StepHeader num={2} title="Information" subtitle={form.name ? `${form.name} (${form.email})` : ""} isCompleted={activeStep > 2} />
               {activeStep === 2 && (
                 <div className={s.stepContent}>
-                  
+
                   {/* Saved Addresses Section */}
                   {savedAddresses.length > 0 && (
                     <div style={{ marginBottom: 32, paddingBottom: 24, borderBottom: "1px solid #f0f0f0" }}>
@@ -331,10 +333,10 @@ function CheckoutContent() {
                       </h4>
                       <div style={{ display: "flex", gap: 12, overflowX: "auto", paddingBottom: 8 }}>
                         {savedAddresses.map((addr) => (
-                          <div 
+                          <div
                             key={addr.id}
                             onClick={() => handleSelectAddress(addr)}
-                            style={{ 
+                            style={{
                               flexShrink: 0,
                               width: 240,
                               padding: 16,
@@ -362,24 +364,24 @@ function CheckoutContent() {
                   <div className={s.formGrid}>
                     <div className={s.spanTwo}>
                       <label className={s.label}>Full Name <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <input required maxLength={50} className={s.input} style={{ borderColor: errors.name ? "#ff4d4f" : "#e5e7eb" }} value={form.name} onChange={e => { setForm({...form, name: e.target.value}); if(errors.name) setErrors({...errors, name: ""}); }} placeholder="Eleanor Vance" />
+                      <input required maxLength={50} className={s.input} style={{ borderColor: errors.name ? "#ff4d4f" : "#e5e7eb" }} value={form.name} onChange={e => { setForm({ ...form, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: "" }); }} placeholder="Eleanor Vance" />
                       {errors.name && <p className={s.errorText}>{errors.name}</p>}
                     </div>
                     <div>
                       <label className={s.label}>Email Address <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <input 
-                        required 
+                      <input
+                        required
                         maxLength={100}
                         readOnly={!!session?.user?.email}
                         className={s.input}
-                        style={{ 
+                        style={{
                           borderColor: errors.email ? "#ff4d4f" : "#e5e7eb",
                           backgroundColor: session?.user?.email ? "#f5f5f5" : "#fff",
                           color: session?.user?.email ? "#888" : "#000"
-                        }} 
-                        value={form.email} 
-                        onChange={e => { setForm({...form, email: e.target.value}); if(errors.email) setErrors({...errors, email: ""}); }} 
-                        placeholder="" 
+                        }}
+                        value={form.email}
+                        onChange={e => { setForm({ ...form, email: e.target.value }); if (errors.email) setErrors({ ...errors, email: "" }); }}
+                        placeholder=""
                       />
                       {errors.email && <p className={s.errorText}>{errors.email}</p>}
                     </div>
@@ -387,41 +389,41 @@ function CheckoutContent() {
                       <label className={s.label}>Phone Number <span style={{ color: "#ff4d4f" }}>*</span></label>
                       <div style={{ position: "relative" }}>
                         <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: "0.95rem", color: "#000", fontWeight: 600 }}>+91</span>
-                        <input 
-                          required 
+                        <input
+                          required
                           maxLength={10}
                           className={s.input}
-                          style={{ borderColor: errors.phone ? "#ff4d4f" : "#e5e7eb", paddingLeft: "45px" }} 
-                          value={form.phone.replace("+91", "")} 
-                          onChange={e => { 
+                          style={{ borderColor: errors.phone ? "#ff4d4f" : "#e5e7eb", paddingLeft: "45px" }}
+                          value={form.phone.replace("+91", "")}
+                          onChange={e => {
                             const numericValue = e.target.value.replace(/\D/g, '').slice(0, 10);
-                            setForm({...form, phone: "+91" + numericValue}); 
-                            if(errors.phone) setErrors({...errors, phone: ""}); 
-                          }} 
-                          placeholder="9876543210" 
+                            setForm({ ...form, phone: "+91" + numericValue });
+                            if (errors.phone) setErrors({ ...errors, phone: "" });
+                          }}
+                          placeholder="Enter phone number"
                         />
                       </div>
                       {errors.phone && <p className={s.errorText}>{errors.phone}</p>}
                     </div>
                     <div className={s.spanTwo}>
                       <label className={s.label}>Shipping Address <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <textarea required maxLength={200} className={s.input} style={{ height: "80px", resize: "none", borderColor: errors.street ? "#ff4d4f" : "#e5e7eb" }} value={form.street} onChange={e => { setForm({...form, street: e.target.value}); if(errors.street) setErrors({...errors, street: ""}); }} placeholder="Enter your address" />
+                      <textarea required maxLength={200} className={s.input} style={{ height: "80px", resize: "none", borderColor: errors.street ? "#ff4d4f" : "#e5e7eb" }} value={form.street} onChange={e => { setForm({ ...form, street: e.target.value }); if (errors.street) setErrors({ ...errors, street: "" }); }} placeholder="Enter your address" />
                       {errors.street && <p className={s.errorText}>{errors.street}</p>}
                     </div>
                     <div>
                       <label className={s.label}>City <span style={{ color: "#ff4d4f" }}>*</span></label>
-                      <input required maxLength={50} className={s.input} style={{ borderColor: errors.city ? "#ff4d4f" : "#e5e7eb" }} value={form.city} onChange={e => { setForm({...form, city: e.target.value}); if(errors.city) setErrors({...errors, city: ""}); }} placeholder="Enter your city" />
+                      <input required maxLength={50} className={s.input} style={{ borderColor: errors.city ? "#ff4d4f" : "#e5e7eb" }} value={form.city} onChange={e => { setForm({ ...form, city: e.target.value }); if (errors.city) setErrors({ ...errors, city: "" }); }} placeholder="Enter your city" />
                       {errors.city && <p className={s.errorText}>{errors.city}</p>}
                     </div>
                     <div>
                       <label className={s.label}>State / Zip <span style={{ color: "#ff4d4f" }}>*</span></label>
                       <div style={{ display: "flex", gap: 8 }}>
                         <div style={{ flex: 1 }}>
-                          <input required maxLength={50} className={s.input} style={{ borderColor: errors.state ? "#ff4d4f" : "#e5e7eb" }} value={form.state} onChange={e => { setForm({...form, state: e.target.value}); if(errors.state) setErrors({...errors, state: ""}); }} placeholder="State" />
+                          <input required maxLength={50} className={s.input} style={{ borderColor: errors.state ? "#ff4d4f" : "#e5e7eb" }} value={form.state} onChange={e => { setForm({ ...form, state: e.target.value }); if (errors.state) setErrors({ ...errors, state: "" }); }} placeholder="State" />
                           {errors.state && <p className={s.errorText}>{errors.state}</p>}
                         </div>
                         <div style={{ flex: 1 }}>
-                          <input required maxLength={20} className={s.input} style={{ borderColor: errors.zip ? "#ff4d4f" : "#e5e7eb" }} value={form.zip} onChange={e => { setForm({...form, zip: e.target.value}); if(errors.zip) setErrors({...errors, zip: ""}); }} placeholder="ZIP" />
+                          <input required maxLength={20} className={s.input} style={{ borderColor: errors.zip ? "#ff4d4f" : "#e5e7eb" }} value={form.zip} onChange={e => { setForm({ ...form, zip: e.target.value }); if (errors.zip) setErrors({ ...errors, zip: "" }); }} placeholder="ZIP" />
                           {errors.zip && <p className={s.errorText}>{errors.zip}</p>}
                         </div>
                       </div>
@@ -476,7 +478,7 @@ function CheckoutContent() {
                       <span style={{ fontWeight: 700, fontSize: "0.9rem" }}>Cash on Delivery (COD)</span>
                     </label>
                   </div>
-                  <button 
+                  <button
                     disabled={loading}
                     className={`btn btn-primary ${s.payBtn}`}
                     onClick={handlePlaceOrder}
@@ -493,22 +495,22 @@ function CheckoutContent() {
           <div className={s.priceColumn}>
             <div className={s.priceCard}>
               <h3 className={s.priceHeader}>Order Summary</h3>
-              
+
               {/* Discount Input */}
               <div style={{ marginBottom: 24 }}>
                 <label className={s.label}>Discount Code / Gift Card</label>
                 <div style={{ display: "flex", gap: 8 }}>
-                  <input 
+                  <input
                     className={s.input}
                     style={{ borderColor: couponError ? "#ff4d4f" : appliedCoupon ? "#2D9E67" : "#e5e7eb" }}
-                    value={couponCode} 
-                    onChange={e => setCouponCode(e.target.value.toUpperCase())} 
-                    placeholder="Enter code" 
+                    value={couponCode}
+                    onChange={e => setCouponCode(e.target.value.toUpperCase())}
+                    placeholder="Enter code"
                     disabled={appliedCoupon || applyingCoupon}
                   />
                   {appliedCoupon ? (
-                    <button 
-                      className={s.applyBtn} 
+                    <button
+                      className={s.applyBtn}
                       style={{ background: "#f5f5f5", color: "#666" }}
                       onClick={() => {
                         setAppliedCoupon(null);
@@ -519,8 +521,8 @@ function CheckoutContent() {
                       Remove
                     </button>
                   ) : (
-                    <button 
-                      className={s.applyBtn} 
+                    <button
+                      className={s.applyBtn}
                       disabled={applyingCoupon || !couponCode}
                       onClick={handleApplyCoupon}
                     >
@@ -553,9 +555,9 @@ function CheckoutContent() {
                 <span>{formatPrice(grandTotal)}</span>
               </div>
             </div>
-            
+
             <p className={s.secureText}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="#888"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#888"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" /></svg>
               Payment is 256-bit SSL encrypted.
             </p>
           </div>
