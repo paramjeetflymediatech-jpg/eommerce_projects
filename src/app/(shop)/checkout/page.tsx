@@ -10,7 +10,7 @@ import s from "./checkout.module.css";
 function CheckoutContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { items, getTotal, clearCart } = useCartStore();
+  const { items, getTotal, clearCart, updateQuantity, removeItem } = useCartStore();
   const searchParams = useSearchParams();
   const failedParam = searchParams.get("failed") === "true";
   
@@ -107,8 +107,8 @@ function CheckoutContent() {
 
   const subtotal = getTotal();
   const shipping = 0;
-  const duties = subtotal * 0.02;
-  const taxes = subtotal * 0.05;
+  const duties = 0;
+  const taxes = 0;
   const grandTotal = subtotal + shipping + duties + taxes - discountAmount;
 
   const validateInformation = () => {
@@ -266,10 +266,32 @@ function CheckoutContent() {
                               Size: <span style={{ fontWeight: 700, color: "#000" }}>{item.variant.size}</span>
                             </p>
                           )}
-                          <p style={{ fontSize: "0.80rem", color: "#888" }}>Quantity: {item.quantity}</p>
-                          <span style={{ fontSize: "1rem", fontWeight: 800 }}>
-                            {formatPrice(item.variant?.price ?? item.product.price)}
-                          </span>
+                          <div className={s.qtyWrapper}>
+                            <button 
+                              className={s.qtyBtn}
+                              onClick={() => {
+                                if (item.quantity > 1) {
+                                  updateQuantity(item.product.id, item.variant?.id || undefined, item.quantity - 1);
+                                } else {
+                                  removeItem(item.product.id, item.variant?.id || undefined);
+                                }
+                              }}
+                            >
+                              −
+                            </button>
+                            <span className={s.qtyValue}>{item.quantity}</span>
+                            <button 
+                              className={s.qtyBtn}
+                              onClick={() => updateQuantity(item.product.id, item.variant?.id || undefined, item.quantity + 1)}
+                            >
+                              +
+                            </button>
+                          </div>
+                          <div style={{ marginTop: 12 }}>
+                            <span style={{ fontSize: "1rem", fontWeight: 800 }}>
+                              {formatPrice((item.variant?.price ?? item.product.price) * item.quantity)}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -504,14 +526,7 @@ function CheckoutContent() {
                 <span>Shipping</span>
                 <span style={{ color: shipping === 0 ? "#2D9E67" : "inherit" }}>{shipping === 0 ? "FREE" : formatPrice(shipping)}</span>
               </div>
-              <div className={s.priceRow}>
-                <span>Estimated Duties</span>
-                <span>{formatPrice(duties)}</span>
-              </div>
-              <div className={s.priceRow}>
-                <span>Estimated Taxes</span>
-                <span>{formatPrice(taxes)}</span>
-              </div>
+
               {discountAmount > 0 && (
                 <div className={s.priceRow} style={{ color: "#2D9E67" }}>
                   <span>Discount</span>

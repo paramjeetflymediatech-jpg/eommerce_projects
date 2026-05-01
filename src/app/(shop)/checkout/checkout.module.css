@@ -365,3 +365,37 @@
   letter-spacing: normal;
   cursor: pointer;
 }
+
+/* Quantity Controls */
+.qtyWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.qtyBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.qtyBtn:hover {
+  background: #f9fafb;
+  border-color: #000;
+}
+
+.qtyValue {
+  font-size: 0.9rem;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
