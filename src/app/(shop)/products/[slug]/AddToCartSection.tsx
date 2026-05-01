@@ -143,11 +143,17 @@ export default function AddToCartSection({
       addItem(
         { id: product.id, name: product.name, price: product.price, images: product.images, slug: product.slug, stock: product.stock },
         quantity,
-        { id: selectedVariant.id, size: selectedVariant.size, color: selectedVariant.color, price: selectedVariant.price }
+        { 
+          id: selectedVariant.id, 
+          size: selectedVariant.size, 
+          color: selectedVariant.color, 
+          price: selectedVariant.price,
+          images: selectedVariant.images
+        }
       );
     }
     setAdded(true);
-    setTimeout(() => setAdded(false), 2000);
+    setTimeout(() => setAdded(false), 2000);~
     openCart();
   };
 

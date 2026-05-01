@@ -23,9 +23,12 @@ function CheckoutContent() {
   const [couponError, setCouponError] = useState("");
   const [discountAmount, setDiscountAmount] = useState(0);
   const [applyingCoupon, setApplyingCoupon] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("PHONEPE");
   
   const [form, setForm] = useState({ 
-    name: "", email: "", street: "", city: "", state: "", zip: "", country: "IN", phone: "+91" 
+    name: session?.user?.name || "", 
+    email: session?.user?.email || "", 
+    street: "", city: "", state: "", zip: "", country: "IN", phone: "+91" 
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [savedAddresses, setSavedAddresses] = useState<any[]>([]);
@@ -103,7 +106,7 @@ function CheckoutContent() {
   if (!mounted || (items.length === 0 && !loading)) return null;
 
   const subtotal = getTotal();
-  const shipping = subtotal >= 2500 ? 0 : 50;
+  const shipping = 0;
   const duties = subtotal * 0.02;
   const taxes = subtotal * 0.05;
   const grandTotal = subtotal + shipping + duties + taxes - discountAmount;
@@ -113,9 +116,7 @@ function CheckoutContent() {
     if (!form.name.trim()) newErrors.name = "Full name is required";
     else if (!/^[a-zA-Z\s\-']{2,50}$/.test(form.name.trim())) newErrors.name = "Please enter a valid, real name";
 
-    if (!form.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(form.email)) {
+    if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(form.email)) {
       newErrors.email = "Please enter a genuine email address";
     }
 
@@ -173,7 +174,7 @@ function CheckoutContent() {
   const handlePlaceOrder = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/stripe/checkout", {
+      const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -184,12 +185,17 @@ function CheckoutContent() {
           })),
           shippingAddress: { ...form },
           couponCode: appliedCoupon?.code || null,
+          paymentMethod,
         }),
       });
       const data = await res.json();
       if (data.url) {
-        clearCart();
         window.location.href = data.url;
+      } else if (data.success) {
+        clearCart();
+        window.location.href = `/checkout/success?orderId=${data.orderId}`;
+      } else {
+        alert(data.error || "Order creation failed");
       }
     } catch (err) {
       console.error(err);
@@ -248,7 +254,11 @@ function CheckoutContent() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                     {items.map((item) => (
                       <div key={`${item.product.id}-${item.variant?.id ?? 'no-variant'}`} className={s.cartItemRow}>
-                        <img src={item.product.images?.[0] || ""} alt="" className={s.cartImg} />
+                        <img 
+                          src={item.variant?.images?.[0] || item.product.images?.[0] || ""} 
+                          alt="" 
+                          className={s.cartImg} 
+                        />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <h4 style={{ fontSize: "0.9rem", fontWeight: 700, margin: "0 0 6px" }}>{item.product.name}</h4>
                           {item.variant && (
@@ -320,9 +330,8 @@ function CheckoutContent() {
                       {errors.name && <p className={s.errorText}>{errors.name}</p>}
                     </div>
                     <div>
-                      <label className={s.label}>Email Address <span style={{ color: "#ff4d4f" }}>*</span></label>
+                      <label className={s.label}>Email Address <span style={{ color: "#888", fontSize: "0.8em" }}>(Optional)</span></label>
                       <input 
-                        required 
                         type="email" 
                         maxLength={100}
                         readOnly={!!session?.user?.email}
@@ -421,12 +430,15 @@ function CheckoutContent() {
               <StepHeader num={4} title="Payment" isCompleted={activeStep > 4} />
               {activeStep === 4 && (
                 <div className={s.stepContent}>
-                  <div className={s.paymentBox}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <input type="radio" checked readOnly style={{ width: 18, height: 18, accentColor: "#000" }} />
-                      <span style={{ fontWeight: 700, fontSize: "0.9rem" }}>Debit/Credit Card (via Stripe)</span>
-                    </div>
-                    <p style={{ marginLeft: 30, fontSize: "0.8rem", color: "#888", marginTop: 8 }}>Secure, encrypted payment processing.</p>
+                  <div className={s.paymentBox} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
+                      <input type="radio" checked={paymentMethod === "PHONEPE"} onChange={() => setPaymentMethod("PHONEPE")} style={{ width: 18, height: 18, accentColor: "#000" }} />
+                      <span style={{ fontWeight: 700, fontSize: "0.9rem" }}>PhonePe (UPI, Cards, NetBanking)</span>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
+                      <input type="radio" checked={paymentMethod === "COD"} onChange={() => setPaymentMethod("COD")} style={{ width: 18, height: 18, accentColor: "#000" }} />
+                      <span style={{ fontWeight: 700, fontSize: "0.9rem" }}>Cash on Delivery (COD)</span>
+                    </label>
                   </div>
                   <button 
                     disabled={loading}

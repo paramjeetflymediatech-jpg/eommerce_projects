@@ -74,7 +74,15 @@ export default function CartDrawer() {
                 {items.map((item, idx) => (
                   <div key={`${item.product.id}-${item.variant?.id || idx}`} style={styles.cartItem}>
                     <div style={styles.imgWrapper}>
-                      {item.product.images?.[0] && <Image src={item.product.images[0]} alt="" fill style={{ objectFit: "cover" }} sizes="80px" />}
+                      {(item.variant?.images?.[0] || item.product.images?.[0]) && (
+                        <Image 
+                          src={item.variant?.images?.[0] || item.product.images[0]} 
+                          alt="" 
+                          fill 
+                          style={{ objectFit: "cover" }} 
+                          sizes="80px" 
+                        />
+                      )}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <Link href={`/products/${item.product.slug}`} onClick={closeCart} style={{ textDecoration: "none" }}>

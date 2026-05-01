@@ -4,11 +4,13 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import Swal from "sweetalert2";
 
 const NAV = [
   { href: "/admin/dashboard", icon: "⊞", label: "Dashboard" },
   { href: "/admin/products", icon: "📦", label: "Products" },
   { href: "/admin/orders", icon: "🛒", label: "Orders" },
+  { href: "/admin/payments", icon: "💳", label: "Payments" },
   { href: "/admin/coupons", icon: "🎟️", label: "Coupons" },
   { href: "/admin/users", icon: "👥", label: "Users" },
   { href: "/admin/categories", icon: "🏷️", label: "Categories" },
@@ -39,6 +41,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [sidebarOpen]);
 
   const isLoginPage = pathname === "/admin/login";
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Confirm Logout",
+      text: "Are you sure you want to sign out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DC2626",
+      cancelButtonColor: "#000",
+      confirmButtonText: "Yes, logout!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        signOut({ callbackUrl: "/" });
+      }
+    });
+  };
 
   if (status === "loading") {
     return (
@@ -184,24 +202,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </nav>
 
             {/* Sidebar Footer */}
-            <div style={{ ...styles.sidebarFooter, justifyContent: collapsed ? "center" : "flex-start" }}>
-              {!collapsed && (
-                <div style={styles.adminInfo}>
-                  <div style={styles.avatar}>
-                    {(session?.user?.name || "A")[0].toUpperCase()}
-                  </div>
-                  <div style={{ overflow: "hidden" }}>
-                    <p style={styles.adminName}>{session?.user?.name || "Admin"}</p>
-                    <p style={styles.adminRole}>Administrator</p>
-                  </div>
-                </div>
-              )}
+            <div style={{ ...styles.sidebarFooter, justifyContent: collapsed ? "center" : "flex-start", flexDirection: "column", gap: 12 }}>
+
               <button
-                onClick={() => signOut({ callbackUrl: "/admin/login" })}
+                onClick={handleLogout}
                 title="Sign out"
-                style={{ ...styles.signOutBtn, marginLeft: collapsed ? 0 : "auto" }}
+                style={{ 
+                  ...styles.signOutBtn, 
+                  width: "100%", 
+                  display: "flex", 
+                  alignItems: "center", 
+                  justifyContent: collapsed ? "center" : "flex-start",
+                  gap: 8,
+                  padding: "8px 12px",
+                  borderRadius: "4px",
+                  background: "rgba(220, 38, 38, 0.1)",
+                  color: "#DC2626",
+                  border: "1px solid rgba(220, 38, 38, 0.2)",
+                  fontWeight: 600
+                }}
               >
-                ⏻
+                <span>⏻</span>
+                {!collapsed && <span>Logout</span>}
               </button>
             </div>
           </aside>
@@ -225,14 +247,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <h1 style={styles.pageTitle}>{pageName}</h1>
             </div>
 
-            <div style={styles.headerRight}>
+            {/* <div style={styles.headerRight}>
               <Link href="/" target="_blank" style={styles.headerAction} title="View Store">
                 🏪 Store
               </Link>
               <div style={styles.headerAvatar}>
                 {(session?.user?.name || "A")[0].toUpperCase()}
               </div>
-            </div>
+            </div> */}
           </header>
 
           {/* Page Content */}

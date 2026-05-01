@@ -16,6 +16,7 @@ export interface CartVariant {
   size: string;
   color?: string | null;
   price?: number | null;
+  images?: string[] | null;
 }
 
 export interface CartItem {

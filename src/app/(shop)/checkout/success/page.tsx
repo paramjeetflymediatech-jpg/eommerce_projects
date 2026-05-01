@@ -1,21 +1,30 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
 
 function CheckoutSuccessContent() {
+  const { clearCart } = useCartStore();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
+  const orderId = searchParams.get("orderId");
   const [orderData, setOrderData] = useState<{ email?: string; orderId?: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    clearCart();
+    if (orderId) {
+      setOrderData({ orderId });
+      setLoading(false);
+      return;
+    }
     if (!sessionId) { setLoading(false); return; }
     fetch(`/api/stripe/session?session_id=${sessionId}`)
       .then(r => r.json())
       .then(data => { setOrderData(data); setLoading(false); })
       .catch(() => setLoading(false));
-  }, [sessionId]);
+  }, [sessionId, orderId]);
 
   return (
     <div style={{
@@ -93,7 +102,7 @@ function CheckoutSuccessContent() {
           </div>
         )}
 
-        {!loading && !orderData?.email && sessionId && (
+        {!loading && !orderData?.email && (sessionId || orderId) && (
           <div style={{
             background: "#f8f8f8",
             padding: "20px 24px",
@@ -101,7 +110,7 @@ function CheckoutSuccessContent() {
             border: "1px solid #f0f0f0",
           }}>
             <p style={{ fontSize: "0.8rem", color: "#888", margin: 0, fontFamily: "monospace" }}>
-              Session: …{sessionId.slice(-16)}
+              Order ID: {orderId || `…${sessionId?.slice(-16)}`}
             </p>
           </div>
         )}

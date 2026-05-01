@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import stripe from "@/lib/stripe";
 import { syncDB, Product, Order, OrderItem, ProductVariant } from "@/lib/models";
 import { apiResponse, apiError } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import crypto from "crypto";
 
 let dbReady = false;
 async function ensureDB() {
@@ -14,16 +14,15 @@ export async function POST(req: NextRequest) {
   await ensureDB();
   const session = await getServerSession(authOptions);
   if (!session) {
-    console.warn("⚠️ [STRIPE_CHECKOUT] Unauthorized access attempt (no session found)");
+    console.warn("⚠️ [CHECKOUT] Unauthorized access attempt (no session found)");
     return apiError("Unauthorized", 401);
   }
 
   const body = await req.json();
-  const { items, shippingAddress, couponCode } = body;
+  const { items, shippingAddress, couponCode, paymentMethod } = body;
 
   if (!items?.length) return apiError("No items in cart");
 
-  // Validate shipping address
   if (!shippingAddress) return apiError("Shipping address is required", 400);
 
   const requiredFields = ["name", "email", "street", "city", "state", "zip", "phone"];
@@ -33,13 +32,10 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Basic email validation
   if (!/\S+@\S+\.\S+/.test(shippingAddress.email)) {
     return apiError("Invalid email address", 400);
   }
 
-  // Fetch products and build line items
-  const lineItems = [];
   let subtotal = 0;
 
   for (const item of items) {
@@ -55,23 +51,8 @@ export async function POST(req: NextRequest) {
     const price = variant?.price ?? product.price;
     const itemTotal = Number(price) * item.quantity;
     subtotal += itemTotal;
-
-    lineItems.push({
-      price_data: {
-        currency: "usd",
-        product_data: {
-          name: `${product.name}${variant ? ` - ${variant.size}${variant.color ? ` (${variant.color})` : ""}` : ""}`,
-          images: product.images?.slice(0, 1).map((img: string) =>
-            img.startsWith("http") ? img : `${process.env.NEXT_PUBLIC_APP_URL}${img}`
-          ) || [],
-        },
-        unit_amount: Math.round(Number(price) * 100),
-      },
-      quantity: item.quantity,
-    });
   }
 
-  // ─── Apply Coupon ────────────────────────────────────────────────────────
   let discountAmount = 0;
   let validatedCoupon = null;
   if (couponCode) {
@@ -81,7 +62,6 @@ export async function POST(req: NextRequest) {
     });
 
     if (validatedCoupon) {
-      // Basic validation (duplicated from validate route for security)
       const isExpired = validatedCoupon.expiryDate && new Date(validatedCoupon.expiryDate) < new Date();
       const limitReached = validatedCoupon.usageLimit && validatedCoupon.usedCount >= validatedCoupon.usageLimit;
       const minAmountMet = subtotal >= Number(validatedCoupon.minOrderAmount);
@@ -100,54 +80,24 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // Calculate final totals for Stripe
-  // We'll apply the discount proportionally to all items to keep line items matched
-  const discountFactor = subtotal > 0 ? (subtotal - discountAmount) / subtotal : 0;
-  
-  const finalLineItems = lineItems.map(item => ({
-    ...item,
-    price_data: {
-      ...item.price_data,
-      unit_amount: Math.round(item.price_data.unit_amount * discountFactor),
-    }
-  }));
+  // Free shipping as requested
+  const orderTotal = subtotal + 0 + (subtotal * 0.02) + (subtotal * 0.05) - discountAmount;
 
-  // Calculate shipping/tax/etc if needed (based on the original subtotal logic in the frontend)
-  // For simplicity, we just use the line items.
-  const orderTotal = subtotal + (subtotal >= 2500 ? 0 : 50) + (subtotal * 0.02) + (subtotal * 0.05) - discountAmount;
-
-  // Create Stripe checkout session
-  const checkoutSession = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: finalLineItems,
-    mode: "payment",
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout?failed=true`,
-    metadata: {
-      userId: session.user.id,
-      shippingAddress: JSON.stringify(shippingAddress),
-      items: JSON.stringify(items),
-    },
-  });
-
-  // ─── Create Order in DB immediately so it appears in admin ───────
   try {
     const order = await Order.create({
       userId: Number(session.user.id),
       status: "PENDING",
       total: orderTotal,
       shippingAddress: shippingAddress,
-      stripeSessionId: checkoutSession.id,
       couponCode: validatedCoupon?.code || undefined,
       discountAmount: discountAmount,
+      paymentMethod: paymentMethod || "PHONEPE",
     });
 
-    // Update coupon usage count if applied
     if (validatedCoupon) {
       await validatedCoupon.increment("usedCount");
     }
 
-    // Create OrderItems
     for (const item of items) {
       const product = await Product.findByPk(item.productId);
       if (product) {
@@ -169,10 +119,54 @@ export async function POST(req: NextRequest) {
         });
       }
     }
-  } catch (err) {
-    console.error("Failed to create order in DB:", err);
-    // Don't block the checkout even if DB save fails
-  }
 
-  return apiResponse({ url: checkoutSession.url, sessionId: checkoutSession.id });
+    if (paymentMethod === "COD") {
+      return apiResponse({ success: true, orderId: order.id });
+    } else {
+      // PhonePe V2 Integration using Official SDK
+      const { StandardCheckoutClient, Env, StandardCheckoutPayRequest } = require("@phonepe-pg/pg-sdk-node");
+
+      const clientId = process.env.PHONEPE_CLIENT_ID;
+      const clientSecret = process.env.PHONEPE_CLIENT_SECRET;
+      const clientVersion = parseInt(process.env.PHONEPE_CLIENT_VERSION || "1");
+      const env = process.env.PHONEPE_ENV === "production" ? Env.PRODUCTION : Env.SANDBOX;
+
+      if (!clientId || !clientSecret) {
+        return apiError("PhonePe credentials not configured", 500);
+      }
+
+      const client = StandardCheckoutClient.getInstance(clientId, clientSecret, clientVersion, env);
+
+      const merchantTransactionId = `TXN_${Date.now()}_${order.id}`;
+
+      // Store the transaction ID in the order
+      await order.update({ stripeSessionId: merchantTransactionId });
+
+       const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      const redirectUrl = `${appUrl}/api/payment/phonepe/callback?merchantOrderId=${merchantTransactionId}`;
+
+      const request = StandardCheckoutPayRequest.builder()
+        .merchantOrderId(merchantTransactionId)
+        .amount(Math.round(orderTotal * 100)) // amount in paise
+        .redirectUrl(redirectUrl)
+        .build();
+
+      try {
+        const response = await client.pay(request);
+        
+        if (response && response.redirectUrl) {
+          return apiResponse({ url: response.redirectUrl });
+        } else {
+          console.error("PhonePe SDK Response Error:", response);
+          return apiError("Failed to get payment URL from PhonePe");
+        }
+      } catch (sdkError: any) {
+        console.error("PhonePe SDK Initiation Error:", sdkError);
+        return apiError(`PhonePe Error: ${sdkError.message || "Initiation failed"}`);
+      }
+    }
+  } catch (err) {
+    console.error("Failed to create order:", err);
+    return apiError("Failed to create order");
+  }
 }

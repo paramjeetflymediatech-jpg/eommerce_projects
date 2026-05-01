@@ -22,12 +22,13 @@ export interface OrderAttributes {
   notes?: string;
   couponCode?: string;
   discountAmount?: number;
+  paymentMethod?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 interface OrderCreationAttributes
-  extends Optional<OrderAttributes, "id" | "stripePaymentId" | "stripeSessionId" | "trackingId" | "carrier" | "notes" | "couponCode" | "discountAmount"> {}
+  extends Optional<OrderAttributes, "id" | "stripePaymentId" | "stripeSessionId" | "trackingId" | "carrier" | "notes" | "couponCode" | "discountAmount" | "paymentMethod"> {}
 
 class Order
   extends Model<OrderAttributes, OrderCreationAttributes>
@@ -45,6 +46,7 @@ class Order
   declare notes: string;
   declare couponCode: string;
   declare discountAmount: number;
+  declare paymentMethod: string;
   declare user?: { name: string; email: string };
   declare items?: any[];
   declare createdAt: Date;
@@ -72,6 +74,7 @@ Order.init(
     notes: { type: DataTypes.TEXT, allowNull: true },
     couponCode: { type: DataTypes.STRING(50), allowNull: true },
     discountAmount: { type: DataTypes.DECIMAL(10, 2), allowNull: true, defaultValue: 0 },
+    paymentMethod: { type: DataTypes.STRING(50), allowNull: true },
   },
   { sequelize, modelName: "Order", tableName: "orders" }
 );
