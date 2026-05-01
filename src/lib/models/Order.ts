@@ -69,7 +69,7 @@ Order.init(
     shippingAddress: { type: DataTypes.JSON, allowNull: false },
     stripePaymentId: { type: DataTypes.STRING(255), allowNull: true },
     stripeSessionId: { type: DataTypes.STRING(255), allowNull: true },
-    trackingId: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, allowNull: false },
+    trackingId: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, allowNull: true },
     carrier: { type: DataTypes.STRING(255), allowNull: true },
     notes: { type: DataTypes.TEXT, allowNull: true },
     couponCode: { type: DataTypes.STRING(50), allowNull: true },
