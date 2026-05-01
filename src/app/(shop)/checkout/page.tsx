@@ -49,14 +49,14 @@ function CheckoutContent() {
   }, [mounted, status, router]);
 
   useEffect(() => {
-    if (session?.user) {
+    if (status === "authenticated" && session?.user) {
       setForm(prev => ({ 
         ...prev, 
         name: prev.name || session.user?.name || "", 
         email: prev.email || session.user?.email || "" 
       }));
     }
-  }, [session]);
+  }, [session, status]);
 
   useEffect(() => {
     const fetchAddresses = async () => {
