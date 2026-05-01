@@ -61,7 +61,17 @@ export default function Header() {
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
-        <div className="header-container">
+        <div 
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center",
+            width: "100%",
+            padding: "0 40px",
+            height: "100%",
+          }}
+          className="header-container"
+        >
           {/* LEFT - MENU */}
           <div style={{ display: "flex", alignItems: "center" }}>
             <button
