@@ -108,10 +108,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
           <tbody>
             {order.items?.map((item: any, i: number) => (
               <tr key={i} style={styles.tr}>
-                <td style={styles.td}>{item.product?.name}</td>
+                <td style={styles.td}>{item.productName}</td>
                 <td style={styles.tdCenter}>{item.quantity}</td>
-                <td style={styles.tdRight}>{formatPrice(item.price)}</td>
-                <td style={styles.tdRight}>{formatPrice(Number(item.price) * item.quantity)}</td>
+                <td style={styles.tdRight}>{formatPrice(Number(item.priceAtPurchase))}</td>
+                <td style={styles.tdRight}>{formatPrice(Number(item.priceAtPurchase) * item.quantity)}</td>
               </tr>
             ))}
           </tbody>
@@ -144,8 +144,17 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
       <style dangerouslySetInnerHTML={{ __html: `
         @media print {
           .no-print { display: none !important; }
-          body { background: #fff !important; }
-          @page { margin: 20mm; }
+          body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+          div[style*="invoicePage"] { padding: 0 !important; background: #fff !important; }
+          div[style*="invoiceContainer"] { 
+            box-shadow: none !important; 
+            border: none !important; 
+            width: 100% !important; 
+            max-width: 100% !important; 
+            margin: 0 !important; 
+            padding: 20px !important; 
+          }
+          @page { margin: 15mm; }
         }
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
       `}} />

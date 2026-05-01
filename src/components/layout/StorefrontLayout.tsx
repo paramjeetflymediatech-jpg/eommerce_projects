@@ -7,8 +7,9 @@ import CartDrawer from "@/components/cart/CartDrawer";
 export default function StorefrontLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  const isInvoice = pathname?.includes("/invoice");
 
-  if (isAdmin) {
+  if (isAdmin || isInvoice) {
     return <main>{children}</main>;
   }
 
