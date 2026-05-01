@@ -14,12 +14,14 @@ export async function GET(req: NextRequest) {
     }
 
     const where: any = {};
-    if (id) {
-      // Handle both numeric and padded string IDs
-      const numericId = parseInt(id.replace(/^0+/, ""));
-      where.id = numericId || id;
-    } else if (trackingId) {
-      where.trackingId = trackingId;
+    if (id || trackingId) {
+      where.trackingId = id || trackingId;
+    } else if (searchParams.get("sessionId")) {
+      where.stripeSessionId = searchParams.get("sessionId");
+    }
+
+    if (Object.keys(where).length === 0) {
+      return apiError("Tracking ID is required", 400);
     }
 
     const order = await Order.findOne({
@@ -29,7 +31,7 @@ export async function GET(req: NextRequest) {
         {
           model: OrderItem,
           as: "items",
-          include: [{ model: Product, as: "product", attributes: ["name", "images"] }],
+          include: [{ model: Product, as: "product", attributes: ["name", "images", "slug"] }],
         },
       ],
     });

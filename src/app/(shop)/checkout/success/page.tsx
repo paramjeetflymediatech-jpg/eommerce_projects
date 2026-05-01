@@ -3,28 +3,44 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import Link from "next/link";
+import { formatPrice } from "@/lib/utils";
 
 function CheckoutSuccessContent() {
   const { clearCart } = useCartStore();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const orderId = searchParams.get("orderId");
-  const [orderData, setOrderData] = useState<{ email?: string; orderId?: string } | null>(null);
+  const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     clearCart();
-    if (orderId) {
-      setOrderData({ orderId });
-      setLoading(false);
-      return;
-    }
-    if (!sessionId) { setLoading(false); return; }
-    fetch(`/api/stripe/session?session_id=${sessionId}`)
-      .then(r => r.json())
-      .then(data => { setOrderData(data); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, [sessionId, orderId]);
+    
+    const fetchOrder = async () => {
+      try {
+        let url = "";
+        if (orderId) {
+          url = `/api/orders/track?id=${orderId}`;
+        } else if (sessionId) {
+          url = `/api/orders/track?sessionId=${sessionId}`;
+        }
+
+        if (url) {
+          const res = await fetch(url);
+          const data = await res.json();
+          if (data.success) {
+            setOrder(data.order);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch order:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrder();
+  }, [sessionId, orderId, clearCart]);
 
   return (
     <div style={{
@@ -33,13 +49,11 @@ function CheckoutSuccessContent() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      paddingTop: "80px",
-      paddingBottom: "80px",
       padding: "80px 16px",
     }}>
       <div style={{
         background: "#fff",
-        maxWidth: "540px",
+        maxWidth: "600px",
         width: "100%",
         padding: "60px 48px",
         textAlign: "center",
@@ -81,37 +95,41 @@ function CheckoutSuccessContent() {
           <p style={{ color: "#aaa", fontSize: "0.8rem", marginBottom: "32px" }}>Fetching order details…</p>
         )}
 
-        {!loading && orderData?.email && (
+        {!loading && order && (
           <div style={{
             background: "#f8f8f8",
-            padding: "20px 24px",
+            padding: "24px",
             marginBottom: "32px",
             textAlign: "left",
             border: "1px solid #f0f0f0",
           }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
-              <span style={{ fontSize: "0.85rem", color: "#888", fontWeight: 700, letterSpacing: "normal" }}>Order ID</span>
-              <span style={{ fontSize: "0.8rem", fontWeight: 700, fontFamily: "monospace" }}>
-                {sessionId?.slice(-12).toUpperCase()}
+            <div style={{ marginBottom: "20px" }}>
+              <span style={{ fontSize: "0.75rem", color: "#888", fontWeight: 700, textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+                Tracking ID (UUID)
+              </span>
+              <span style={{ fontSize: "0.9rem", fontWeight: 700, wordBreak: "break-all" }}>
+                {order.trackingId}
               </span>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span style={{ fontSize: "0.85rem", color: "#888", fontWeight: 700, letterSpacing: "normal" }}>Confirmation sent to</span>
-              <span style={{ fontSize: "0.8rem", fontWeight: 600 }}>{orderData.email}</span>
+            
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: "0.75rem", color: "#888", fontWeight: 700, textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+                  Status
+                </span>
+                <span style={{ fontSize: "0.9rem", fontWeight: 700 }}>
+                  {order.status}
+                </span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <span style={{ fontSize: "0.75rem", color: "#888", fontWeight: 700, textTransform: "uppercase", display: "block", marginBottom: "4px" }}>
+                  Order Date
+                </span>
+                <span style={{ fontSize: "0.9rem", fontWeight: 700 }}>
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </span>
+              </div>
             </div>
-          </div>
-        )}
-
-        {!loading && !orderData?.email && (sessionId || orderId) && (
-          <div style={{
-            background: "#f8f8f8",
-            padding: "20px 24px",
-            marginBottom: "32px",
-            border: "1px solid #f0f0f0",
-          }}>
-            <p style={{ fontSize: "0.8rem", color: "#888", margin: 0, fontFamily: "monospace" }}>
-              Order ID: {orderId || `…${sessionId?.slice(-16)}`}
-            </p>
           </div>
         )}
 
@@ -141,7 +159,7 @@ function CheckoutSuccessContent() {
 
 export default function CheckoutSuccessPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div style={{ padding: 120, textAlign: "center" }}>Loading success page...</div>}>
       <CheckoutSuccessContent />
     </Suspense>
   );

@@ -21,10 +21,10 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState<any>({ totalPages: 1 });
-  
+
   const [editingOrder, setEditingOrder] = useState<any>(null);
   const [viewingOrder, setViewingOrder] = useState<any>(null);
-  
+
   const [editData, setEditData] = useState({ trackingId: "", carrier: "", street: "", city: "", state: "", zip: "" });
 
   const fetchOrders = async () => {
@@ -67,8 +67,8 @@ export default function AdminOrdersPage() {
 
   const openEditModal = (order: any) => {
     setEditingOrder(order);
-    setEditData({ 
-      trackingId: order.trackingId || "", 
+    setEditData({
+      trackingId: order.trackingId || "",
       carrier: order.carrier || "",
       street: order.shippingAddress?.street || "",
       city: order.shippingAddress?.city || "",
@@ -126,9 +126,9 @@ export default function AdminOrdersPage() {
           <p style={styles.subtitle}>Track customer purchases and manage delivery cycles.</p>
         </div>
         <div style={styles.filters} className="admin-filter-row">
-          <select 
-            value={statusFilter} 
-            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }} 
+          <select
+            value={statusFilter}
+            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
             style={styles.select}
           >
             <option value="ALL">All Statuses</option>
@@ -165,7 +165,7 @@ export default function AdminOrdersPage() {
               orders.map((order) => (
                 <tr key={order.id} style={styles.tr}>
                   <td style={styles.td}>
-                    <div style={styles.ref}>#{order.id.toString().padStart(6, "0")}</div>
+                    <div style={styles.ref}>{order.trackingId?.split('-')[0].toUpperCase() || order.id}</div>
                   </td>
                   <td style={styles.td}>
                     <div style={styles.userName}>{order.user?.name || "Guest"}</div>
@@ -180,9 +180,9 @@ export default function AdminOrdersPage() {
                     <div style={styles.total}>{formatPrice(order.total)}</div>
                   </td>
                   <td style={styles.td}>
-                    <span style={{ 
-                      ...styles.badge, 
-                      ...STATUS_VARIANTS[order.status] 
+                    <span style={{
+                      ...styles.badge,
+                      ...STATUS_VARIANTS[order.status]
                     }}>
                       {order.status}
                     </span>
@@ -227,7 +227,7 @@ export default function AdminOrdersPage() {
           <div key={order.id} className="admin-card-item">
             <div className="admin-card-row">
               <span style={{ fontFamily: "monospace", fontWeight: 800, fontSize: "0.9rem" }}>#{order.id.toString().padStart(6, "0")}</span>
-              <span style={{ 
+              <span style={{
                 padding: "3px 10px", fontSize: "0.65rem", fontWeight: 800,
                 ...STATUS_VARIANTS[order.status]
               }}>{order.status}</span>
@@ -250,7 +250,7 @@ export default function AdminOrdersPage() {
                 onChange={(e) => updateStatus(order.id, e.target.value)}
                 style={{ border: "1px solid #eee", padding: "6px 10px", fontSize: "0.75rem", background: "#fff", outline: "none", flex: 1 }}
               >
-                {["PENDING","PROCESSING","SHIPPED","DELIVERED","CANCELLED"].map(s => <option key={s} value={s}>{s.charAt(0) + s.slice(1).toLowerCase()}</option>)}
+                {["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"].map(s => <option key={s} value={s}>{s.charAt(0) + s.slice(1).toLowerCase()}</option>)}
               </select>
               <button onClick={() => setViewingOrder(order)} style={{ ...styles.trackBtn, color: "#666" }} title="View Details">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -269,16 +269,16 @@ export default function AdminOrdersPage() {
       </div>
 
       <div style={styles.pagination}>
-        <button 
-          onClick={() => setPage(p => Math.max(1, p - 1))} 
+        <button
+          onClick={() => setPage(p => Math.max(1, p - 1))}
           disabled={page === 1}
           style={styles.pageBtn}
         >
           Previous
         </button>
         <span style={styles.pageInfo}>Page {page} of {pagination.totalPages}</span>
-        <button 
-          onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))} 
+        <button
+          onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
           disabled={page === pagination.totalPages}
           style={styles.pageBtn}
         >
@@ -289,12 +289,12 @@ export default function AdminOrdersPage() {
       {/* VIEW ORDER MODAL */}
       {viewingOrder && (
         <div style={styles.modalOverlay}>
-          <div style={{...styles.modal, maxWidth: "700px", maxHeight: "90vh", overflowY: "auto"}}>
+          <div style={{ ...styles.modal, maxWidth: "700px", maxHeight: "90vh", overflowY: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-              <h2 style={styles.modalTitle}>Order #{viewingOrder.id.toString().padStart(6, "0")}</h2>
+              <h2 style={styles.modalTitle}>Order {viewingOrder.trackingId?.split('-')[0].toUpperCase() || viewingOrder.id}</h2>
               <button onClick={() => setViewingOrder(null)} style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer" }}>✕</button>
             </div>
-            
+
             <div style={styles.splitRow}>
               <div style={{ flex: 1, padding: "16px", background: "#f8f8f8", borderRadius: "8px" }}>
                 <h4 style={{ margin: "0 0 8px", fontSize: "0.85rem", letterSpacing: "normal", color: "#888" }}>Customer Details</h4>
@@ -320,8 +320,8 @@ export default function AdminOrdersPage() {
                       <p style={{ margin: "0 0 4px", fontWeight: 700, fontSize: "0.95rem" }}>{item.productName}</p>
                       {(item.variantSize || item.variantColor) && (
                         <p style={{ margin: "0 0 4px", fontSize: "0.8rem", color: "#888" }}>
-                           {item.variantSize && `Size: ${item.variantSize} `} 
-                           {item.variantColor && `Color: ${item.variantColor}`}
+                          {item.variantSize && `Size: ${item.variantSize} `}
+                          {item.variantColor && `Color: ${item.variantColor}`}
                         </p>
                       )}
                       <p style={{ margin: "0", fontSize: "0.85rem", color: "#555" }}>Qty: {item.quantity} × {formatPrice(item.priceAtPurchase)}</p>
@@ -346,63 +346,63 @@ export default function AdminOrdersPage() {
           <div style={styles.modal}>
             <h2 style={styles.modalTitle}>Edit Order</h2>
             <p style={styles.modalSubtitle}>Adjust routing and delivery specs for order #{editingOrder.id.toString().padStart(6, "0")}</p>
-            
+
             <div style={styles.splitRow}>
               <div style={styles.formGroup}>
                 <label style={styles.label}>Carrier Name</label>
-                <input 
+                <input
                   style={styles.input}
                   placeholder="e.g. FedEx, BlueDart"
                   value={editData.carrier}
-                  onChange={(e) => setEditData({...editData, carrier: e.target.value})}
+                  onChange={(e) => setEditData({ ...editData, carrier: e.target.value })}
                 />
               </div>
 
               <div style={styles.formGroup}>
                 <label style={styles.label}>Tracking ID</label>
-                <input 
+                <input
                   style={styles.input}
                   placeholder="Enter tracking number"
                   value={editData.trackingId}
-                  onChange={(e) => setEditData({...editData, trackingId: e.target.value})}
+                  onChange={(e) => setEditData({ ...editData, trackingId: e.target.value })}
                 />
               </div>
             </div>
 
             <h4 style={{ margin: "16px 0 12px", borderBottom: "1px solid #eee", paddingBottom: "8px", fontSize: "0.85rem", letterSpacing: "normal", color: "#000" }}>Update Destination</h4>
-            
+
             <div style={styles.formGroup}>
               <label style={styles.label}>Street Address</label>
-              <input 
+              <input
                 style={styles.input}
                 value={editData.street}
-                onChange={(e) => setEditData({...editData, street: e.target.value})}
+                onChange={(e) => setEditData({ ...editData, street: e.target.value })}
               />
             </div>
 
             <div style={styles.splitRow}>
               <div style={styles.formGroup}>
                 <label style={styles.label}>City</label>
-                <input 
+                <input
                   style={styles.input}
                   value={editData.city}
-                  onChange={(e) => setEditData({...editData, city: e.target.value})}
+                  onChange={(e) => setEditData({ ...editData, city: e.target.value })}
                 />
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>State</label>
-                <input 
+                <input
                   style={styles.input}
                   value={editData.state}
-                  onChange={(e) => setEditData({...editData, state: e.target.value})}
+                  onChange={(e) => setEditData({ ...editData, state: e.target.value })}
                 />
               </div>
               <div style={styles.formGroup}>
                 <label style={styles.label}>ZIP</label>
-                <input 
+                <input
                   style={styles.input}
                   value={editData.zip}
-                  onChange={(e) => setEditData({...editData, zip: e.target.value})}
+                  onChange={(e) => setEditData({ ...editData, zip: e.target.value })}
                 />
               </div>
             </div>

@@ -343,7 +343,7 @@ function CheckoutContent() {
                         }} 
                         value={form.email} 
                         onChange={e => { setForm({...form, email: e.target.value}); if(errors.email) setErrors({...errors, email: ""}); }} 
-                        placeholder="eleanor@example.com" 
+                        placeholder="" 
                       />
                       {errors.email && <p className={s.errorText}>{errors.email}</p>}
                     </div>

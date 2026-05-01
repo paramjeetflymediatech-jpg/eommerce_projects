@@ -37,9 +37,9 @@ export async function GET(req: NextRequest) {
     offset,
     include: [
       { model: User, as: "user", attributes: ["id", "name", "email"] },
-      { 
-        model: OrderItem, 
-        as: "items", 
+      {
+        model: OrderItem,
+        as: "items",
         include: [{ model: Product, as: "product", attributes: ["id", "name", "images"] }]
       }
     ],
@@ -113,7 +113,7 @@ export async function DELETE(req: NextRequest) {
 
     // Delete associated order items to avoid foreign key constraints
     await OrderItem.destroy({ where: { orderId: id } });
-    
+
     // Delete the order
     await order.destroy();
 

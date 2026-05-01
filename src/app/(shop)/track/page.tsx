@@ -20,7 +20,7 @@ function OrderTrackingContent() {
       if (res.ok) {
         setOrder(data.order);
       } else {
-        setError(data.error || "Order not found. Please check your Reference ID.");
+        setError(data.error || "Order not found. Please check your Tracking ID (UUID).");
         setOrder(null);
       }
     } catch (err) {
@@ -39,7 +39,7 @@ function OrderTrackingContent() {
     trackOrder(orderQuery);
   };
 
-  const steps = ["Pending", "Processing", "Shipped", "Delivered"];
+  const steps = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED"];
   const currentStepIndex = steps.indexOf(order?.status || "");
 
   return (
@@ -47,13 +47,13 @@ function OrderTrackingContent() {
       <div style={styles.content}>
         <header style={styles.header}>
           <h1 style={styles.title}>Track Your Order</h1>
-          <p style={styles.subtitle}>Enter your order reference ID to see current status and tracking info.</p>
+          <p style={styles.subtitle}>Enter your Tracking ID (UUID) to see current status and tracking info.</p>
         </header>
 
         <form onSubmit={handleSubmit} style={styles.form}>
           <input
             style={styles.input}
-            placeholder="Order ID / Reference Number"
+            placeholder="Enter your Tracking ID"
             value={orderQuery}
             onChange={(e) => setOrderQuery(e.target.value)}
           />
@@ -66,64 +66,93 @@ function OrderTrackingContent() {
 
         {order && (
           <div style={styles.result}>
-             <div style={styles.orderCard}>
-               <div style={styles.cardHeader}>
-                  <div>
-                    <p style={styles.refLabel}>Order Reference</p>
-                    <h2 style={styles.refValue}>#{order.id.toString().padStart(6, "0")}</h2>
+            <div style={styles.orderCard}>
+              <div style={styles.cardHeader}>
+                <div>
+                  <p style={styles.refLabel}>Order Number</p>
+                  <h2 style={styles.refValue}>{order.id.toString().padStart(6, "0")}</h2>
+                  <div style={{ marginTop: 12 }}>
+                    <p style={styles.refLabel}>Tracking ID</p>
+                    <p style={{ ...styles.refValue, fontSize: "0.85rem", opacity: 0.6 }}>{order.trackingId}</p>
                   </div>
-                  <div style={{ textAlign: "right" }}>
-                    <p style={styles.refLabel}>Status</p>
-                    <h2 style={{ ...styles.statusValue, color: getStatusColor(order.status) }}>
-                      {order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase()}
-                    </h2>
-                  </div>
-               </div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <p style={styles.refLabel}>Status</p>
+                  <h2 style={{ ...styles.statusValue, color: getStatusColor(order.status) }}>
+                    {order.status.charAt(0).toUpperCase() + order.status.slice(1).toLowerCase()}
+                  </h2>
+                </div>
+              </div>
 
-               {/* Timeline */}
-               <div style={styles.timeline}>
-                  {steps.map((step, i) => (
-                    <div key={step} style={{ ...styles.step, opacity: i <= currentStepIndex ? 1 : 0.3 }}>
-                      <div style={{ 
-                        ...styles.dot, 
-                        background: i <= currentStepIndex ? getStatusColor(step) : "#eee",
-                        boxShadow: i === currentStepIndex ? `0 0 0 4px ${getStatusColor(step)}20` : "none"
-                      }} />
-                      <span style={styles.stepLabel}>{step}</span>
+              {/* Timeline */}
+              <div style={styles.timeline}>
+                <div style={styles.timelineLine}>
+                  <div style={{
+                    ...styles.timelineProgress,
+                    width: `${Math.max(0, (currentStepIndex / (steps.length - 1)) * 100)}%`,
+                    background: getStatusColor(order.status)
+                  }} />
+                </div>
+                {steps.map((step, i) => {
+                  const isActive = i <= currentStepIndex;
+                  const isCurrent = i === currentStepIndex;
+                  return (
+                    <div key={step} style={styles.step}>
+                      <div style={{
+                        ...styles.dot,
+                        background: isActive ? getStatusColor(step) : "#e5e7eb",
+                        transform: isCurrent ? "scale(1.2)" : "scale(1)",
+                        boxShadow: isCurrent ? `0 0 0 6px ${getStatusColor(step)}20` : "none",
+                        border: isActive ? "none" : "2px solid #e5e7eb"
+                      }}>
+                        {isActive && (
+                          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </div>
+                      <span style={{
+                        ...styles.stepLabel,
+                        color: isActive ? "#000" : "#9ca3af",
+                        fontWeight: isActive ? 700 : 500
+                      }}>
+                        {step.charAt(0) + step.slice(1).toLowerCase()}
+                      </span>
                     </div>
-                  ))}
-                  <div style={styles.timelineLine}>
-                    <div style={{ 
-                      ...styles.timelineProgress, 
-                      width: `${(currentStepIndex / (steps.length - 1)) * 100}%`,
-                      background: getStatusColor(order.status)
-                    }} />
+                  );
+                })}
+              </div>
+
+              {order.trackingId && (
+                <div style={styles.trackingInfo}>
+                  <div style={styles.infoRow}>
+                    <span style={styles.infoLabel}>Carrier</span>
+                    <span style={styles.infoValue}>{order.carrier || "Standard Shipping"}</span>
                   </div>
-               </div>
+                  <div style={styles.infoRow}>
+                    <span style={styles.infoLabel}>Tracking Number</span>
+                    <span style={styles.infoValue} className="tracking-id">{order.trackingId}</span>
+                  </div>
+                </div>
+              )}
 
-               {order.trackingId && (
-                 <div style={styles.trackingInfo}>
-                   <div style={styles.infoRow}>
-                     <span style={styles.infoLabel}>Carrier</span>
-                     <span style={styles.infoValue}>{order.carrier || "Standard Shipping"}</span>
-                   </div>
-                   <div style={styles.infoRow}>
-                     <span style={styles.infoLabel}>Tracking Number</span>
-                     <span style={styles.infoValue} className="tracking-id">{order.trackingId}</span>
-                   </div>
-                 </div>
-               )}
-
-               <div style={styles.itemsList}>
-                  <p style={styles.itemsTitle}>Items Summary</p>
-                  {order.items?.map((item: any) => (
-                    <div key={item.id} style={styles.item}>
-                      <span>{item.product?.name}</span>
-                      <span>x {item.quantity}</span>
-                    </div>
-                  ))}
-               </div>
-             </div>
+              <div style={styles.itemsList}>
+                <p style={styles.itemsTitle}>Items Summary</p>
+                {order.items?.map((item: any) => (
+                  <div key={item.id} style={styles.item}>
+                    <Link
+                      href={`/products/${item.product?.slug}`}
+                      style={{ textDecoration: "none", color: "inherit", flex: 1 }}
+                    >
+                      <span style={{ fontWeight: 600, color: "#000" }} className="hover-link">
+                        {item.product?.name}
+                      </span>
+                    </Link>
+                    <span style={{ color: "#666" }}>x {item.quantity}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -133,7 +162,7 @@ function OrderTrackingContent() {
 
 export default function OrderTrackingPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div style={{ padding: 120, textAlign: "center" }}>Loading tracking...</div>}>
       <OrderTrackingContent />
     </Suspense>
   );
@@ -141,10 +170,10 @@ export default function OrderTrackingPage() {
 
 const getStatusColor = (status: string) => {
   switch (status) {
-    case "PENDING": return "#8E8E93";
-    case "PROCESSING": return "#007AFF";
-    case "SHIPPED": return "#AF52DE";
-    case "DELIVERED": return "#34C759";
+    case "PENDING": return "#000";
+    case "PROCESSING": return "#000";
+    case "SHIPPED": return "#000";
+    case "DELIVERED": return "#000";
     case "CANCELLED": return "#FF3B30";
     default: return "#000";
   }
@@ -158,7 +187,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontFamily: "var(--font-sans)",
   },
   content: {
-    maxWidth: "600px",
+    maxWidth: "640px",
     margin: "0 auto",
   },
   header: {
@@ -167,7 +196,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   title: {
     fontFamily: "var(--font-serif)",
-    fontSize: "2.8rem",
+    fontSize: "clamp(2rem, 8vw, 3rem)",
     fontWeight: 400,
     marginBottom: "16px",
     letterSpacing: "-0.02em",
@@ -185,21 +214,23 @@ const styles: Record<string, React.CSSProperties> = {
   input: {
     flex: 1,
     padding: "16px 20px",
-    border: "1px solid #000",
-    borderRadius: "0",
+    border: "1px solid #e5e7eb",
+    borderRadius: "8px",
     fontSize: "1rem",
     outline: "none",
     letterSpacing: "0.02em",
+    transition: "border-color 0.2s",
   },
   button: {
-    padding: "16px 24px",
+    padding: "16px 32px",
     background: "#000",
     color: "#fff",
     border: "none",
-    borderRadius: "0",
-    fontSize: "0.9rem",
-    fontWeight: 700,
-    letterSpacing: "normal",
+    borderRadius: "8px",
+    fontSize: "0.95rem",
+    fontWeight: 600,
+    cursor: "pointer",
+    transition: "transform 0.1s",
   },
   error: {
     padding: "16px",
@@ -207,6 +238,7 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#e53e3e",
     fontSize: "0.9rem",
     textAlign: "center",
+    borderRadius: "8px",
     border: "1px solid #feb2b2",
     marginBottom: "40px",
   },
@@ -215,9 +247,11 @@ const styles: Record<string, React.CSSProperties> = {
     animation: "fadeIn 0.5s ease-out",
   },
   orderCard: {
-    border: "1px solid #000",
+    border: "1px solid #e5e7eb",
     padding: "40px",
     background: "#fff",
+    borderRadius: "16px",
+    boxShadow: "0 4px 24px rgba(0,0,0,0.04)",
   },
   cardHeader: {
     display: "flex",
@@ -226,38 +260,40 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: "48px",
   },
   refLabel: {
-    fontSize: "0.85rem",
+    fontSize: "0.75rem",
     fontWeight: 700,
-    letterSpacing: "normal",
-    color: "#aaa",
-    marginBottom: "4px",
+    letterSpacing: "0.05em",
+    color: "#9ca3af",
+    textTransform: "uppercase",
+    marginBottom: "8px",
   },
   refValue: {
-    fontSize: "1.2rem",
+    fontSize: "1rem",
     fontWeight: 700,
     fontFamily: "monospace",
     margin: 0,
+    color: "#000",
   },
   statusValue: {
-    fontSize: "1.15rem",
+    fontSize: "1.1rem",
     fontWeight: 700,
     margin: 0,
-    letterSpacing: "normal",
+    letterSpacing: "-0.01em",
   },
   timeline: {
     position: "relative",
     display: "flex",
     justifyContent: "space-between",
     marginBottom: "64px",
-    padding: "0 10px",
+    padding: "0 4px",
   },
   timelineLine: {
     position: "absolute",
-    top: "10px",
-    left: "20px",
-    right: "20px",
+    top: "12px",
+    left: "24px",
+    right: "24px",
     height: "2px",
-    background: "#eee",
+    background: "#f3f4f6",
     zIndex: 1,
   },
   timelineProgress: {
@@ -265,7 +301,7 @@ const styles: Record<string, React.CSSProperties> = {
     top: 0,
     left: 0,
     height: "100%",
-    transition: "width 0.8s ease",
+    transition: "width 1s cubic-bezier(0.4, 0, 0.2, 1)",
     zIndex: 2,
   },
   step: {
@@ -275,24 +311,27 @@ const styles: Record<string, React.CSSProperties> = {
     flexDirection: "column",
     alignItems: "center",
     gap: "12px",
+    width: "60px",
   },
   dot: {
-    width: "20px",
-    height: "20px",
+    width: "24px",
+    height: "24px",
     borderRadius: "50%",
-    transition: "all 0.3s ease",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+    background: "#fff",
   },
   stepLabel: {
-    fontSize: "0.6rem",
-    fontWeight: 800,
-    letterSpacing: "0.1em",
+    fontSize: "0.75rem",
     whiteSpace: "nowrap",
+    transition: "color 0.4s",
   },
   trackingInfo: {
     background: "#f9fafb",
     padding: "24px",
-    borderTop: "1px solid #000",
-    borderBottom: "1px solid #000",
+    borderRadius: "12px",
     marginBottom: "40px",
   },
   infoRow: {
@@ -301,8 +340,8 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: "12px",
   },
   infoLabel: {
-    fontSize: "0.75rem",
-    color: "#666",
+    fontSize: "0.8rem",
+    color: "#6b7280",
     fontWeight: 500,
   },
   infoValue: {
@@ -314,17 +353,19 @@ const styles: Record<string, React.CSSProperties> = {
     marginTop: "24px",
   },
   itemsTitle: {
-    fontSize: "0.85rem",
+    fontSize: "0.8rem",
     fontWeight: 700,
-    letterSpacing: "normal",
-    color: "#aaa",
+    color: "#9ca3af",
+    textTransform: "uppercase",
     marginBottom: "16px",
+    letterSpacing: "0.05em",
   },
   item: {
     display: "flex",
     justifyContent: "space-between",
-    padding: "8px 0",
-    fontSize: "0.9rem",
-    color: "#444",
+    padding: "12px 0",
+    fontSize: "0.95rem",
+    color: "#1f2937",
+    borderBottom: "1px solid #f3f4f6",
   }
 };
