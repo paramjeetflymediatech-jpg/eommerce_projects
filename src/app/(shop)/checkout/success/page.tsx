@@ -76,7 +76,7 @@ function CheckoutSuccessContent() {
         </div>
 
         <p style={{ fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", color: "#888", marginBottom: "16px" }}>
-          Order Confirmed
+          Booking Confirmed
         </p>
         <h1 style={{
           fontFamily: "var(--font-serif)",
