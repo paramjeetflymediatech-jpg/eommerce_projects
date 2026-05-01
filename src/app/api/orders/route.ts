@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { ensureDB, Order, OrderItem, Product } from "@/lib/models";
+import { Op } from "sequelize";
 import { apiResponse, apiError } from "@/lib/utils";
 
 // GET /api/orders — list orders for the logged-in user
@@ -13,7 +14,10 @@ export async function GET(req: NextRequest) {
   const userId = Number((session as any).user.id);
 
   const orders = await Order.findAll({
-    where: { userId },
+    where: { 
+      userId,
+      status: { [Op.ne]: "PENDING" } 
+    },
     include: [
       {
         model: OrderItem,
