@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { ensureDB, Order, User } from "@/lib/models";
 import { apiResponse, apiError, getPaginationMeta } from "@/lib/utils";
+import { Op } from "sequelize";
 
 async function requireAdmin(req: NextRequest) {
   const session = await getServerSession(authOptions as any);
@@ -27,6 +28,9 @@ export async function GET(req: NextRequest) {
   if (paymentMethod && paymentMethod !== "ALL") {
     where.paymentMethod = paymentMethod;
   }
+  
+  // By default, only show finalized/non-pending transactions in the payment history
+  where.status = { [Op.ne]: "PENDING" };
 
   const { count, rows } = await Order.findAndCountAll({
     where,
@@ -38,7 +42,12 @@ export async function GET(req: NextRequest) {
     order: [["createdAt", "DESC"]],
   });
 
-  const totalAmount = await Order.sum('total', { where });
+  const totalAmount = await Order.sum('total', { 
+    where: { 
+      ...where, 
+      status: { [Op.notIn]: ["PENDING", "CANCELLED"] } 
+    } 
+  });
 
   return apiResponse({
     payments: rows,

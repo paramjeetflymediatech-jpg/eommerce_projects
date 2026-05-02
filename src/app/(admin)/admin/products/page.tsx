@@ -380,7 +380,7 @@ export default function AdminProductsPage() {
             {/* ── Product Images ── */}
             <div style={{ marginBottom: 32 }}>
               <div style={s.sectionTitle}>Product Media <span style={{ fontWeight: 400, color: "#aaa" }}>(Front, Back & Gallery)</span></div>
-              
+
               {/* Primary Images (Front & Back) */}
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
                 {[0, 1].map((idx) => {
@@ -388,7 +388,7 @@ export default function AdminProductsPage() {
                   const isUploading = uploadingImg === `main-${idx}`;
                   const label = idx === 0 ? "Front Image (Shop Display)" : "Back Image (Hover View)";
                   const desc = idx === 0 ? "Main view shown in catalogs" : "Second view shown on mouse hover";
-                  
+
                   return (
                     <div key={idx} style={{ ...s.imageSlot, padding: 16 }}>
                       <div style={{ ...s.imageSlotLabel, color: "#000", fontSize: "0.75rem", marginBottom: 4 }}>{label}</div>
@@ -403,7 +403,7 @@ export default function AdminProductsPage() {
                           <div style={s.imgPlaceholder}><div style={s.spinner} /><span style={{ fontSize: "0.7rem", color: "#999", marginTop: 8 }}>Uploading…</span></div>
                         ) : (
                           <div style={s.imgPlaceholder}>
-                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
                           </div>
                         )}
                       </div>
@@ -441,7 +441,7 @@ export default function AdminProductsPage() {
                           <div style={s.imgPlaceholder}><div style={s.spinner} /></div>
                         ) : (
                           <div style={s.imgPlaceholder}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
                           </div>
                         )}
                       </div>
@@ -549,7 +549,7 @@ export default function AdminProductsPage() {
                             const vKey = `variant-${activeColorIdx}-${imgIdx}`;
                             const isUploading = uploadingImg === vKey;
                             const label = imgIdx === 0 ? "Front View" : "Back View";
-                            
+
                             return (
                               <div key={imgIdx} style={{ ...s.variantImageSlot, width: "100%" }}>
                                 <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "#888", marginBottom: 4 }}>{label}</div>
@@ -566,7 +566,7 @@ export default function AdminProductsPage() {
                                     <div style={s.imgPlaceholder}><div style={s.spinner} /></div>
                                   ) : (
                                     <div style={s.imgPlaceholder}>
-                                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
                                     </div>
                                   )}
                                 </div>
@@ -608,7 +608,7 @@ export default function AdminProductsPage() {
                             onClick={() => {
                               const imgs = [...activeGroup.images];
                               // Fill up to index 2 if needed
-                              while(imgs.length < 2) imgs.push("");
+                              while (imgs.length < 2) imgs.push("");
                               imgs.push("");
                               updateColorGroup(activeColorIdx, { images: imgs });
                             }}
@@ -621,7 +621,7 @@ export default function AdminProductsPage() {
                             const imgIdx = i + 2;
                             const vKey = `variant-${activeColorIdx}-${imgIdx}`;
                             const isUploading = uploadingImg === vKey;
-                            
+
                             return (
                               <div key={imgIdx} style={{ ...s.variantImageSlot, width: 80 }}>
                                 <div style={{ ...s.variantImagePreview, height: 60 }}>
@@ -637,7 +637,7 @@ export default function AdminProductsPage() {
                                     <div style={s.imgPlaceholder}><div style={s.spinner} /></div>
                                   ) : (
                                     <div style={s.imgPlaceholder}>
-                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
                                     </div>
                                   )}
                                 </div>

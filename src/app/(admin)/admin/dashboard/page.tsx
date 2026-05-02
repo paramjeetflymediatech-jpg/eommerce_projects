@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Product, Order, User, Category, ensureDB } from "@/lib/models";
 import { formatPrice } from "@/lib/utils";
+import { Op } from "sequelize";
 
 export const metadata: Metadata = { title: "Admin Dashboard | Aion Luxury" };
 export const dynamic = "force-dynamic";
@@ -11,10 +12,14 @@ async function getStats() {
   try {
     const [productCount, orderCount, userCount, categoryCount, totalRevenueResult] = await Promise.all([
       Product.count(),
-      Order.count(),
+      Order.count({ where: { status: { [Op.ne]: "PENDING" } } }),
       User.count(),
       Category.count(),
-      Order.sum("total")
+      Order.sum("total", {
+        where: {
+          status: { [Op.notIn]: ["PENDING", "CANCELLED"] }
+        }
+      })
     ]);
 
     return {
@@ -44,17 +49,17 @@ export default async function AdminDashboard() {
   return (
     <div style={{ maxWidth: 1400, margin: "0 auto" }}>
       {/* Header Bar */}
-      <div style={{ 
-        marginBottom: 40, 
+      <div style={{
+        marginBottom: 40,
         padding: "32px 0",
         borderBottom: "1px solid #eee",
         display: "flex",
         flexDirection: "column",
         gap: 8
       }}>
-        <h2 style={{ 
-          fontSize: "clamp(1.5rem, 5vw, 2.2rem)", 
-          fontWeight: 500, 
+        <h2 style={{
+          fontSize: "clamp(1.5rem, 5vw, 2.2rem)",
+          fontWeight: 500,
           margin: 0,
           fontFamily: "var(--font-serif)",
           letterSpacing: "-0.02em",
@@ -62,9 +67,9 @@ export default async function AdminDashboard() {
         }}>
           Overview
         </h2>
-        <p style={{ 
-          color: "#666", 
-          fontSize: "0.9rem", 
+        <p style={{
+          color: "#666",
+          fontSize: "0.9rem",
           margin: 0,
           opacity: 0.8
         }}>
@@ -87,9 +92,9 @@ export default async function AdminDashboard() {
 
       {/* Tools Section */}
       <div style={{ marginBottom: 24 }}>
-        <h3 style={{ 
-          fontSize: "1rem", 
-          fontWeight: 600, 
+        <h3 style={{
+          fontSize: "1rem",
+          fontWeight: 600,
           letterSpacing: "normal",
           color: "#888",
           marginBottom: 24
@@ -171,17 +176,17 @@ const s: Record<string, React.CSSProperties> = {
     opacity: 0.8
   },
   statContent: { display: "flex", flexDirection: "column", gap: 4 },
-  statLabel: { 
-    fontSize: "0.85rem", 
-    color: "#999", 
-    fontWeight: 500, 
-    letterSpacing: "normal", 
-    margin: 0 
+  statLabel: {
+    fontSize: "0.85rem",
+    color: "#999",
+    fontWeight: 500,
+    letterSpacing: "normal",
+    margin: 0
   },
-  statValue: { 
-    fontSize: "2.2rem", 
-    fontWeight: 400, 
-    color: "#000", 
+  statValue: {
+    fontSize: "2.2rem",
+    fontWeight: 400,
+    color: "#000",
     margin: 0,
     fontFamily: "var(--font-serif)"
   },
@@ -208,17 +213,17 @@ const s: Record<string, React.CSSProperties> = {
     letterSpacing: "normal",
     color: "#ccc",
   },
-  toolTitle: { 
-    fontSize: "1.4rem", 
-    fontWeight: 500, 
+  toolTitle: {
+    fontSize: "1.4rem",
+    fontWeight: 500,
     margin: 0,
     fontFamily: "var(--font-serif)",
     color: "#111"
   },
-  toolDesc: { 
-    fontSize: "0.95rem", 
-    color: "#777", 
-    lineHeight: 1.7, 
+  toolDesc: {
+    fontSize: "0.95rem",
+    color: "#777",
+    lineHeight: 1.7,
     margin: 0,
     fontWeight: 300
   },

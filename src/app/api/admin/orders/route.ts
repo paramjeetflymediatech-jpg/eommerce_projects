@@ -29,6 +29,9 @@ export async function GET(req: NextRequest) {
   const where: any = {};
   if (status && status !== "ALL") {
     where.status = status;
+  } else {
+    // By default, exclude PENDING orders from "ALL" view to avoid showing abandoned checkouts
+    where.status = { [Op.ne]: "PENDING" };
   }
 
   const { count, rows } = await Order.findAndCountAll({

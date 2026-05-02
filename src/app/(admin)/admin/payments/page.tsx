@@ -2,6 +2,14 @@
 import { useState, useEffect } from "react";
 import { formatPrice } from "@/lib/utils";
 
+const STATUS_VARIANTS: any = {
+  PENDING: { color: "#8E8E93", background: "#F1F1F2" },
+  PROCESSING: { color: "#007AFF", background: "#E5F1FF" },
+  SHIPPED: { color: "#AF52DE", background: "#F6ECFB" },
+  DELIVERED: { color: "#34C759", background: "#ECF9F0" },
+  CANCELLED: { color: "#FF3B30", background: "#FFEBEA" },
+};
+
 export default function AdminPaymentsPage() {
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +47,7 @@ export default function AdminPaymentsPage() {
       <header style={styles.header}>
         <div>
           <h1 style={styles.title}>Payments</h1>
-          <p style={styles.subtitle}>Track incoming transactions and cash on delivery records.</p>
+          <p style={styles.subtitle}>Track incoming transactions and cash flow.</p>
         </div>
         <div style={styles.filters} className="admin-filter-row">
           <select 
@@ -47,14 +55,14 @@ export default function AdminPaymentsPage() {
             onChange={(e) => { setMethodFilter(e.target.value); setPage(1); }} 
             style={styles.select}
           >
-            <option value="ALL">All Payment Methods</option>
+            <option value="ALL">All Methods</option>
             <option value="PHONEPE">Prepaid (PhonePe)</option>
-            <option value="COD">Cash on Delivery (COD)</option>
+            <option value="COD">Cash on Delivery</option>
           </select>
         </div>
       </header>
 
-      {/* Aggregate Stats */}
+      {/* Stats Card */}
       <div style={styles.statsCard}>
         <div style={styles.statLabel}>Total {methodFilter === "ALL" ? "" : methodFilter === "PHONEPE" ? "Prepaid" : "COD"} Revenue</div>
         <div style={styles.statValue}>{formatPrice(totalAmount)}</div>
@@ -68,8 +76,8 @@ export default function AdminPaymentsPage() {
             <tr>
               <th style={styles.th}>Order Ref</th>
               <th style={styles.th}>Customer</th>
-              <th style={styles.th}>Payment Method</th>
-              <th style={styles.th}>Order Status</th>
+              <th style={styles.th}>Method</th>
+              <th style={styles.th}>Status</th>
               <th style={styles.th}>Transaction ID</th>
               <th style={styles.th}>Date</th>
               <th style={{...styles.th, textAlign: "right"}}>Amount</th>
@@ -93,17 +101,23 @@ export default function AdminPaymentsPage() {
                   <td style={styles.td}>
                     <span style={{
                       ...styles.badge,
-                      background: payment.paymentMethod === "COD" ? "#FFF4E5" : "#E5F1FF",
-                      color: payment.paymentMethod === "COD" ? "#B25E02" : "#0056B3"
+                      background: payment.paymentMethod === "COD" ? "#fff7e6" : "#e6f7ff",
+                      color: payment.paymentMethod === "COD" ? "#d46b08" : "#096dd9",
+                      border: `1px solid ${payment.paymentMethod === "COD" ? "#ffd591" : "#91d5ff"}`
                     }}>
-                      {payment.paymentMethod === "PHONEPE" ? "Prepaid (PhonePe)" : payment.paymentMethod === "COD" ? "COD" : payment.paymentMethod || "UNKNOWN"}
+                      {payment.paymentMethod === "PHONEPE" ? "Prepaid" : payment.paymentMethod}
                     </span>
                   </td>
                   <td style={styles.td}>
-                    <span style={{...styles.badge, background: "#f5f5f5", color: "#666"}}>{payment.status}</span>
+                    <span style={{
+                      ...styles.badge, 
+                      ...STATUS_VARIANTS[payment.status]
+                    }}>
+                      {payment.status}
+                    </span>
                   </td>
                   <td style={styles.td}>
-                    <span style={styles.txnId}>{payment.stripePaymentId || payment.stripeSessionId || "N/A"}</span>
+                    <span style={styles.txnId}>{payment.stripePaymentId || payment.stripeSessionId || "—"}</span>
                   </td>
                   <td style={styles.td}>
                     <div style={styles.date}>{new Date(payment.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
@@ -122,15 +136,15 @@ export default function AdminPaymentsPage() {
         <button 
           onClick={() => setPage(p => Math.max(1, p - 1))} 
           disabled={page === 1}
-          style={styles.pageBtn}
+          style={{ ...styles.pageBtn, opacity: page === 1 ? 0.3 : 1 }}
         >
           Previous
         </button>
-        <span style={styles.pageInfo}>Page {page} of {pagination.totalPages}</span>
+        <span style={styles.pageInfo}>{page} / {pagination.totalPages}</span>
         <button 
           onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))} 
           disabled={page === pagination.totalPages}
-          style={styles.pageBtn}
+          style={{ ...styles.pageBtn, opacity: page === pagination.totalPages ? 0.3 : 1 }}
         >
           Next
         </button>
@@ -141,170 +155,173 @@ export default function AdminPaymentsPage() {
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    padding: "clamp(24px, 5vw, 60px)",
-    maxWidth: "1440px",
+    maxWidth: "1200px",
     margin: "0 auto",
-    fontFamily: "var(--font-sans)",
+    fontFamily: "'Inter', sans-serif",
+    padding: "20px 0",
   },
   header: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-end",
+    alignItems: "center",
     marginBottom: "32px",
+    gap: "20px",
     flexWrap: "wrap",
-    gap: "24px",
   },
   title: {
-    fontFamily: "var(--font-serif)",
-    fontSize: "2.4rem",
-    fontWeight: 400,
-    color: "#000",
-    marginBottom: "12px",
-    letterSpacing: "-0.01em",
+    fontSize: "1.75rem",
+    fontWeight: 700,
+    color: "#111",
+    margin: 0,
+    letterSpacing: "-0.02em",
   },
   subtitle: {
-    fontSize: "0.85rem",
-    color: "#888",
-    letterSpacing: "normal",
-    fontWeight: 500,
+    fontSize: "0.9rem",
+    color: "#666",
+    margin: "4px 0 0",
   },
   filters: {
-    flex: 1,
-    maxWidth: "280px",
+    minWidth: "200px",
   },
   select: {
     width: "100%",
-    padding: "14px 0",
-    background: "transparent",
-    border: "none",
-    borderBottom: "1px solid #e0e0e0",
-    fontSize: "0.85rem",
-    fontWeight: 700,
-    letterSpacing: "normal",
+    padding: "10px 16px",
+    borderRadius: "8px",
+    border: "1px solid #e0e0e0",
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    background: "#fff",
     outline: "none",
-    fontFamily: "inherit",
     cursor: "pointer",
+    appearance: "none",
+    backgroundImage: "url(\"data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E\")",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 12px center",
+    backgroundSize: "16px",
   },
   statsCard: {
     background: "#fff",
-    border: "1px solid #eee",
+    border: "1px solid #f0f0f0",
     padding: "24px",
     marginBottom: "32px",
-    borderRadius: "8px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px"
+    borderRadius: "12px",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
   },
   statLabel: {
-    fontSize: "0.85rem",
+    fontSize: "0.75rem",
     color: "#888",
-    fontWeight: 600,
+    fontWeight: 700,
     textTransform: "uppercase",
-    letterSpacing: "0.05em"
+    letterSpacing: "0.05em",
+    marginBottom: "8px",
   },
   statValue: {
     fontSize: "2rem",
     fontWeight: 800,
-    color: "#000"
+    color: "#111",
+    letterSpacing: "-0.02em",
   },
   error: {
-    padding: "16px",
-    background: "#000",
-    color: "#fff",
-    fontSize: "0.85rem",
-    fontWeight: 700,
-    letterSpacing: "normal",
-    marginBottom: "32px",
+    padding: "12px 16px",
+    background: "#fff1f0",
+    border: "1px solid #ffa39e",
+    color: "#cf1322",
+    borderRadius: "8px",
+    fontSize: "0.875rem",
+    marginBottom: "24px",
   },
   tableWrapper: {
-    overflowX: "auto",
     background: "#fff",
-    borderTop: "1px solid #000",
+    borderRadius: "12px",
+    border: "1px solid #f0f0f0",
+    overflow: "hidden",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.02)",
   },
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    textAlign: "left",
+    fontSize: "0.875rem",
   },
   th: {
-    padding: "24px 16px",
-    fontSize: "0.8rem",
-    fontWeight: 800,
-    color: "#999",
-    letterSpacing: "normal",
-    borderBottom: "1px solid #f2f2f2",
+    padding: "16px 20px",
+    textAlign: "left",
+    background: "#fafafa",
+    color: "#888",
+    fontWeight: 600,
+    borderBottom: "1px solid #f0f0f0",
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
+    fontSize: "0.75rem",
   },
   tr: {
-    borderBottom: "1px solid #f2f2f2",
+    borderBottom: "1px solid #f5f5f5",
+    transition: "background 0.2s",
   },
   td: {
-    padding: "24px 16px",
-    fontSize: "0.9rem",
-    color: "#000",
+    padding: "16px 20px",
     verticalAlign: "middle",
   },
   ref: {
-    fontFamily: "monospace",
     fontWeight: 700,
-    fontSize: "0.85rem",
-    color: "#000",
+    color: "#111",
+    fontFamily: "monospace",
+    fontSize: "0.95rem",
   },
   userName: {
     fontWeight: 600,
-    marginBottom: "2px",
+    color: "#111",
   },
   userEmail: {
     fontSize: "0.8rem",
     color: "#888",
+    marginTop: "2px",
   },
   total: {
-    fontWeight: 800,
-    fontSize: "0.95rem",
+    fontWeight: 700,
+    color: "#111",
   },
   badge: {
-    padding: "6px 12px",
-    fontSize: "0.75rem",
-    fontWeight: 800,
-    letterSpacing: "normal",
-    borderRadius: "4px"
+    padding: "4px 10px",
+    borderRadius: "6px",
+    fontSize: "0.7rem",
+    fontWeight: 700,
+    textTransform: "uppercase",
+    display: "inline-block",
   },
   txnId: {
     fontFamily: "monospace",
     fontSize: "0.75rem",
     color: "#666",
-    background: "#f9f9f9",
+    background: "#fafafa",
     padding: "4px 8px",
+    borderRadius: "4px",
     border: "1px solid #eee",
-    borderRadius: "4px"
   },
   date: {
-    fontSize: "0.8rem",
     color: "#888",
+    fontSize: "0.8rem",
   },
-  loading: { textAlign: "center", padding: "80px", color: "#888", fontSize: "0.8rem" },
-  empty: { textAlign: "center", padding: "80px", color: "#ccc", fontSize: "0.8rem" },
+  loading: { textAlign: "center", padding: "80px", color: "#888", fontSize: "0.875rem" },
+  empty: { textAlign: "center", padding: "80px", color: "#ccc", fontSize: "0.875rem" },
   pagination: {
-    marginTop: "48px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    gap: "32px",
+    gap: "24px",
+    marginTop: "32px",
   },
   pageBtn: {
-    background: "none",
-    border: "none",
+    padding: "8px 16px",
+    borderRadius: "8px",
+    border: "1px solid #e0e0e0",
+    background: "#fff",
+    fontSize: "0.875rem",
+    fontWeight: 600,
     cursor: "pointer",
-    fontSize: "0.8rem",
-    fontWeight: 700,
-    color: "#000",
-    letterSpacing: "normal",
-    padding: "8px 0",
-    borderBottom: "1px solid #000",
   },
   pageInfo: {
-    fontSize: "0.75rem",
-    fontWeight: 700,
-    letterSpacing: "normal",
-    color: "#aaa",
+    fontSize: "0.875rem",
+    fontWeight: 600,
+    color: "#888",
   },
 };

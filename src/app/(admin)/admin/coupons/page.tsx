@@ -138,10 +138,10 @@ export default function AdminCouponsPage() {
 
   return (
     <div style={styles.container}>
-      <header style={styles.header} className="admin-action-header">
+      <header style={styles.header}>
         <div>
-          <h1 style={styles.title}>Coupons & Discounts</h1>
-          <p style={styles.subtitle}>Manage promotional codes and gift card credits.</p>
+          <h1 style={styles.title}>Coupons</h1>
+          <p style={styles.subtitle}>Create and manage promotional codes for your store.</p>
         </div>
         <button
           onClick={() => { setEditId(null); resetForm(); setShowForm(true); }}
@@ -161,7 +161,7 @@ export default function AdminCouponsPage() {
               <th style={styles.th}>Usage</th>
               <th style={styles.th}>Status</th>
               <th style={styles.th}>Expiry</th>
-              <th style={styles.th}>Actions</th>
+              <th style={{ ...styles.th, textAlign: "right" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -173,36 +173,44 @@ export default function AdminCouponsPage() {
               coupons.map((coupon) => (
                 <tr key={coupon.id} style={styles.tr}>
                   <td style={styles.td}>
-                    <div style={{ fontWeight: 700, letterSpacing: "0.05em" }}>{coupon.code}</div>
-                    <div style={{ fontSize: "0.7rem", color: "#888", marginTop: 2 }}>{coupon.description || "No description"}</div>
+                    <div style={styles.codeText}>{coupon.code}</div>
+                    <div style={styles.descText}>{coupon.description || "No description"}</div>
                   </td>
                   <td style={styles.td}>
-                    <span style={styles.badge}>{coupon.discountType}</span>
+                    <span style={styles.typeBadge}>{coupon.discountType}</span>
                   </td>
                   <td style={styles.td}>
-                    {coupon.discountType === "PERCENTAGE" ? `${coupon.discountValue}%` : formatPrice(coupon.discountValue)}
+                    <div style={styles.valueText}>
+                      {coupon.discountType === "PERCENTAGE" ? `${coupon.discountValue}%` : formatPrice(coupon.discountValue)}
+                    </div>
                   </td>
                   <td style={styles.td}>
-                    <div style={{ fontSize: "0.85rem" }}>
+                    <div style={styles.usageText}>
                       {coupon.usedCount} / {coupon.usageLimit || "∞"}
                     </div>
                   </td>
                   <td style={styles.td}>
                     <span style={{ 
                       ...styles.statusBadge, 
-                      background: coupon.isActive ? "#e6f4ea" : "#fce8e6",
-                      color: coupon.isActive ? "#1e7e34" : "#d93025"
+                      background: coupon.isActive ? "#e6f4ea" : "#fff1f0",
+                      color: coupon.isActive ? "#1e7e34" : "#cf1322"
                     }}>
                       {coupon.isActive ? "Active" : "Inactive"}
                     </span>
                   </td>
                   <td style={styles.td}>
-                    {coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString() : "Never"}
+                    <div style={styles.dateText}>
+                      {coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "Never"}
+                    </div>
                   </td>
                   <td style={styles.td}>
-                    <div style={{ display: "flex", gap: 12 }}>
-                      <button onClick={() => handleEdit(coupon)} style={styles.iconBtn}>Edit</button>
-                      <button onClick={() => deleteCoupon(coupon.id)} style={{ ...styles.iconBtn, color: "#d93025" }}>Delete</button>
+                    <div style={{ display: "flex", gap: "12px", justifyContent: "flex-end" }}>
+                      <button onClick={() => handleEdit(coupon)} style={styles.actionBtn} title="Edit">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                      </button>
+                      <button onClick={() => deleteCoupon(coupon.id)} style={{ ...styles.actionBtn, color: "#cf1322" }} title="Delete">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -212,122 +220,103 @@ export default function AdminCouponsPage() {
         </table>
       </div>
 
-      {/* Form Modal */}
+      {/* Modal */}
       {showForm && (
-        <div style={styles.overlay} onClick={() => setShowForm(false)}>
+        <div style={styles.modalOverlay} onClick={() => setShowForm(false)}>
           <div style={styles.modal} onClick={e => e.stopPropagation()}>
             <div style={styles.modalHeader}>
-              <h2 style={styles.modalTitle}>{editId ? "Edit Coupon" : "Generate Coupon"}</h2>
+              <h2 style={styles.modalTitle}>{editId ? "Edit Coupon" : "Create Coupon"}</h2>
               <button onClick={() => setShowForm(false)} style={styles.closeBtn}>✕</button>
             </div>
-
-            <div style={styles.formGrid}>
-              <div style={styles.formGroup}>
-                <label style={styles.lbl}>Coupon Code *</label>
-                <input
-                  style={styles.inp}
-                  placeholder="e.g. SUMMER20"
-                  value={form.code}
-                  onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.lbl}>Discount Type *</label>
-                <select
-                  style={styles.inp}
-                  value={form.discountType}
-                  onChange={e => setForm({ ...form, discountType: e.target.value })}
-                >
-                  <option value="FIXED">Fixed Amount</option>
-                  <option value="PERCENTAGE">Percentage</option>
-                </select>
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.lbl}>Discount Value *</label>
-                <input
-                  style={styles.inp}
-                  type="number"
-                  placeholder={form.discountType === "PERCENTAGE" ? "20 (%)" : "50 ($)"}
-                  value={form.discountValue}
-                  onChange={e => setForm({ ...form, discountValue: e.target.value })}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.lbl}>Min Order Amount ($)</label>
-                <input
-                  style={styles.inp}
-                  type="number"
-                  placeholder="0.00"
-                  value={form.minOrderAmount}
-                  onChange={e => setForm({ ...form, minOrderAmount: e.target.value })}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.lbl}>Max Discount (For %)</label>
-                <input
-                  style={styles.inp}
-                  type="number"
-                  placeholder="No limit"
-                  value={form.maxDiscountAmount}
-                  onChange={e => setForm({ ...form, maxDiscountAmount: e.target.value })}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.lbl}>Usage Limit</label>
-                <input
-                  style={styles.inp}
-                  type="number"
-                  placeholder="Unlimited"
-                  value={form.usageLimit}
-                  onChange={e => setForm({ ...form, usageLimit: e.target.value })}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.lbl}>Expiry Date</label>
-                <input
-                  style={styles.inp}
-                  type="date"
-                  value={form.expiryDate}
-                  onChange={e => setForm({ ...form, expiryDate: e.target.value })}
-                />
-              </div>
-
-              <div style={styles.formGroup}>
-                <label style={styles.lbl}>Status</label>
-                <div style={{ display: "flex", gap: 16, marginTop: 12 }}>
-                  <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-                    <input type="radio" checked={form.isActive} onChange={() => setForm({...form, isActive: true})} /> Active
-                  </label>
-                  <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-                    <input type="radio" checked={!form.isActive} onChange={() => setForm({...form, isActive: false})} /> Inactive
-                  </label>
+            <div style={styles.modalBody}>
+              <div style={styles.formGrid}>
+                <div style={{ ...styles.formGroup, gridColumn: "span 2" }}>
+                  <label style={styles.label}>Coupon Code</label>
+                  <input
+                    style={styles.input}
+                    placeholder="e.g. SUMMER25"
+                    value={form.code}
+                    onChange={e => setForm({ ...form, code: e.target.value.toUpperCase() })}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Discount Type</label>
+                  <select
+                    style={styles.input}
+                    value={form.discountType}
+                    onChange={e => setForm({ ...form, discountType: e.target.value })}
+                  >
+                    <option value="FIXED">Fixed Amount</option>
+                    <option value="PERCENTAGE">Percentage</option>
+                  </select>
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Discount Value</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    placeholder="e.g. 20"
+                    value={form.discountValue}
+                    onChange={e => setForm({ ...form, discountValue: e.target.value })}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Min Order Amount</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    placeholder="0.00"
+                    value={form.minOrderAmount}
+                    onChange={e => setForm({ ...form, minOrderAmount: e.target.value })}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Usage Limit</label>
+                  <input
+                    style={styles.input}
+                    type="number"
+                    placeholder="Unlimited"
+                    value={form.usageLimit}
+                    onChange={e => setForm({ ...form, usageLimit: e.target.value })}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Expiry Date</label>
+                  <input
+                    style={styles.input}
+                    type="date"
+                    value={form.expiryDate}
+                    onChange={e => setForm({ ...form, expiryDate: e.target.value })}
+                  />
+                </div>
+                <div style={styles.formGroup}>
+                  <label style={styles.label}>Status</label>
+                  <div style={{ display: "flex", gap: "20px", marginTop: "12px" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "0.875rem" }}>
+                      <input type="radio" checked={form.isActive} onChange={() => setForm({...form, isActive: true})} /> Active
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "0.875rem" }}>
+                      <input type="radio" checked={!form.isActive} onChange={() => setForm({...form, isActive: false})} /> Inactive
+                    </label>
+                  </div>
+                </div>
+                <div style={{ ...styles.formGroup, gridColumn: "span 2" }}>
+                  <label style={styles.label}>Description</label>
+                  <textarea
+                    style={{ ...styles.input, minHeight: "80px", resize: "none" }}
+                    placeholder="Notes about this coupon..."
+                    value={form.description}
+                    onChange={e => setForm({ ...form, description: e.target.value })}
+                  />
                 </div>
               </div>
-
-              <div style={{ ...styles.formGroup, gridColumn: "1 / -1" }}>
-                <label style={styles.lbl}>Description</label>
-                <textarea
-                  style={{ ...styles.inp, minHeight: "60px", resize: "none" }}
-                  placeholder="Internal notes or user-facing description..."
-                  value={form.description}
-                  onChange={e => setForm({ ...form, description: e.target.value })}
-                />
+              <div style={styles.modalFooter}>
+                <button onClick={() => setShowForm(false)} style={styles.cancelBtn}>Cancel</button>
+                <button onClick={handleSave} disabled={saving} style={styles.saveBtn}>
+                  {saving ? "Saving..." : editId ? "Update Coupon" : "Create Coupon"}
+                </button>
               </div>
             </div>
-
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              style={{ ...styles.saveBtn, opacity: saving ? 0.7 : 1 }}
-            >
-              {saving ? "Saving..." : editId ? "Update Coupon" : "Generate Coupon"}
-            </button>
           </div>
         </div>
       )}
@@ -337,165 +326,221 @@ export default function AdminCouponsPage() {
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    padding: "clamp(24px, 5vw, 60px)",
-    maxWidth: "1440px",
+    maxWidth: "1200px",
     margin: "0 auto",
+    fontFamily: "'Inter', sans-serif",
+    padding: "20px 0",
   },
   header: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-end",
-    marginBottom: "48px",
-    gap: "24px",
+    alignItems: "center",
+    marginBottom: "32px",
+    gap: "20px",
     flexWrap: "wrap",
   },
   title: {
-    fontFamily: "var(--font-serif)",
-    fontSize: "2.4rem",
-    fontWeight: 400,
-    color: "#000",
-    marginBottom: "12px",
-    letterSpacing: "-0.01em",
+    fontSize: "1.75rem",
+    fontWeight: 700,
+    color: "#111",
+    margin: 0,
+    letterSpacing: "-0.02em",
   },
   subtitle: {
-    fontSize: "0.85rem",
-    color: "#888",
-    fontWeight: 500,
+    fontSize: "0.9rem",
+    color: "#666",
+    margin: "4px 0 0",
   },
   addBtn: {
     background: "#000",
     color: "#fff",
     border: "none",
-    padding: "16px 32px",
-    fontSize: "0.85rem",
+    padding: "12px 24px",
+    borderRadius: "8px",
+    fontSize: "0.875rem",
     fontWeight: 600,
     cursor: "pointer",
+    transition: "opacity 0.2s",
   },
   tableWrapper: {
     background: "#fff",
-    borderTop: "1px solid #000",
-    overflowX: "auto",
+    borderRadius: "12px",
+    border: "1px solid #f0f0f0",
+    overflow: "hidden",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.02)",
   },
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    textAlign: "left",
+    fontSize: "0.875rem",
   },
   th: {
-    padding: "24px 16px",
-    fontSize: "0.75rem",
-    fontWeight: 800,
-    color: "#999",
-    borderBottom: "1px solid #f2f2f2",
+    padding: "16px 20px",
+    textAlign: "left",
+    background: "#fafafa",
+    color: "#888",
+    fontWeight: 600,
+    borderBottom: "1px solid #f0f0f0",
     textTransform: "uppercase",
     letterSpacing: "0.05em",
+    fontSize: "0.75rem",
   },
   tr: {
-    borderBottom: "1px solid #f2f2f2",
+    borderBottom: "1px solid #f5f5f5",
+    transition: "background 0.2s",
   },
   td: {
-    padding: "24px 16px",
-    fontSize: "0.9rem",
-    color: "#000",
+    padding: "16px 20px",
+    verticalAlign: "middle",
   },
-  badge: {
+  codeText: {
+    fontWeight: 700,
+    color: "#111",
+    letterSpacing: "0.05em",
+    fontFamily: "monospace",
+    fontSize: "1rem",
+  },
+  descText: {
+    fontSize: "0.75rem",
+    color: "#888",
+    marginTop: "4px",
+  },
+  typeBadge: {
     fontSize: "0.7rem",
     fontWeight: 700,
     padding: "4px 8px",
     background: "#f0f0f0",
-    color: "#000",
-    borderRadius: "2px",
+    color: "#333",
+    borderRadius: "4px",
+    textTransform: "uppercase",
+  },
+  valueText: {
+    fontWeight: 700,
+    color: "#111",
+  },
+  usageText: {
+    color: "#666",
+    fontSize: "0.8rem",
+    fontWeight: 500,
   },
   statusBadge: {
-    fontSize: "0.75rem",
-    fontWeight: 700,
     padding: "4px 10px",
-    borderRadius: "12px",
-  },
-  iconBtn: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "0.85rem",
+    borderRadius: "6px",
+    fontSize: "0.7rem",
     fontWeight: 700,
-    padding: 0,
-    color: "#000",
-    textDecoration: "underline",
+    textTransform: "uppercase",
+    display: "inline-block",
   },
-  overlay: {
-    position: "fixed",
-    inset: 0,
-    background: "rgba(255,255,255,0.9)",
-    backdropFilter: "blur(4px)",
-    zIndex: 2000,
+  dateText: {
+    color: "#888",
+    fontSize: "0.8rem",
+  },
+  actionBtn: {
+    width: "32px",
+    height: "32px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: "6px",
+    border: "1px solid #eee",
+    background: "#fff",
+    cursor: "pointer",
+    color: "#666",
+    transition: "all 0.2s",
+    padding: 0,
+  },
+  modalOverlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.4)",
+    backdropFilter: "blur(4px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
     padding: "20px",
   },
   modal: {
     background: "#fff",
+    borderRadius: "16px",
     width: "100%",
     maxWidth: "600px",
-    padding: "40px",
-    border: "1px solid #000",
-    boxShadow: "0 20px 50px rgba(0,0,0,0.1)",
-    maxHeight: "90vh",
-    overflowY: "auto",
+    boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
+    overflow: "hidden",
   },
   modalHeader: {
+    padding: "24px",
+    borderBottom: "1px solid #f0f0f0",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: "32px",
   },
   modalTitle: {
-    fontFamily: "var(--font-serif)",
-    fontSize: "1.8rem",
-    fontWeight: 400,
     margin: 0,
+    fontSize: "1.25rem",
+    fontWeight: 700,
   },
   closeBtn: {
     background: "none",
     border: "none",
-    fontSize: "1.2rem",
+    fontSize: "1.25rem",
     cursor: "pointer",
+    color: "#999",
+  },
+  modalBody: {
+    padding: "24px",
   },
   formGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
-    gap: "24px",
+    gap: "16px",
   },
-  formGroup: { marginBottom: "20px" },
-  lbl: {
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+  },
+  label: {
     fontSize: "0.75rem",
-    fontWeight: 800,
-    color: "#888",
-    marginBottom: "8px",
-    display: "block",
+    fontWeight: 700,
+    color: "#666",
     textTransform: "uppercase",
+    letterSpacing: "0.05em",
   },
-  inp: {
-    width: "100%",
-    padding: "12px 0",
-    background: "transparent",
-    border: "none",
-    borderBottom: "1px solid #eee",
-    fontSize: "1rem",
+  input: {
+    padding: "12px",
+    borderRadius: "8px",
+    border: "1px solid #e0e0e0",
+    fontSize: "0.875rem",
     outline: "none",
-    fontFamily: "inherit",
+    transition: "border 0.2s",
+    width: "100%",
+    boxSizing: "border-box",
+  },
+  modalFooter: {
+    marginTop: "32px",
+    display: "flex",
+    gap: "12px",
+  },
+  cancelBtn: {
+    flex: 1,
+    padding: "12px",
+    borderRadius: "8px",
+    border: "1px solid #e0e0e0",
+    background: "#fff",
+    fontWeight: 600,
+    cursor: "pointer",
   },
   saveBtn: {
-    width: "100%",
+    flex: 2,
+    padding: "12px",
+    borderRadius: "8px",
+    border: "none",
     background: "#000",
     color: "#fff",
-    border: "none",
-    padding: "18px 0",
-    fontSize: "0.9rem",
-    fontWeight: 700,
+    fontWeight: 600,
     cursor: "pointer",
-    marginTop: "24px",
   },
-  loading: { textAlign: "center", padding: "80px", color: "#888" },
-  empty: { textAlign: "center", padding: "80px", color: "#ccc" },
+  loading: { textAlign: "center", padding: "80px", color: "#888", fontSize: "0.875rem" },
+  empty: { textAlign: "center", padding: "80px", color: "#ccc", fontSize: "0.875rem" },
 };
