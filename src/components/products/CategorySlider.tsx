@@ -126,7 +126,7 @@ export default function CategorySlider({ categories }: CategorySliderProps) {
                 <div style={{ color: "#ffffff", backgroundColor: "rgba(20, 20, 20, 0.45)", padding: "24px", borderRadius: "12px", backdropFilter: "blur(8px)", width: "100%", border: "1px solid rgba(255, 255, 255, 0.15)", boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)" }}>
                   <h3 style={{ fontSize: "1.85rem", fontWeight: "700", marginBottom: "8px", letterSpacing: "0.5px", textShadow: "0 2px 4px rgba(0,0,0,0.5)", lineHeight: "1.2" }}>{cat.name}</h3>
                   <p className="text-tracked" style={{ fontSize: "0.95rem", fontWeight: "600", color: "#e2e8f0", marginBottom: "8px", textShadow: "0 1px 2px rgba(0,0,0,0.5)", textTransform: "uppercase", letterSpacing: "2px" }}>Luxury at Its Best</p>
-                  <p style={{ fontSize: "1.05rem", color: "#f8fafc", opacity: 0.9, fontWeight: "400", lineHeight: "1.5", textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}>Made from super combed cotton-rich fabric, label-free for all-day comfort, smart fit.</p>
+                  <p style={{ fontSize: "1.05rem", color: "#f8fafc", opacity: 0.9, fontWeight: "400", lineHeight: "1.5", textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}>One of its kind, Adjustable & Reversible Thermals.</p>
                 </div>
               </div>
             </Link>
