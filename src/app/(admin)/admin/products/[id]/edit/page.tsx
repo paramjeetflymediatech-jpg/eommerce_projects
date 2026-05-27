@@ -114,11 +114,24 @@ export default function EditProductPage() {
                 if (!map.has(key)) {
                   map.set(key, { color: key, description: v.description || "", images: Array.isArray(v.images) ? v.images : [], variants: [] });
                 }
-                map.get(key)!.variants.push({ size: v.size || "", stock: String(v.stock ?? 0), price: v.price ? String(v.price) : "", comparePrice: v.comparePrice ? String(v.comparePrice) : "", sku: v.sku || "" });
+                const group = map.get(key)!;
+                const sizeValue = (v.size || "").trim();
+                const isDuplicate = group.variants.some(
+                  (row) => (row.size || "").trim().toLowerCase() === sizeValue.toLowerCase()
+                );
+                if (!isDuplicate) {
+                  group.variants.push({
+                    size: sizeValue,
+                    stock: String(v.stock ?? 0),
+                    price: v.price ? String(v.price) : "",
+                    comparePrice: v.comparePrice ? String(v.comparePrice) : "",
+                    sku: v.sku || ""
+                  });
+                }
               }
               return Array.from(map.values());
             }
-console.log(p.variants,"p.variants")
+            console.log(p.variants,"p.variants")
             const colorGroups = p.variants?.length ? variantsToGroups(p.variants) : [];
             console.log(colorGroups,"colorGroups")
             setForm({ name: p.name, slug: p.slug, description: p.description || "", price: String(p.price), comparePrice: p.comparePrice ? String(p.comparePrice) : "", stock: String(p.stock), categoryId: String(p.categoryId), imageUrls, isFeatured: p.isFeatured, colorGroups });

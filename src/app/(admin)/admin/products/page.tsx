@@ -63,14 +63,21 @@ function variantsToGroups(variants: any[]): ColorGroup[] {
         variants: [],
       });
     }
-    map.get(key)!.variants.push({
-      id: v.id,
-      size: v.size || "",
-      stock: String(v.stock ?? 0),
-      price: v.price ? String(v.price) : "",
-      comparePrice: v.comparePrice ? String(v.comparePrice) : "",
-      sku: v.sku || "",
-    });
+    const group = map.get(key)!;
+    const sizeValue = (v.size || "").trim();
+    const isDuplicate = group.variants.some(
+      (row) => (row.size || "").trim().toLowerCase() === sizeValue.toLowerCase()
+    );
+    if (!isDuplicate) {
+      group.variants.push({
+        id: v.id,
+        size: sizeValue,
+        stock: String(v.stock ?? 0),
+        price: v.price ? String(v.price) : "",
+        comparePrice: v.comparePrice ? String(v.comparePrice) : "",
+        sku: v.sku || "",
+      });
+    }
   }
   return Array.from(map.values());
 }
