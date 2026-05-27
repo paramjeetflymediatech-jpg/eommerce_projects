@@ -98,7 +98,7 @@ export default function EditProductPage() {
         .then(data => {
           if (data.product) {
             const p = data.product;
-            
+
             const cat = categories.find(c => c.id === p.categoryId);
             if (cat && cat.parentId) { setParentCategoryId(String(cat.parentId)); setSubCategoryId(String(cat.id)); }
             else if (cat) { setParentCategoryId(String(cat.id)); setSubCategoryId(""); }
@@ -106,7 +106,7 @@ export default function EditProductPage() {
 
             const images = Array.isArray(p.images) ? p.images : [];
             const imageUrls = [...images, ...Array(10).fill("")].slice(0, 10);
-            
+
             function variantsToGroups(variants: any[]) {
               const map = new Map<string, ColorGroup>();
               for (const v of variants) {
@@ -133,10 +133,10 @@ export default function EditProductPage() {
 
   const handleSave = async () => {
     const finalCategoryId = subCategoryId || parentCategoryId;
-    if (!form.name || !form.price || !finalCategoryId) { 
-      setMsg({ text: "Name, price, and category are required.", type: "error" }); 
+    if (!form.name || !form.price || !finalCategoryId) {
+      setMsg({ text: "Name, price, and category are required.", type: "error" });
       window.scrollTo(0, 0);
-      return; 
+      return;
     }
     setSaving(true); setMsg({ text: "", type: "" });
     const payload = {
@@ -151,18 +151,18 @@ export default function EditProductPage() {
       });
       const data = await res.json();
       setSaving(false);
-      if (!res.ok) { 
-        setMsg({ text: data.error || "Failed to save.", type: "error" }); 
+      if (!res.ok) {
+        setMsg({ text: data.error || "Failed to save.", type: "error" });
         window.scrollTo(0, 0);
-        return; 
+        return;
       }
       Swal.fire({ title: "Success", text: "Product updated!", icon: "success", confirmButtonColor: "#000" }).then(() => {
         router.push("/admin/products");
       });
-    } catch { 
-      setMsg({ text: "Network error occurred.", type: "error" }); 
+    } catch {
+      setMsg({ text: "Network error occurred.", type: "error" });
       window.scrollTo(0, 0);
-      setSaving(false); 
+      setSaving(false);
     }
   };
 
@@ -281,7 +281,7 @@ export default function EditProductPage() {
   const activeGroup = form.colorGroups[activeColorIdx];
 
   if (status === "loading" || loadingProduct) return <div style={s.center}>Loading...</div>;
-
+  console.log(activeGroup, "activegro")
   return (
     <div style={s.container}>
       <header style={s.header}>
@@ -702,7 +702,7 @@ const s: Record<string, React.CSSProperties> = {
   saveBtn: { background: "#000", color: "#fff", border: "none", padding: "10px 24px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer" },
   sectionTitle: { fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", color: "#555", marginBottom: 14, paddingBottom: 8, borderBottom: "1px solid #f0f0f0" },
   editBtn: { background: "none", color: "#000", border: "1px solid #ddd", padding: "6px 12px", fontSize: "0.75rem", cursor: "pointer", fontWeight: 600 },
-  
+
   // Product Images Grid
   imageGrid: { display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginTop: 8 },
   imageSlot: { display: "flex", flexDirection: "column", border: "1px solid #ebebeb", padding: 8, background: "#fafafa" },
