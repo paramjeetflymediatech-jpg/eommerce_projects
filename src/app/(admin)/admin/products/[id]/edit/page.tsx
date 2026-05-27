@@ -118,8 +118,9 @@ export default function EditProductPage() {
               }
               return Array.from(map.values());
             }
-
+console.log(p.variants,"p.variants")
             const colorGroups = p.variants?.length ? variantsToGroups(p.variants) : [];
+            console.log(colorGroups,"colorGroups")
             setForm({ name: p.name, slug: p.slug, description: p.description || "", price: String(p.price), comparePrice: p.comparePrice ? String(p.comparePrice) : "", stock: String(p.stock), categoryId: String(p.categoryId), imageUrls, isFeatured: p.isFeatured, colorGroups });
           }
           setLoadingProduct(false);
