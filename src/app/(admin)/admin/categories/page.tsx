@@ -2,10 +2,12 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
 export default function AdminCategoriesPage() {
   const { data: session } = useSession();
+  const router = useRouter();
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -153,7 +155,7 @@ export default function AdminCategoriesPage() {
         </div>
         <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
           <button
-            onClick={() => { setEditId(null); setForm({ name: "", description: "", parentId: "", image: "", banner: "" }); setShowForm(true); }}
+            onClick={() => router.push("/admin/categories/new")}
             style={styles.addBtn}
           >
             Define Root Class
@@ -164,9 +166,7 @@ export default function AdminCategoriesPage() {
                 Swal.fire({ title: "Guidance", text: "You must first define a Root Category before branching into sub-disciplines.", icon: "info", confirmButtonColor: "#000" });
                 return;
               }
-              setEditId(null);
-              setForm({ name: "", description: "", parentId: String(categories[0].id), image: "", banner: "" });
-              setShowForm(true);
+              router.push(`/admin/categories/new?type=sub&parentId=${categories[0].id}`);
             }}
             style={{ ...styles.addBtn, background: "transparent", color: "#000", border: "1px solid #000" }}
           >

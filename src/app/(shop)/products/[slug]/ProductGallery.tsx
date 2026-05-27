@@ -131,7 +131,7 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
                   alt={`${productName} view ${i + 1}`} 
                   fill 
                   unoptimized={true}
-                  style={{ objectFit: "contain" }} 
+                  style={{ objectFit: "cover" }} 
                   sizes="(max-width: 1000px) 100vw, 60vw" 
                   priority={i === 0}
                 />

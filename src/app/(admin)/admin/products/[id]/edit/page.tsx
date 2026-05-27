@@ -1,0 +1,733 @@
+"use client";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter, useParams } from "next/navigation";
+import { getColorFromName } from "@/lib/colors";
+import Link from "next/link";
+import Swal from "sweetalert2";
+
+interface Category { id: number; name: string; parentId: number | null; }
+
+interface VariantRow {
+  id?: number;
+  size: string;
+  stock: string;
+  price: string;
+  comparePrice: string;
+  sku: string;
+}
+
+interface ColorGroup {
+  color: string;
+  description: string;
+  images: string[];
+  variants: VariantRow[];
+}
+
+const emptyRow = (): VariantRow => ({ size: "", stock: "0", price: "", comparePrice: "", sku: "" });
+
+const emptyGroup = (): ColorGroup => ({
+  color: "",
+  description: "",
+  images: [],
+  variants: [emptyRow()],
+});
+
+const emptyForm = () => ({
+  name: "", slug: "", description: "", price: "", comparePrice: "",
+  stock: "", categoryId: "",
+  imageUrls: Array(10).fill("") as string[],
+  isFeatured: false,
+  colorGroups: [] as ColorGroup[],
+});
+
+function groupsToVariants(groups: ColorGroup[]) {
+  const out: any[] = [];
+  for (const g of groups) {
+    for (const row of g.variants) {
+      if (!row.size && row.stock === "0" && !row.price) continue;
+      out.push({
+        size: row.size,
+        color: g.color,
+        description: g.description,
+        stock: row.stock,
+        price: row.price || undefined,
+        comparePrice: row.comparePrice || undefined,
+        sku: row.sku || undefined,
+        images: g.images.filter(Boolean),
+      });
+    }
+  }
+  return out;
+}
+
+export default function EditProductPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const params = useParams();
+  const { id } = params;
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [form, setForm] = useState(emptyForm());
+  const [parentCategoryId, setParentCategoryId] = useState("");
+  const [subCategoryId, setSubCategoryId] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState({ text: "", type: "" });
+  const [activeColorIdx, setActiveColorIdx] = useState(0);
+  const [uploadingImg, setUploadingImg] = useState<string | null>(null);
+  const [loadingProduct, setLoadingProduct] = useState(true);
+
+  useEffect(() => {
+    if (status === "unauthenticated") router.push("/admin/login");
+    if (status === "authenticated" && (session?.user as any)?.role !== "ADMIN") router.push("/admin/login");
+  }, [status, session, router]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/admin/categories?all=true");
+        if (res.ok) { const d = await res.json(); setCategories(d.categories || []); }
+      } catch (e) { console.error(e); }
+    };
+    if (status === "authenticated") { loadCategories(); }
+  }, [status]);
+
+  useEffect(() => {
+    if (status === "authenticated" && id && categories.length > 0) {
+      fetch(`/api/admin/products/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.product) {
+            const p = data.product;
+            
+            const cat = categories.find(c => c.id === p.categoryId);
+            if (cat && cat.parentId) { setParentCategoryId(String(cat.parentId)); setSubCategoryId(String(cat.id)); }
+            else if (cat) { setParentCategoryId(String(cat.id)); setSubCategoryId(""); }
+            else { setParentCategoryId(""); setSubCategoryId(""); }
+
+            const images = Array.isArray(p.images) ? p.images : [];
+            const imageUrls = [...images, ...Array(10).fill("")].slice(0, 10);
+            
+            function variantsToGroups(variants: any[]) {
+              const map = new Map<string, ColorGroup>();
+              for (const v of variants) {
+                const key = (v.color || "").trim();
+                if (!map.has(key)) {
+                  map.set(key, { color: key, description: v.description || "", images: Array.isArray(v.images) ? v.images : [], variants: [] });
+                }
+                map.get(key)!.variants.push({ size: v.size || "", stock: String(v.stock ?? 0), price: v.price ? String(v.price) : "", comparePrice: v.comparePrice ? String(v.comparePrice) : "", sku: v.sku || "" });
+              }
+              return Array.from(map.values());
+            }
+
+            const colorGroups = p.variants?.length ? variantsToGroups(p.variants) : [];
+            setForm({ name: p.name, slug: p.slug, description: p.description || "", price: String(p.price), comparePrice: p.comparePrice ? String(p.comparePrice) : "", stock: String(p.stock), categoryId: String(p.categoryId), imageUrls, isFeatured: p.isFeatured, colorGroups });
+          }
+          setLoadingProduct(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setLoadingProduct(false);
+        });
+    }
+  }, [status, id, categories]);
+
+  const handleSave = async () => {
+    const finalCategoryId = subCategoryId || parentCategoryId;
+    if (!form.name || !form.price || !finalCategoryId) { 
+      setMsg({ text: "Name, price, and category are required.", type: "error" }); 
+      window.scrollTo(0, 0);
+      return; 
+    }
+    setSaving(true); setMsg({ text: "", type: "" });
+    const payload = {
+      name: form.name, slug: form.slug || undefined, description: form.description, price: form.price,
+      comparePrice: form.comparePrice || undefined, stock: form.stock || "0", categoryId: finalCategoryId,
+      images: form.imageUrls.filter(u => u.trim() !== ""), isFeatured: form.isFeatured,
+      variants: groupsToVariants(form.colorGroups),
+    };
+    try {
+      const res = await fetch(`/api/admin/products/${id}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      setSaving(false);
+      if (!res.ok) { 
+        setMsg({ text: data.error || "Failed to save.", type: "error" }); 
+        window.scrollTo(0, 0);
+        return; 
+      }
+      Swal.fire({ title: "Success", text: "Product updated!", icon: "success", confirmButtonColor: "#000" }).then(() => {
+        router.push("/admin/products");
+      });
+    } catch { 
+      setMsg({ text: "Network error occurred.", type: "error" }); 
+      window.scrollTo(0, 0);
+      setSaving(false); 
+    }
+  };
+
+  const handleNameChange = (newName: string) => {
+    setForm(prev => {
+      const oldSlug = prev.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+      const isAuto = prev.slug === "" || prev.slug === oldSlug;
+      return { ...prev, name: newName, slug: isAuto ? newName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") : prev.slug };
+    });
+  };
+
+  const handleDeleteFile = async (url: string) => {
+    if (!url) return;
+    try {
+      await fetch(`/api/upload?url=${encodeURIComponent(url)}`, { method: "DELETE" });
+    } catch (err) {
+      console.error("Failed to delete file from server", err);
+    }
+  };
+
+  const processImage = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith("image/")) return resolve(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const targetWidth = 1080;
+          const targetHeight = 1440;
+          const targetRatio = targetWidth / targetHeight;
+          const sourceRatio = img.width / img.height;
+          let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+          if (sourceRatio > targetRatio) {
+            drawHeight = img.height;
+            drawWidth = img.height * targetRatio;
+            offsetX = (img.width - drawWidth) / 2;
+          } else {
+            drawWidth = img.width;
+            drawHeight = img.width / targetRatio;
+            offsetY = (img.height - drawHeight) / 2;
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return resolve(file);
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, targetWidth, targetHeight);
+          ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight, 0, 0, targetWidth, targetHeight);
+          canvas.toBlob((blob) => {
+            if (!blob) return resolve(file);
+            const newFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + "_1080x1440.jpg", { type: "image/jpeg", lastModified: Date.now() });
+            resolve(newFile);
+          }, "image/jpeg", 0.95);
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const uploadFile = async (rawFile: File, key: string, onSuccess: (url: string) => void) => {
+    setUploadingImg(key);
+    const file = await processImage(rawFile);
+    const fd = new FormData(); fd.append("files", file); fd.append("folder", "products");
+    try {
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (res.ok && data.urls?.[0]) { onSuccess(data.urls[0]); }
+      else setMsg({ text: data.error || "Upload failed.", type: "error" });
+    } catch { setMsg({ text: "Upload error.", type: "error" }); }
+    setUploadingImg(null);
+  };
+
+  const updateMainImage = (idx: number, url: string) => {
+    const oldUrl = form.imageUrls[idx];
+    if (oldUrl && !url) handleDeleteFile(oldUrl); // Delete if removed
+    const newUrls = [...form.imageUrls]; newUrls[idx] = url; setForm(prev => ({ ...prev, imageUrls: newUrls }));
+  };
+
+  const updateColorGroup = (gIdx: number, patch: Partial<ColorGroup>) => {
+    setForm(prev => {
+      const groups = [...prev.colorGroups];
+      groups[gIdx] = { ...groups[gIdx], ...patch };
+      return { ...prev, colorGroups: groups };
+    });
+  };
+
+  const updateVariantRow = (gIdx: number, rIdx: number, patch: Partial<VariantRow>) => {
+    setForm(prev => {
+      const groups = [...prev.colorGroups];
+      const rows = [...groups[gIdx].variants];
+      rows[rIdx] = { ...rows[rIdx], ...patch };
+      groups[gIdx] = { ...groups[gIdx], variants: rows };
+      return { ...prev, colorGroups: groups };
+    });
+  };
+
+  const addColorGroup = () => {
+    setForm(prev => ({ ...prev, colorGroups: [...prev.colorGroups, emptyGroup()] }));
+    setActiveColorIdx(form.colorGroups.length);
+  };
+
+  const removeColorGroup = async (gIdx: number) => {
+    const res = await Swal.fire({ title: "Remove color?", text: "Are you sure you want to remove this color and all its variants?", icon: "warning", showCancelButton: true, confirmButtonColor: "#DC2626", confirmButtonText: "Yes, remove" });
+    if (!res.isConfirmed) return;
+    setForm(prev => {
+      const groups = prev.colorGroups.filter((_, i) => i !== gIdx);
+      return { ...prev, colorGroups: groups };
+    });
+    setActiveColorIdx(idx => Math.max(0, idx >= gIdx ? idx - 1 : idx));
+  };
+
+  const activeGroup = form.colorGroups[activeColorIdx];
+
+  if (status === "loading" || loadingProduct) return <div style={s.center}>Loading...</div>;
+
+  return (
+    <div style={s.container}>
+      <header style={s.header}>
+        <div>
+          <h1 style={s.title}>Edit Product</h1>
+          <p style={s.subtitle}>Modify an existing product in your inventory.</p>
+        </div>
+        <Link href="/admin/products" style={s.backBtn}>
+          ← Back to Inventory
+        </Link>
+      </header>
+
+      {msg.text && (
+        <div style={{ ...s.alert, background: msg.type === "error" ? "#FFF5F5" : "#F0FDF4", border: `1px solid ${msg.type === "error" ? "#FECACA" : "#BBF7D0"}`, color: msg.type === "error" ? "#DC2626" : "#15803D" }}>
+          {msg.text}
+        </div>
+      )}
+
+      <div style={s.formContainer}>
+        {/* ── Basic Info ── */}
+        <div style={s.sectionTitle}>Basic Information</div>
+        <div style={s.grid2}>
+          <div style={s.formField}>
+            <label style={s.lbl}>Product Name *</label>
+            <input style={s.inp} type="text" placeholder="Product name" value={form.name} onChange={e => handleNameChange(e.target.value)} />
+          </div>
+          <div style={s.formField}>
+            <label style={s.lbl}>Slug</label>
+            <input style={s.inp} type="text" placeholder="auto-generated" value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} />
+          </div>
+          <div style={s.formField}>
+            <label style={s.lbl}>Price (INR) *</label>
+            <input style={s.inp} type="number" placeholder="0.00" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} />
+          </div>
+          <div style={s.formField}>
+            <label style={s.lbl}>Compare Price</label>
+            <input style={s.inp} type="number" placeholder="0.00" value={form.comparePrice} onChange={e => setForm({ ...form, comparePrice: e.target.value })} />
+          </div>
+          <div style={s.formField}>
+            <label style={s.lbl}>Stock</label>
+            <input style={s.inp} type="number" placeholder="0" value={form.stock} onChange={e => setForm({ ...form, stock: e.target.value })} />
+          </div>
+          <div style={s.formField}>
+            <label style={s.lbl}>Main Category (Department) *</label>
+            <select style={s.inp} value={parentCategoryId} onChange={e => { setParentCategoryId(e.target.value); setSubCategoryId(""); }}>
+              <option value="">Select Department...</option>
+              {categories.filter(c => !c.parentId).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+          <div style={s.formField}>
+            <label style={s.lbl}>Sub-Category (Discipline)</label>
+            <select style={s.inp} value={subCategoryId} onChange={e => setSubCategoryId(e.target.value)} disabled={!parentCategoryId}>
+              <option value="">None / Select...</option>
+              {categories.filter(c => c.parentId == (parentCategoryId as any)).map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div style={s.formField}>
+          <label style={s.lbl}>Default Description</label>
+          <textarea style={{ ...s.inp, minHeight: 80, resize: "vertical" }} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Product description (used when no color selected)..." />
+        </div>
+
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", marginBottom: 20, fontSize: "0.875rem" }}>
+          <input type="checkbox" checked={form.isFeatured} onChange={e => setForm({ ...form, isFeatured: e.target.checked })} />
+          Mark as Featured Product
+        </label>
+
+        {/* ── Product Images ── */}
+        <div style={{ marginBottom: 32 }}>
+          <div style={s.sectionTitle}>Product Media <span style={{ fontWeight: 400, color: "#aaa" }}>(Front, Back & Gallery)</span></div>
+
+          {/* Primary Images (Front & Back) */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
+            {[0, 1].map((idx) => {
+              const url = form.imageUrls[idx];
+              const isUploading = uploadingImg === `main-${idx}`;
+              const label = idx === 0 ? "Front Image (Shop Display)" : "Back Image (Hover View)";
+              const desc = idx === 0 ? "Main view shown in catalogs" : "Second view shown on mouse hover";
+
+              return (
+                <div key={idx} style={{ ...s.imageSlot, padding: 16 }}>
+                  <div style={{ ...s.imageSlotLabel, color: "#000", fontSize: "0.75rem", marginBottom: 4 }}>{label}</div>
+                  <div style={{ fontSize: "0.65rem", color: "#888", marginBottom: 12 }}>{desc}</div>
+                  <div style={{ ...s.imagePreview, height: 160 }}>
+                    {url ? (
+                      <>
+                        <img src={url} alt={label} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                        <button onClick={() => updateMainImage(idx, "")} style={s.imgRemoveBtn}>✕</button>
+                      </>
+                    ) : isUploading ? (
+                      <div style={s.imgPlaceholder}><div style={s.spinner} /><span style={{ fontSize: "0.7rem", color: "#999", marginTop: 8 }}>Uploading…</span></div>
+                    ) : (
+                      <div style={s.imgPlaceholder}>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
+                      </div>
+                    )}
+                  </div>
+                  <input
+                    style={{ ...s.inp, fontSize: "0.75rem", padding: "8px 10px", marginTop: 12, marginBottom: 8 }}
+                    value={url} onChange={e => updateMainImage(idx, e.target.value)}
+                    placeholder="Paste URL"
+                  />
+                  <label style={{ ...s.uploadLabel, padding: "8px 0" }}>
+                    {isUploading ? "Uploading…" : "Upload File"}
+                    <input type="file" accept="image/*" style={{ display: "none" }} disabled={isUploading}
+                      onChange={e => e.target.files?.[0] && uploadFile(e.target.files[0], `main-${idx}`, url => updateMainImage(idx, url))} />
+                  </label>
+                </div>
+              );
+            })}
+          </div>
+
+
+        </div>
+
+        {/* ── Product Variants ── */}
+        <div style={{ borderTop: "1px solid #eee", paddingTop: 20, marginBottom: 24 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+            <div style={s.sectionTitle} className="no-margin">Product Variants <span style={{ fontWeight: 400, color: "#aaa" }}>(Colors &amp; Sizes)</span></div>
+            <button type="button" onClick={addColorGroup} style={{ ...s.editBtn, fontSize: "0.7rem" }}>+ Add Color</button>
+          </div>
+
+          {form.colorGroups.length === 0 ? (
+            <div style={{ background: "#fafafa", border: "1px dashed #e0e0e0", padding: "24px 20px", textAlign: "center" }}>
+              <p style={{ fontSize: "0.8rem", color: "#999", margin: 0 }}>No variants added. Product will be sold as a single item.</p>
+              <button type="button" onClick={addColorGroup} style={{ ...s.editBtn, marginTop: 12, fontSize: "0.75rem" }}>+ Add Color Group</button>
+            </div>
+          ) : (
+            <div style={{ display: "flex", gap: 0, flexDirection: "column" }}>
+              {/* Color Tab Bar */}
+              <div style={s.colorTabBar}>
+                {form.colorGroups.map((g, gIdx) => (
+                  <button
+                    key={gIdx}
+                    type="button"
+                    onClick={() => setActiveColorIdx(gIdx)}
+                    style={{
+                      ...s.colorTab,
+                      ...(activeColorIdx === gIdx ? s.colorTabActive : {}),
+                    }}
+                  >
+                    {g.color ? (
+                      <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ width: 10, height: 10, borderRadius: "50%", background: getColorFromName(g.color), border: "1px solid rgba(0,0,0,0.2)", flexShrink: 0, display: "inline-block" }} />
+                        {g.color}
+                      </span>
+                    ) : `Color ${gIdx + 1}`}
+                    <span
+                      onClick={e => { e.stopPropagation(); removeColorGroup(gIdx); }}
+                      style={{ marginLeft: 6, opacity: 0.4, cursor: "pointer", fontSize: "0.65rem", lineHeight: 1 }}
+                      title="Remove color"
+                    >✕</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Active Color Panel */}
+              {activeGroup && (
+                <div style={s.colorPanel}>
+                  {/* Color Name */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+                    <div style={s.formField}>
+                      <label style={s.lbl}>Color Name</label>
+                      <input
+                        style={s.inp} value={activeGroup.color}
+                        onChange={e => updateColorGroup(activeColorIdx, { color: e.target.value })}
+                        placeholder="e.g. Midnight Black, Ivory White"
+                      />
+                    </div>
+                    <div style={{ display: "flex", alignItems: "flex-end", gap: 8, paddingBottom: 2 }}>
+                      {["Black", "White", "Red", "Navy", "Beige", "Camel", "Olive", "Gray"].map(c => (
+                        <button
+                          key={c} type="button"
+                          onClick={() => updateColorGroup(activeColorIdx, { color: c })}
+                          title={c}
+                          style={{ width: 20, height: 20, borderRadius: "50%", border: activeGroup.color === c ? "2px solid #000" : "1px solid #ddd", background: getColorFromName(c), cursor: "pointer", flexShrink: 0 }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Per-color Description */}
+                  <div style={{ ...s.formField, marginBottom: 16 }}>
+                    <label style={s.lbl}>Description for this Color <span style={{ fontWeight: 400, color: "#bbb" }}>(overrides default)</span></label>
+                    <textarea
+                      style={{ ...s.inp, minHeight: 70, resize: "vertical", fontSize: "0.85rem" }}
+                      value={activeGroup.description}
+                      onChange={e => updateColorGroup(activeColorIdx, { description: e.target.value })}
+                      placeholder="Optional: describe this specific colorway…"
+                    />
+                  </div>
+
+                  {/* Per-color Images */}
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                      <label style={s.lbl}>Color Display Images <span style={{ fontWeight: 400, color: "#bbb" }}>(Front & Back)</span></label>
+                    </div>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                      {[0, 1].map((imgIdx) => {
+                        const imgUrl = activeGroup.images[imgIdx] || "";
+                        const vKey = `variant-${activeColorIdx}-${imgIdx}`;
+                        const isUploading = uploadingImg === vKey;
+                        const label = imgIdx === 0 ? "Front View" : "Back View";
+
+                        return (
+                          <div key={imgIdx} style={{ ...s.variantImageSlot, width: "100%" }}>
+                            <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "#888", marginBottom: 4 }}>{label}</div>
+                            <div style={{ ...s.variantImagePreview, height: 100 }}>
+                              {imgUrl ? (
+                                <>
+                                  <img src={imgUrl} alt={label} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                                  <button type="button" onClick={() => {
+                                    const oldUrl = activeGroup.images[imgIdx];
+                                    if (oldUrl) handleDeleteFile(oldUrl);
+                                    const imgs = [...activeGroup.images]; imgs[imgIdx] = "";
+                                    updateColorGroup(activeColorIdx, { images: imgs });
+                                  }} style={s.imgRemoveBtn}>✕</button>
+                                </>
+                              ) : isUploading ? (
+                                <div style={s.imgPlaceholder}><div style={s.spinner} /></div>
+                              ) : (
+                                <div style={s.imgPlaceholder}>
+                                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
+                                </div>
+                              )}
+                            </div>
+                            <input
+                              style={{ ...s.inp, fontSize: "0.65rem", padding: "6px 8px", marginTop: 8, marginBottom: 4 }}
+                              value={imgUrl}
+                              onChange={e => {
+                                const imgs = [...activeGroup.images];
+                                while (imgs.length <= imgIdx) imgs.push(""); // ensure index exists
+                                imgs[imgIdx] = e.target.value;
+                                updateColorGroup(activeColorIdx, { images: imgs });
+                              }}
+                              placeholder="URL"
+                            />
+                            <label style={{ ...s.uploadLabel, fontSize: "0.65rem", padding: "6px 0" }}>
+                              {isUploading ? "…" : "Upload"}
+                              <input type="file" accept="image/*" style={{ display: "none" }} disabled={isUploading}
+                                onChange={e => {
+                                  if (!e.target.files?.[0]) return;
+                                  uploadFile(e.target.files[0], vKey, url => {
+                                    const imgs = [...activeGroup.images];
+                                    while (imgs.length <= imgIdx) imgs.push("");
+                                    imgs[imgIdx] = url;
+                                    updateColorGroup(activeColorIdx, { images: imgs });
+                                  });
+                                }} />
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Additional Color Gallery */}
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                      <label style={{ ...s.lbl, fontSize: "0.7rem" }}>Additional Color Gallery <span style={{ fontWeight: 400, color: "#bbb" }}>(Optional)</span></label>
+                      <button type="button"
+                        onClick={() => {
+                          const imgs = [...activeGroup.images];
+                          // Fill up to index 2 if needed
+                          while (imgs.length < 2) imgs.push("");
+                          imgs.push("");
+                          updateColorGroup(activeColorIdx, { images: imgs });
+                        }}
+                        style={{ fontSize: "0.6rem", padding: "4px 8px", background: "#f5f5f5", border: "1px solid #ddd", cursor: "pointer" }}>
+                        + Add Image
+                      </button>
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      {activeGroup.images.slice(2).map((imgUrl, i) => {
+                        const imgIdx = i + 2;
+                        const vKey = `variant-${activeColorIdx}-${imgIdx}`;
+                        const isUploading = uploadingImg === vKey;
+
+                        return (
+                          <div key={imgIdx} style={{ ...s.variantImageSlot, width: 80 }}>
+                            <div style={{ ...s.variantImagePreview, height: 60 }}>
+                              {imgUrl ? (
+                                <>
+                                  <img src={imgUrl} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                  <button type="button" onClick={() => {
+                                    const oldUrl = activeGroup.images[imgIdx];
+                                    if (oldUrl) handleDeleteFile(oldUrl);
+                                    const imgs = activeGroup.images.filter((_, idx) => idx !== imgIdx);
+                                    updateColorGroup(activeColorIdx, { images: imgs });
+                                  }} style={s.imgRemoveBtn}>✕</button>
+                                </>
+                              ) : isUploading ? (
+                                <div style={s.imgPlaceholder}><div style={s.spinner} /></div>
+                              ) : (
+                                <div style={s.imgPlaceholder}>
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
+                                </div>
+                              )}
+                            </div>
+                            <label style={{ ...s.uploadLabel, fontSize: "0.55rem", padding: "4px 0", marginTop: 4 }}>
+                              {isUploading ? "…" : "Upload"}
+                              <input type="file" accept="image/*" style={{ display: "none" }} disabled={isUploading}
+                                onChange={e => {
+                                  if (!e.target.files?.[0]) return;
+                                  uploadFile(e.target.files[0], vKey, url => {
+                                    const imgs = [...activeGroup.images];
+                                    imgs[imgIdx] = url;
+                                    updateColorGroup(activeColorIdx, { images: imgs });
+                                  });
+                                }} />
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Size Rows */}
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                      <label style={s.lbl}>Sizes for {activeGroup.color || "this color"}</label>
+                      <button type="button"
+                        onClick={() => updateColorGroup(activeColorIdx, { variants: [...activeGroup.variants, emptyRow()] })}
+                        style={{ fontSize: "0.65rem", padding: "4px 10px", background: "#f5f5f5", border: "1px solid #ddd", cursor: "pointer" }}>
+                        + Add Size
+                      </button>
+                    </div>
+                    <div style={s.sizeTable}>
+                      <div style={s.sizeTableHeader}>
+                        {["Size", "Stock", "Price (opt)", "Compare (opt)", "SKU (opt)", ""].map(h => (
+                          <div key={h} style={{ ...s.sizeTh }}>{h}</div>
+                        ))}
+                      </div>
+                      {activeGroup.variants.map((row, rIdx) => (
+                        <div key={rIdx} style={s.sizeTableRow}>
+                          <input style={{ ...s.inp, ...s.sizeInput }} value={row.size} onChange={e => updateVariantRow(activeColorIdx, rIdx, { size: e.target.value })} placeholder="e.g. XL, 32, 10" />
+                          <input style={{ ...s.inp, ...s.sizeInput }} type="number" value={row.stock} onChange={e => updateVariantRow(activeColorIdx, rIdx, { stock: e.target.value })} placeholder="0" />
+                          <input style={{ ...s.inp, ...s.sizeInput }} type="number" value={row.price} onChange={e => updateVariantRow(activeColorIdx, rIdx, { price: e.target.value })} placeholder="—" />
+                          <input style={{ ...s.inp, ...s.sizeInput }} type="number" value={row.comparePrice} onChange={e => updateVariantRow(activeColorIdx, rIdx, { comparePrice: e.target.value })} placeholder="—" />
+                          <input style={{ ...s.inp, ...s.sizeInput }} value={row.sku} onChange={e => updateVariantRow(activeColorIdx, rIdx, { sku: e.target.value })} placeholder="—" />
+                          <button type="button" onClick={async () => {
+                            const res = await Swal.fire({ title: "Remove size?", text: "Are you sure?", icon: "warning", showCancelButton: true, confirmButtonColor: "#DC2626", confirmButtonText: "Yes, remove" });
+                            if (!res.isConfirmed) return;
+                            const rows = activeGroup.variants.filter((_, i) => i !== rIdx);
+                            updateColorGroup(activeColorIdx, { variants: rows.length ? rows : [emptyRow()] });
+                          }} style={{ background: "none", border: "none", color: "#DC2626", cursor: "pointer", fontSize: "0.8rem", padding: "0 4px" }}>✕</button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
+          <Link href="/admin/products" style={{ ...s.cancelBtn, textDecoration: "none" }}>Cancel</Link>
+          <button onClick={handleSave} disabled={saving} style={{ ...s.saveBtn, opacity: saving ? 0.7 : 1 }}>
+            {saving ? "Saving…" : "Update Product"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const s: Record<string, React.CSSProperties> = {
+  container: {
+    padding: "clamp(24px, 5vw, 60px)",
+    maxWidth: "960px",
+    margin: "0 auto",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    marginBottom: "48px",
+    gap: "24px",
+    flexWrap: "wrap",
+  },
+  title: {
+    fontFamily: "var(--font-serif)",
+    fontSize: "2.4rem",
+    fontWeight: 400,
+    color: "#000",
+    marginBottom: "12px",
+    letterSpacing: "-0.01em",
+  },
+  subtitle: {
+    fontSize: "0.85rem",
+    color: "#888",
+    letterSpacing: "normal",
+    fontWeight: 500,
+  },
+  backBtn: {
+    color: "#000",
+    textDecoration: "none",
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    border: "1px solid #000",
+    padding: "10px 20px",
+    display: "inline-block",
+  },
+  formContainer: {
+    background: "#fff",
+    padding: "clamp(20px, 4vw, 40px)",
+    border: "1px solid #eee",
+  },
+  center: { textAlign: "center", padding: 60, color: "#888" },
+  alert: { padding: "12px 16px", marginBottom: 20, fontSize: "0.875rem" },
+  grid2: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(200px,100%), 1fr))", gap: 16, marginBottom: 16 },
+  formField: { display: "flex", flexDirection: "column", gap: 4, marginBottom: 4 },
+  lbl: { fontSize: "0.75rem", fontWeight: 700, color: "#666", letterSpacing: "normal" },
+  inp: { padding: "9px 11px", border: "1px solid #e0e0e0", outline: "none", fontSize: "0.88rem", color: "#000", background: "#fff", width: "100%", boxSizing: "border-box" },
+  cancelBtn: { background: "#fff", color: "#000", border: "1px solid #ddd", padding: "10px 20px", fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" },
+  saveBtn: { background: "#000", color: "#fff", border: "none", padding: "10px 24px", fontSize: "0.8rem", fontWeight: 700, cursor: "pointer" },
+  sectionTitle: { fontSize: "0.85rem", fontWeight: 700, letterSpacing: "normal", color: "#555", marginBottom: 14, paddingBottom: 8, borderBottom: "1px solid #f0f0f0" },
+  editBtn: { background: "none", color: "#000", border: "1px solid #ddd", padding: "6px 12px", fontSize: "0.75rem", cursor: "pointer", fontWeight: 600 },
+  
+  // Product Images Grid
+  imageGrid: { display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginTop: 8 },
+  imageSlot: { display: "flex", flexDirection: "column", border: "1px solid #ebebeb", padding: 8, background: "#fafafa" },
+  imageSlotLabel: { fontSize: "0.58rem", fontWeight: 700, color: "#bbb", marginBottom: 6, letterSpacing: "0.05em" },
+  imagePreview: { height: 90, background: "#f3f3f3", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #ebebeb" },
+  imgPlaceholder: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%", height: "100%", gap: 4 },
+  imgRemoveBtn: { position: "absolute", top: 4, right: 4, background: "rgba(0,0,0,0.55)", color: "#fff", border: "none", width: 20, height: 20, cursor: "pointer", fontSize: "0.65rem", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" },
+  uploadLabel: { display: "block", textAlign: "center", background: "#f0f0f0", border: "1px solid #e0e0e0", fontSize: "0.65rem", padding: "5px 0", cursor: "pointer", fontWeight: 600, color: "#555" },
+  spinner: { width: 16, height: 16, border: "2px solid #e0e0e0", borderTop: "2px solid #555", borderRadius: "50%", animation: "spin 0.7s linear infinite" },
+
+  // Variant Colors
+  colorTabBar: { display: "flex", flexWrap: "wrap", gap: 0, borderBottom: "2px solid #f0f0f0", marginBottom: 0 },
+  colorTab: { padding: "8px 16px", fontSize: "0.75rem", border: "none", borderBottom: "2px solid transparent", background: "none", cursor: "pointer", color: "#888", fontWeight: 600, display: "flex", alignItems: "center", marginBottom: -2 },
+  colorTabActive: { borderBottom: "2px solid #000", color: "#000", background: "#fff" },
+  colorPanel: { border: "1px solid #f0f0f0", borderTop: "none", padding: 20, background: "#fff" },
+
+  // Variant Images
+  variantImageGrid: { display: "flex", flexWrap: "wrap", gap: 8 },
+  variantImageSlot: { display: "flex", flexDirection: "column", width: 90, border: "1px solid #ebebeb", padding: 6, background: "#fafafa" },
+  variantImagePreview: { height: 72, background: "#f3f3f3", position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" },
+
+  // Size Table
+  sizeTable: { border: "1px solid #f0f0f0", overflowX: "auto" },
+  sizeTableHeader: { display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1.5fr 32px", gap: 0, background: "#f9f9f7", borderBottom: "1px solid #eee" },
+  sizeTableRow: { display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1.5fr 32px", gap: 0, borderBottom: "1px solid #f5f5f5", alignItems: "center" },
+  sizeTh: { padding: "7px 10px", fontSize: "0.7rem", fontWeight: 700, color: "#999", letterSpacing: "normal" },
+  sizeInput: { border: "none", borderRight: "1px solid #f0f0f0", borderRadius: 0, fontSize: "0.82rem", padding: "8px 10px" },
+};

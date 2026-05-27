@@ -16,6 +16,7 @@ interface Variant {
   comparePrice?: number | null;
   stock: number;
   images?: string[] | null;
+  description?: string | null;
 }
 
 interface Product {
@@ -207,9 +208,9 @@ export default function AddToCartSection({
                 <span style={{ color: "#000", fontWeight: 700 }}>{selectedSize}</span>
               )}
             </span>
-            <span style={{ fontSize: "0.6rem", fontWeight: 800, color: "#000", textDecoration: "underline", cursor: "pointer" }}>
+            {/* <span style={{ fontSize: "0.6rem", fontWeight: 800, color: "#000", textDecoration: "underline", cursor: "pointer" }}>
               Size Guide
-            </span>
+            </span> */}
           </div>
           <div className={s.variantGrid}>
             {sizesToShow.map(size => {

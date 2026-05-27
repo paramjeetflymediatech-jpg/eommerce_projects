@@ -11,12 +11,13 @@ export interface ProductVariantAttributes {
   stock: number;
   sku?: string | null;
   images?: string[] | null;
+  description?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
 interface ProductVariantCreationAttributes
-  extends Optional<ProductVariantAttributes, "id" | "color" | "price" | "comparePrice" | "sku"> {}
+  extends Optional<ProductVariantAttributes, "id" | "color" | "price" | "comparePrice" | "sku" | "description"> {}
 
 class ProductVariant
   extends Model<ProductVariantAttributes, ProductVariantCreationAttributes>
@@ -31,6 +32,7 @@ class ProductVariant
   declare stock: number;
   declare sku: string | null;
   declare images: string[] | null;
+  declare description: string | null;
   declare createdAt: Date;
   declare updatedAt: Date;
 }
@@ -50,6 +52,7 @@ ProductVariant.init(
     stock: { type: DataTypes.INTEGER, defaultValue: 0 },
     sku: { type: DataTypes.STRING(100), allowNull: true },
     images: { type: DataTypes.JSON, allowNull: true, defaultValue: [] },
+    description: { type: DataTypes.TEXT, allowNull: true },
   },
   {
     sequelize,

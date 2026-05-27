@@ -174,13 +174,13 @@ const styles: Record<string, React.CSSProperties> = {
   },
   imageWrapper: {
     position: "relative",
-    aspectRatio: "11/14",
+    aspectRatio: "3/4",
     background: "white",
     overflow: "hidden",
     marginBottom: "16px",
   },
   image: {
-    objectFit: "contain",
+    objectFit: "cover",
   },
   overlay: {
     position: "absolute",

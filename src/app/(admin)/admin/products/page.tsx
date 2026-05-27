@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { formatPrice } from "@/lib/utils";
 import { getColorFromName } from "@/lib/colors";
+import Swal from "sweetalert2";
 
 interface Category { id: number; name: string; parentId: number | null; }
 
@@ -57,7 +58,7 @@ function variantsToGroups(variants: any[]): ColorGroup[] {
     if (!map.has(key)) {
       map.set(key, {
         color: key,
-        description: "",
+        description: v.description || "",
         images: Array.isArray(v.images) ? v.images : [],
         variants: [],
       });
@@ -83,6 +84,7 @@ function groupsToVariants(groups: ColorGroup[]) {
       out.push({
         size: row.size,
         color: g.color,
+        description: g.description,
         stock: row.stock,
         price: row.price || undefined,
         comparePrice: row.comparePrice || undefined,
@@ -137,22 +139,11 @@ export default function AdminProductsPage() {
   useEffect(() => { if (status === "authenticated") { loadProducts(); loadCategories(); } }, [status, loadProducts]);
 
   const openCreate = () => {
-    setForm(emptyForm()); setEditId(null); setParentCategoryId(""); setSubCategoryId("");
-    setActiveColorIdx(0); setShowForm(true); setMsg({ text: "", type: "" });
+    router.push("/admin/products/new");
   };
 
   const openEdit = (p: any) => {
-    const cat = categories.find(c => c.id === p.categoryId);
-    if (cat && cat.parentId) { setParentCategoryId(String(cat.parentId)); setSubCategoryId(String(cat.id)); }
-    else if (cat) { setParentCategoryId(String(cat.id)); setSubCategoryId(""); }
-    else { setParentCategoryId(""); setSubCategoryId(""); }
-
-    const images = Array.isArray(p.images) ? p.images : [];
-    const imageUrls = [...images, ...Array(10).fill("")].slice(0, 10);
-    const colorGroups = p.variants?.length ? variantsToGroups(p.variants) : [];
-
-    setForm({ name: p.name, slug: p.slug, description: p.description || "", price: String(p.price), comparePrice: p.comparePrice ? String(p.comparePrice) : "", stock: String(p.stock), categoryId: String(p.categoryId), imageUrls, isFeatured: p.isFeatured, colorGroups });
-    setActiveColorIdx(0); setEditId(p.id); setShowForm(true); setMsg({ text: "", type: "" });
+    router.push(`/admin/products/${p.id}/edit`);
   };
 
   const handleSave = async () => {
@@ -190,9 +181,53 @@ export default function AdminProductsPage() {
     });
   };
 
+  const processImage = (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      if (!file.type.startsWith("image/")) return resolve(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const targetWidth = 1080;
+          const targetHeight = 1440;
+          const targetRatio = targetWidth / targetHeight;
+          const sourceRatio = img.width / img.height;
+          let drawWidth, drawHeight, offsetX = 0, offsetY = 0;
+          if (sourceRatio > targetRatio) {
+            drawHeight = img.height;
+            drawWidth = img.height * targetRatio;
+            offsetX = (img.width - drawWidth) / 2;
+          } else {
+            drawWidth = img.width;
+            drawHeight = img.width / targetRatio;
+            offsetY = (img.height - drawHeight) / 2;
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = targetWidth;
+          canvas.height = targetHeight;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) return resolve(file);
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, targetWidth, targetHeight);
+          ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight, 0, 0, targetWidth, targetHeight);
+          canvas.toBlob((blob) => {
+            if (!blob) return resolve(file);
+            const newFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + "_1080x1440.jpg", { type: "image/jpeg", lastModified: Date.now() });
+            resolve(newFile);
+          }, "image/jpeg", 0.95);
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
   // Upload helper — works for main images and variant images
-  const uploadFile = async (file: File, key: string, onSuccess: (url: string) => void) => {
+  const uploadFile = async (rawFile: File, key: string, onSuccess: (url: string) => void) => {
     setUploadingImg(key);
+    const file = await processImage(rawFile);
     const fd = new FormData(); fd.append("files", file); fd.append("folder", "products");
     try {
       const res = await fetch("/api/upload", { method: "POST", body: fd });
@@ -230,7 +265,9 @@ export default function AdminProductsPage() {
     setActiveColorIdx(form.colorGroups.length);
   };
 
-  const removeColorGroup = (gIdx: number) => {
+  const removeColorGroup = async (gIdx: number) => {
+    const res = await Swal.fire({ title: "Remove color?", text: "Are you sure you want to remove this color and all its variants?", icon: "warning", showCancelButton: true, confirmButtonColor: "#DC2626", confirmButtonText: "Yes, remove" });
+    if (!res.isConfirmed) return;
     setForm(prev => {
       const groups = prev.colorGroups.filter((_, i) => i !== gIdx);
       return { ...prev, colorGroups: groups };
@@ -422,43 +459,7 @@ export default function AdminProductsPage() {
                 })}
               </div>
 
-              {/* Gallery Images */}
-              <div className="no-margin" style={{ ...s.sectionTitle, fontSize: "0.75rem", borderBottom: "none", marginBottom: 10 }}>Additional Gallery Images <span style={{ fontWeight: 400, color: "#aaa" }}>(Optional)</span></div>
-              <div style={s.imageGrid}>
-                {form.imageUrls.slice(2).map((url, i) => {
-                  const idx = i + 2;
-                  const isUploading = uploadingImg === `main-${idx}`;
-                  return (
-                    <div key={idx} style={s.imageSlot}>
-                      <div style={s.imageSlotLabel}>#{idx + 1}</div>
-                      <div style={s.imagePreview}>
-                        {url ? (
-                          <>
-                            <img src={url} alt={`Gallery ${idx}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            <button onClick={() => updateMainImage(idx, "")} style={s.imgRemoveBtn}>✕</button>
-                          </>
-                        ) : isUploading ? (
-                          <div style={s.imgPlaceholder}><div style={s.spinner} /></div>
-                        ) : (
-                          <div style={s.imgPlaceholder}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="M21 15l-5-5L5 21" /></svg>
-                          </div>
-                        )}
-                      </div>
-                      <input
-                        style={{ ...s.inp, fontSize: "0.65rem", padding: "4px 6px", marginTop: 4, marginBottom: 2 }}
-                        value={url} onChange={e => updateMainImage(idx, e.target.value)}
-                        placeholder="URL"
-                      />
-                      <label style={{ ...s.uploadLabel, fontSize: "0.6rem", padding: "4px 0" }}>
-                        {isUploading ? "…" : "Upload"}
-                        <input type="file" accept="image/*" style={{ display: "none" }} disabled={isUploading}
-                          onChange={e => e.target.files?.[0] && uploadFile(e.target.files[0], `main-${idx}`, url => updateMainImage(idx, url))} />
-                      </label>
-                    </div>
-                  );
-                })}
-              </div>
+
             </div>
 
             {/* ── Product Variants ── */}
@@ -682,7 +683,9 @@ export default function AdminProductsPage() {
                               <input style={{ ...s.inp, ...s.sizeInput }} type="number" value={row.price} onChange={e => updateVariantRow(activeColorIdx, rIdx, { price: e.target.value })} placeholder="—" />
                               <input style={{ ...s.inp, ...s.sizeInput }} type="number" value={row.comparePrice} onChange={e => updateVariantRow(activeColorIdx, rIdx, { comparePrice: e.target.value })} placeholder="—" />
                               <input style={{ ...s.inp, ...s.sizeInput }} value={row.sku} onChange={e => updateVariantRow(activeColorIdx, rIdx, { sku: e.target.value })} placeholder="—" />
-                              <button type="button" onClick={() => {
+                              <button type="button" onClick={async () => {
+                                const res = await Swal.fire({ title: "Remove size?", text: "Are you sure?", icon: "warning", showCancelButton: true, confirmButtonColor: "#DC2626", confirmButtonText: "Yes, remove" });
+                                if (!res.isConfirmed) return;
                                 const rows = activeGroup.variants.filter((_, i) => i !== rIdx);
                                 updateColorGroup(activeColorIdx, { variants: rows.length ? rows : [emptyRow()] });
                               }} style={{ background: "none", border: "none", color: "#DC2626", cursor: "pointer", fontSize: "0.8rem", padding: "0 4px" }}>✕</button>

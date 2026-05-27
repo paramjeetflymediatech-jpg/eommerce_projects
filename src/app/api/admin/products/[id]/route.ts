@@ -90,6 +90,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
           comparePrice: v.comparePrice ? parseFloat(v.comparePrice) : null,
           stock: parseInt(v.stock) || 0,
           sku: safeSKU,
+          description: v.description || null,
           images: Array.isArray(v.images) ? v.images.filter((img: string) => img?.trim()) : [],
         }, { transaction });
       }

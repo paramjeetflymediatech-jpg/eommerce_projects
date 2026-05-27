@@ -13,6 +13,7 @@ interface Variant {
   comparePrice?: number | null;
   stock: number;
   images?: string[] | null;
+  description?: string | null;
 }
 
 interface Product {
@@ -92,6 +93,16 @@ export default function ProductDetailContent({
   }, [product.images, product.variants, selectedColor]);
 
 
+  const displayDescription = useMemo(() => {
+    if (selectedColor && product.variants?.length) {
+      const variantWithDesc = product.variants.find(v => v.color === selectedColor && v.description);
+      if (variantWithDesc?.description) {
+        return variantWithDesc.description;
+      }
+    }
+    return product.description;
+  }, [product.description, product.variants, selectedColor]);
+
   return (
     <div className={s.mainGrid}>
       {/* Left: Gallery — switches images on color change */}
@@ -124,32 +135,31 @@ export default function ProductDetailContent({
                     key={color}
                     onClick={() => handleColorChange(color)}
                     title={color}
+                    aria-label={`Select color ${color}`}
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 7,
-                      padding: "6px 14px 6px 8px",
+                      justifyContent: "center",
+                      width: 25,
+                      height: 25,
+                      borderRadius: "50%",
+                      padding: 3,
                       border: selectedColor === color
                         ? "2px solid #000"
-                        : "1px solid #ddd",
-                      background: "#fff",
+                        : "2px solid transparent",
+                      background: "transparent",
                       cursor: "pointer",
-                      fontSize: "0.85rem",
-                      fontWeight: 600,
-                      letterSpacing: "normal",
-                      transition: "border 0.15s",
+                      transition: "border 0.2s",
                     }}
                   >
                     <span style={{
-                      width: 14,
-                      height: 14,
+                      width: "100%",
+                      height: "100%",
                       borderRadius: "50%",
                       background: getColorFromName(color),
                       border: "1px solid rgba(0,0,0,0.15)",
-                      flexShrink: 0,
-                      display: "inline-block",
+                      display: "block",
                     }} />
-                    {color}
                   </button>
                 ))}
               </div>
@@ -174,7 +184,7 @@ export default function ProductDetailContent({
               <div
                 className={s.fullDesc}
                 dangerouslySetInnerHTML={{
-                  __html: product.description.replace(/\n/g, "<br/>"),
+                  __html: (displayDescription || "").replace(/\n/g, "<br/>"),
                 }}
               />
             </details>
