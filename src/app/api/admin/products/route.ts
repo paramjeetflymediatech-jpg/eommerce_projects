@@ -88,7 +88,21 @@ export async function POST(req: NextRequest) {
         takenSKUs = new Set(conflicting.map((r: any) => r.sku));
       }
 
+      const uniqueVariants = [];
+      const seenVariantKeys = new Set<string>();
+
       for (const v of variants) {
+        if (!v.size) continue;
+        const colorKey = (v.color || "").trim().toLowerCase();
+        const sizeKey = (v.size || "").trim().toLowerCase();
+        const comboKey = `${colorKey}-${sizeKey}`;
+        if (!seenVariantKeys.has(comboKey)) {
+          seenVariantKeys.add(comboKey);
+          uniqueVariants.push(v);
+        }
+      }
+
+      for (const v of uniqueVariants) {
         const skuValue = v.sku?.trim();
         const safeSKU = skuValue && !takenSKUs.has(skuValue) ? skuValue : null;
 

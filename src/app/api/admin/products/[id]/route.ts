@@ -77,7 +77,21 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       // Delete all existing variants for this product
       await ProductVariant.destroy({ where: { productId: product.id }, transaction });
 
+      const uniqueVariants = [];
+      const seenVariantKeys = new Set<string>();
+
       for (const v of variants) {
+        if (!v.size) continue;
+        const colorKey = (v.color || "").trim().toLowerCase();
+        const sizeKey = (v.size || "").trim().toLowerCase();
+        const comboKey = `${colorKey}-${sizeKey}`;
+        if (!seenVariantKeys.has(comboKey)) {
+          seenVariantKeys.add(comboKey);
+          uniqueVariants.push(v);
+        }
+      }
+
+      for (const v of uniqueVariants) {
         const skuValue = v.sku?.trim();
         // Null out the SKU if it clashes with another product's variant
         const safeSKU = skuValue && !takenSKUs.has(skuValue) ? skuValue : null;
