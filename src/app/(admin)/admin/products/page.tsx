@@ -312,7 +312,7 @@ export default function AdminProductsPage() {
               <tbody>
                 {products.map(p => (
                   <tr key={p.id} style={s.tr}>
-                    <td style={s.td}>{p.images?.[0] ? <img src={p.images[0]} alt={p.name} style={{ width: 44, height: 44, objectFit: "cover" }} /> : <div style={s.noImg}>—</div>}</td>
+                    <td style={s.td}>{p.images?.[0] ? <img src={p.images[0]} alt={p.name} style={{ width: 44, height: 44, objectFit: "contain" }} /> : <div style={s.noImg}>—</div>}</td>
                     <td style={s.td}><span style={s.productName}>{p.name}</span><br /><span style={{ fontSize: "0.75rem", color: "#999" }}>{p.slug}</span></td>
                     <td style={s.td}><span style={s.badge}>{p.category?.name || "—"}</span></td>
                     <td style={s.td}>{formatPrice(p.price)}</td>

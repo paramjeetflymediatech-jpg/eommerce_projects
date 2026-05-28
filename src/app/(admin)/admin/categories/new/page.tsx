@@ -15,6 +15,8 @@ export default function NewCategoryPage() {
   const [form, setForm] = useState({ 
     name: "", 
     description: "", 
+    tagline: "",
+    overlayDescription: "",
     parentId: parentIdParam || "", 
     image: "", 
     banner: "" 
@@ -137,12 +139,22 @@ export default function NewCategoryPage() {
         </div>
 
         <div style={styles.formGroup}>
-          <label style={styles.lbl}>Description</label>
-          <textarea
-            style={{ ...styles.inp, minHeight: "80px", resize: "vertical" }}
-            placeholder="Taxonomy details..."
-            value={form.description}
-            onChange={e => setForm({ ...form, description: e.target.value })}
+          <label style={styles.lbl}>Overlay Tagline <span style={{ color: "#888", fontWeight: 400 }}>(shown on category card — e.g. "Luxury at Its Best")</span></label>
+          <input
+            style={styles.inp}
+            placeholder="e.g., Luxury at Its Best"
+            value={form.tagline}
+            onChange={e => setForm({ ...form, tagline: e.target.value })}
+          />
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.lbl}>Overlay Description <span style={{ color: "#888", fontWeight: 400 }}>(short body text on the card)</span></label>
+          <input
+            style={styles.inp}
+            placeholder="e.g., One of its kind, Adjustable & Reversible Thermals."
+            value={form.overlayDescription}
+            onChange={e => setForm({ ...form, overlayDescription: e.target.value })}
           />
         </div>
 

@@ -16,7 +16,7 @@ export default function AdminCategoriesPage() {
   const [allCategories, setAllCategories] = useState<any[]>([]);
   const [pagination, setPagination] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [form, setForm] = useState({ name: "", description: "", parentId: "", image: "", banner: "" });
+  const [form, setForm] = useState({ name: "", description: "", tagline: "", overlayDescription: "", parentId: "", image: "", banner: "" });
   const [saving, setSaving] = useState(false);
 
   interface CategoryNode {
@@ -82,7 +82,7 @@ export default function AdminCategoriesPage() {
       if (res.ok) {
         setShowForm(false);
         setEditId(null);
-        setForm({ name: "", description: "", parentId: "", image: "", banner: "" });
+        setForm({ name: "", description: "", tagline: "", overlayDescription: "", parentId: "", image: "", banner: "" });
         fetchCategories(currentPage);
         fetchAllForDropdown();
         Swal.fire({
@@ -212,7 +212,7 @@ export default function AdminCategoriesPage() {
                       </td>
                       <td style={styles.td}>
                         <div style={{ display: "flex", gap: 16 }}>
-                          <button onClick={() => { setEditId(cat.id); setForm({ name: cat.name, description: cat.description || "", parentId: cat.parentId ? String(cat.parentId) : "", image: cat.image || "", banner: cat.banner || "" }); setShowForm(true); }} style={styles.iconBtn} title="Edit">
+                          <button onClick={() => { setEditId(cat.id); setForm({ name: cat.name, description: cat.description || "", tagline: cat.tagline || "", overlayDescription: cat.overlayDescription || "", parentId: cat.parentId ? String(cat.parentId) : "", image: cat.image || "", banner: cat.banner || "" }); setShowForm(true); }} style={styles.iconBtn} title="Edit">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                           </button>
                           <button onClick={() => deleteCategory(cat.id)} style={styles.deleteBtn} title="Delete">
@@ -254,7 +254,7 @@ export default function AdminCategoriesPage() {
                 )}
                 <div className="admin-card-actions">
                   <button
-                    onClick={() => { setEditId(cat.id); setForm({ name: cat.name, description: cat.description || "", parentId: cat.parentId ? String(cat.parentId) : "", image: cat.image || "", banner: cat.banner || "" }); setShowForm(true); }}
+                    onClick={() => { setEditId(cat.id); setForm({ name: cat.name, description: cat.description || "", tagline: cat.tagline || "", overlayDescription: cat.overlayDescription || "", parentId: cat.parentId ? String(cat.parentId) : "", image: cat.image || "", banner: cat.banner || "" }); setShowForm(true); }}
                     style={{ flex: 1, background: "none", border: "1px solid #ddd", padding: "8px", fontSize: "0.75rem", fontWeight: 600, cursor: "pointer" }}
                   >Edit</button>
                   <button
@@ -325,12 +325,22 @@ export default function AdminCategoriesPage() {
             </div>
 
             <div style={styles.formGroup}>
-              <label style={styles.lbl}>Description</label>
-              <textarea
-                style={{ ...styles.inp, minHeight: "80px", resize: "vertical" }}
-                placeholder="Taxonomy details..."
-                value={form.description}
-                onChange={e => setForm({ ...form, description: e.target.value })}
+              <label style={styles.lbl}>Overlay Tagline <span style={{ color: "#aaa", fontWeight: 400 }}>(e.g. "Luxury at Its Best")</span></label>
+              <input
+                style={styles.inp}
+                placeholder="e.g., Luxury at Its Best"
+                value={form.tagline}
+                onChange={e => setForm({ ...form, tagline: e.target.value })}
+              />
+            </div>
+
+            <div style={styles.formGroup}>
+              <label style={styles.lbl}>Overlay Description <span style={{ color: "#aaa", fontWeight: 400 }}>(short card body text)</span></label>
+              <input
+                style={styles.inp}
+                placeholder="e.g., One of its kind, Adjustable & Reversible Thermals."
+                value={form.overlayDescription}
+                onChange={e => setForm({ ...form, overlayDescription: e.target.value })}
               />
             </div>
 

@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
   if (!session) return apiError("Unauthorized", 401);
 
   try {
-    const { name, description, parentId, image, banner } = await req.json();
+    const { name, description, tagline, overlayDescription, parentId, image, banner } = await req.json();
     if (!name) return apiError("Name is required");
 
     const slug = slugify(name, { lower: true, strict: true });
@@ -74,6 +74,8 @@ export async function POST(req: NextRequest) {
       name,
       slug,
       description,
+      tagline,
+      overlayDescription,
       parentId: parentId || null,
       image,
       banner
@@ -94,7 +96,7 @@ export async function PATCH(req: NextRequest) {
   if (!session) return apiError("Unauthorized", 401);
 
   try {
-    const { id, name, description, parentId, image, banner } = await req.json();
+    const { id, name, description, tagline, overlayDescription, parentId, image, banner } = await req.json();
     if (!id) return apiError("Category ID is required");
 
     const category = await Category.findByPk(id);
@@ -110,6 +112,8 @@ export async function PATCH(req: NextRequest) {
       category.slug = slugify(name, { lower: true, strict: true });
     }
     if (description !== undefined) category.description = description;
+    if (tagline !== undefined) category.tagline = tagline;
+    if (overlayDescription !== undefined) category.overlayDescription = overlayDescription;
     if (parentId !== undefined) category.parentId = parentId || null;
     if (image !== undefined) category.image = image;
     if (banner !== undefined) category.banner = banner;
