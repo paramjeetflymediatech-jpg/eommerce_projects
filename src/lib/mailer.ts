@@ -5,7 +5,8 @@ const emailPass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
 const emailHost = process.env.SMTP_HOST || process.env.EMAIL_HOST || "smtp.gmail.com";
 const emailPort = Number(process.env.SMTP_PORT || process.env.EMAIL_PORT) || 587;
 const emailFrom = process.env.EMAIL_FROM || `Aion Luxury <${emailUser}>`;
-
+const ADMIN_EMAIL=process.env.ADMIN_EMAIL|| 'honey.sood1987@gmail.com';
+const adminEmails = ADMIN_EMAIL.split(',').map(email => email.trim()).filter(Boolean);
 const transporter = nodemailer.createTransport({
   host: emailHost,
   port: emailPort,
@@ -264,7 +265,7 @@ export async function sendContactInquiryEmail(data: any) {
   `;
   await transporter.sendMail({
     from: emailFrom,
-    to: "honey.sood1987@gmail.com",
+    to: adminEmails,
     subject: `New Inquiry: ${data.subject}`,
     html: baseEmailLayout(content, `New message from ${data.firstName} ${data.lastName}`),
   });
