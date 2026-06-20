@@ -115,7 +115,7 @@ export default function Header() {
                 priority
                 style={{ height: "auto", width: "auto", maxHeight: "56px" }}
               />
-              <span style={{ width: "1px", height: "32px", background: "#e0e0e0", display: "inline-block" }} />
+              <span style={{ width: "1px", height: "32px", background: "#e0e0e0", display: "inline-block", margin: "0 12px" }} />
               <Image
                 src="/makeinindiaa1.png"
                 alt="Make in India"
@@ -124,6 +124,28 @@ export default function Header() {
                 priority
                 style={{ height: "auto", width: "100px", maxHeight: "80px", borderRadius: "2px" }}
               />
+              <span className="flag-divider" style={{ width: "1px", height: "32px", background: "#e0e0e0", display: "inline-block", margin: "0 12px" }} />
+              <div className="flag-section" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Image
+                  src="/india-flag.svg"
+                  alt="India Flag"
+                  width={24}
+                  height={16}
+                  priority
+                  style={{ borderRadius: "1px", border: "1px solid #eaeaea" }}
+                />
+                <span style={{ 
+                  fontSize: "0.75rem", 
+                  fontWeight: 600, 
+                  color: "#111", 
+                  letterSpacing: "0.05em",
+                  fontFamily: "var(--font-body)",
+                  textTransform: "uppercase",
+                  whiteSpace: "nowrap"
+                }}>
+                  (Bharat Nirmit)
+                </span>
+              </div>
             </Link>
           </div>
 
@@ -340,6 +362,20 @@ export default function Header() {
           width: 100%;
           padding: 0 16px;
           height: 100%;
+        }
+
+        .flag-divider,
+        .flag-section {
+          display: none !important;
+        }
+
+        @media (min-width: 768px) {
+          .flag-divider {
+            display: inline-block !important;
+          }
+          .flag-section {
+            display: flex !important;
+          }
         }
 
         @media (min-width: 1024px) {

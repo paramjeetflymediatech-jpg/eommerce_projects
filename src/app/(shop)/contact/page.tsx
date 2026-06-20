@@ -93,8 +93,8 @@ export default function ContactPage() {
                 <div>
                   <h3 style={{ fontSize: "1.2rem", fontWeight: 500, marginBottom: 12, color: "var(--text-primary)" }}>Contact Details</h3>
                   <p style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: "1rem" }}>
-                    <strong>Email:</strong> honey.sood1987@gmail.com<br />
-                    <strong>Phone:</strong> +91 9463873415
+                    <strong>Email:</strong> aionluxuryfashion@gmail.com<br />
+                    <strong>Phone:</strong> +91 8528780000
                   </p>
                 </div>
 
@@ -103,6 +103,14 @@ export default function ContactPage() {
                   <p style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: "1rem" }}>
                     Monday – Saturday: 10:00 AM – 8:00 PM<br />
                     Sunday: Closed
+                  </p>
+                </div>
+
+                <div>
+                  <h3 style={{ fontSize: "1.2rem", fontWeight: 500, marginBottom: 12, color: "var(--text-primary)" }}>Partners</h3>
+                  <p style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: "1rem" }}>
+                    Mani Ram Balvant Rai, Ludhiana<br />
+                    Himalaya Journal Store, Delhi
                   </p>
                 </div>
               </div>
@@ -115,7 +123,7 @@ export default function ContactPage() {
             }}>
               <h3 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: 12 }}>Corporate Inquiries</h3>
               <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.6 }}>
-                For partnership opportunities, wholesale inquiries, or media relations, please contact our corporate team at honey.sood1987@gmail.com.
+                For partnership opportunities, wholesale inquiries, or media relations, please contact our corporate team at aionluxuryfashion@gmail.com.
               </p>
             </div>
           </div>

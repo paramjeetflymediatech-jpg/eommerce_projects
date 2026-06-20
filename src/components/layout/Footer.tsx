@@ -34,7 +34,7 @@ export default function Footer() {
             
             {/* Social Icons - Now here */}
             <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
-              <a href="#" aria-label="Instagram" style={{ color: "#000", opacity: 0.8, transition: "opacity 0.3s" }}>
+              <a href="https://www.instagram.com/aionluxury?igsh=eXB1dGh2a3lnM3B6&utm_source=qr" target="_blank" aria-label="Instagram" style={{ color: "#000", opacity: 0.8, transition: "opacity 0.3s" }}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
               </a>
               <a href="#" aria-label="Pinterest" style={{ color: "#000", opacity: 0.8, transition: "opacity 0.3s" }}>
@@ -53,7 +53,7 @@ export default function Footer() {
           {[
             { title: "Collections", links: [{ label: "All Items", href: "/products" }, { label: "New Arrivals", href: "/products" }, { label: "Featured Items", href: "/products" }, { label: "Limited Sale", href: "/products" }] },
             { title: "The Brand", links: [{ label: "Our Story", href: "/ourstory" }, { label: "Design Philosophy", href: "/ourstory" }, { label: "Craftsmanship", href: "/" }, { label: "Contact Us", href: "/contact" }] },
-            { title: "Concierge", links: [{ label: "Shipping Policy", href: "/shipping-policy" }, { label: "Returns & Refunds", href: "/returns" }, { label: "Privacy Policy", href: "/privacy" }, { label: "Terms & Conditions", href: "/terms" }, { label: "Track Your Order", href: "/track" }] },
+            { title: "Concierge", links: [{ label: "Shipping Policy", href: "/shipping-policy" }, { label: "Return & Refund Policy", href: "/returns" }, { label: "Privacy Policy", href: "/privacy" }, { label: "Terms & Conditions", href: "/terms" }, { label: "Track Your Order", href: "/track" }, { label: "FAQs", href: "/faq" }] },
           ].map((col) => (
             <div key={col.title} className="footer-nav-col">
               <h4 style={{ 
@@ -79,6 +79,32 @@ export default function Footer() {
               </nav>
             </div>
           ))}
+
+          {/* Contact & Partners Column */}
+          <div className="footer-nav-col" style={{ display: "flex", flexDirection: "column" }}>
+            <h4 style={{ 
+              fontSize: "0.75rem", 
+              fontWeight: 700, 
+              marginBottom: 24, 
+              color: "#000", 
+              letterSpacing: "0.1em",
+              textTransform: "uppercase"
+            }}>Contact &amp; Partners</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16, color: "#666", fontSize: "0.85rem", fontWeight: 400 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#000", textTransform: "uppercase", letterSpacing: "0.05em" }}>Contact</span>
+                <a href="tel:+918528780000" style={{ color: "inherit", textDecoration: "none", transition: "color 0.3s" }}>+91 85287 80000</a>
+                <a href="mailto:aionluxuryfashion@gmail.com" style={{ color: "inherit", textDecoration: "none", transition: "color 0.3s" }}>aionluxuryfashion@gmail.com</a>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#000", textTransform: "uppercase", letterSpacing: "0.05em" }}>Partners</span>
+                <div style={{ lineHeight: 1.6, color: "#666" }}>
+                  Mani Ram Balvant Rai, Ludhiana<br />
+                  Himalaya Journal Store, Delhi
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="footer-bottom">
@@ -102,8 +128,8 @@ export default function Footer() {
       <style dangerouslySetInnerHTML={{ __html: `
         .footer-grid {
           display: grid;
-          grid-template-columns: 1.5fr 1fr 1fr 1fr;
-          gap: 60px;
+          grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
+          gap: 40px;
           margin-bottom: 40px;
         }
         .footer-bottom {
@@ -113,6 +139,9 @@ export default function Footer() {
           justify-content: space-between;
           align-items: center;
           gap: 24px;
+        }
+        .footer-nav-col a:hover {
+          color: #000 !important;
         }
         @media (max-width: 1024px) {
           .footer-grid {

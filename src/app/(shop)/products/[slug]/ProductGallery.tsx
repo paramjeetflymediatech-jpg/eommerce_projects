@@ -1,4 +1,3 @@
-"use client";
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import FallbackImage from "@/components/common/FallbackImage";
@@ -7,6 +6,58 @@ import s from "./product-detail.module.css";
 interface ProductGalleryProps {
   images: string[];
   productName: string;
+}
+
+interface ZoomableImageProps {
+  id: string;
+  src: string;
+  alt: string;
+  priority: boolean;
+  onClick: () => void;
+}
+
+function ZoomableImage({ id, src, alt, priority, onClick }: ZoomableImageProps) {
+  const [zoomStyle, setZoomStyle] = useState<React.CSSProperties | null>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (window.innerWidth < 1024) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomStyle({
+      transformOrigin: `${x}% ${y}%`,
+      transform: "scale(2.2)",
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setZoomStyle(null);
+  };
+
+  return (
+    <div 
+      id={id}
+      className={s.galleryItem}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      style={{ cursor: "zoom-in" }}
+    >
+      <FallbackImage 
+        src={src} 
+        alt={alt} 
+        fill 
+        unoptimized={true}
+        style={{ 
+          objectFit: "cover",
+          transition: zoomStyle ? "none" : "transform 0.3s ease-out",
+          ...(zoomStyle || {})
+        }} 
+        sizes="(max-width: 1000px) 100vw, 60vw" 
+        priority={priority}
+      />
+    </div>
+  );
 }
 
 export default function ProductGallery({ images, productName }: ProductGalleryProps) {
@@ -120,22 +171,14 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
         >
           {images.length > 0 ? (
             images.map((img: string, i: number) => (
-              <div 
-                key={img + i} 
-                id={`prod-img-${i}`} 
-                className={s.galleryItem}
+              <ZoomableImage
+                key={img + i}
+                id={`prod-img-${i}`}
+                src={img}
+                alt={`${productName} view ${i + 1}`}
+                priority={i === 0}
                 onClick={() => setIsLightboxOpen(true)}
-              >
-                <FallbackImage 
-                  src={img} 
-                  alt={`${productName} view ${i + 1}`} 
-                  fill 
-                  unoptimized={true}
-                  style={{ objectFit: "cover" }} 
-                  sizes="(max-width: 1000px) 100vw, 60vw" 
-                  priority={i === 0}
-                />
-              </div>
+              />
             ))
           ) : (
             <div className={s.galleryItem}>
