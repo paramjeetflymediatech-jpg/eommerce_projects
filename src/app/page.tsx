@@ -27,7 +27,6 @@ async function getCategories() {
 
     if (!res.ok) return [];
     const data = await res.json();
-    console.log(data, 'data')
     return data.categories || [];
   } catch { return []; }
 }

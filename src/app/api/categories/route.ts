@@ -19,8 +19,6 @@ export async function GET() {
       ],
       order: [["id", "ASC"]],
     });
-    console.log(categories, 'categoriesffff')
-
 
 
     // Add product counts
