@@ -80,37 +80,27 @@ export default function AboutPage() {
           </div>
           <div className={styles.productionGrid}>
             <Link href="/ourstory/yarn-knitting-ball" className={styles.productionCard}>
-              <div className={styles.productionImageWrapper}>
-                <img src="/story/1.png" alt="Yarn / Knitting Ball" className={styles.productionImage} />
-              </div>
+              <img src="/story/1.png" alt="Yarn / Knitting Ball" className={styles.productionImage} />
               <h3 className={styles.productionTitle}>Yarn / Knitting Ball</h3>
               <p className={styles.productionDesc}>Premium fibers selected for durability and comfort.</p>
             </Link>
             <Link href="/ourstory/circular-knitting-machine" className={styles.productionCard}>
-              <div className={styles.productionImageWrapper}>
-                <img src="/story/2.png" alt="Circular Knitting Machine" className={styles.productionImage} />
-              </div>
+              <img src="/story/2.png" alt="Circular Knitting Machine" className={styles.productionImage} />
               <h3 className={styles.productionTitle}>Circular Knitting Machine</h3>
               <p className={styles.productionDesc}>Advanced machinery weaving threads with precision.</p>
             </Link>
             <Link href="/ourstory/knitted-fabric" className={styles.productionCard}>
-              <div className={styles.productionImageWrapper}>
-                <img src="/story/3.png" alt="Knitted Fabric" className={styles.productionImage} />
-              </div>
+              <img src="/story/3.png" alt="Knitted Fabric" className={styles.productionImage} />
               <h3 className={styles.productionTitle}>Knitted Fabric</h3>
               <p className={styles.productionDesc}>High-quality textile rolls prepared for cutting.</p>
             </Link>
             <Link href="/ourstory/garment-cutting" className={styles.productionCard}>
-              <div className={styles.productionImageWrapper}>
-                <img src="/story/4.png" alt="Garment Cutting" className={styles.productionImage} />
-              </div>
+              <img src="/story/4.png" alt="Garment Cutting" className={styles.productionImage} />
               <h3 className={styles.productionTitle}>Garment Cutting</h3>
               <p className={styles.productionDesc}>Exact patterns cut to shape our signature silhouettes.</p>
             </Link>
             <Link href="/ourstory/garment-manufacturing" className={styles.productionCard}>
-              <div className={styles.productionImageWrapper}>
-                <img src="/story/5.png" alt="Garment Manufacturing" className={styles.productionImage} />
-              </div>
+              <img src="/story/5.png" alt="Garment Manufacturing" className={styles.productionImage} />
               <h3 className={styles.productionTitle}>Garment Manufacturing</h3>
               <p className={styles.productionDesc}>Expert tailoring and finishing into luxurious attire.</p>
             </Link>

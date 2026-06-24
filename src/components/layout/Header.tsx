@@ -368,7 +368,7 @@ export default function Header() {
 
         /* Default mobile styling (for screens < 768px) */
         .logo-img {
-          max-height: 20px !important;
+          max-height: 40px !important;
           width: auto !important;
           flex-shrink: 1 !important;
         }
@@ -383,7 +383,7 @@ export default function Header() {
 
         .makeinindia-logo {
           width: 36px !important;
-          max-height: 24px !important;
+          max-height: 40px !important;
           height: auto !important;
           flex-shrink: 1 !important;
         }
