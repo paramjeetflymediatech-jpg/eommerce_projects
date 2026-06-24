@@ -472,6 +472,35 @@ export default function EditProductPage() {
                           style={{ width: 20, height: 20, borderRadius: "50%", border: activeGroup.color === c ? "2px solid #000" : "1px solid #ddd", background: getColorFromName(c), cursor: "pointer", flexShrink: 0 }}
                         />
                       ))}
+                      <div 
+                        title="Pick Custom Color"
+                        style={{ 
+                          position: "relative", 
+                          width: 20, 
+                          height: 20, 
+                          borderRadius: "50%", 
+                          border: activeGroup.color && activeGroup.color.startsWith("#") ? "2px solid #000" : "1px solid #ddd", 
+                          background: "linear-gradient(45deg, red, orange, yellow, green, blue, purple)", 
+                          cursor: "pointer", 
+                          flexShrink: 0,
+                          overflow: "hidden"
+                        }}
+                      >
+                        <input
+                          type="color"
+                          value={activeGroup.color && /^#[0-9a-fA-F]{6}$/.test(activeGroup.color) ? activeGroup.color : "#000000"}
+                          onChange={e => updateColorGroup(activeColorIdx, { color: e.target.value })}
+                          style={{
+                            position: "absolute",
+                            top: "-50%",
+                            left: "-50%",
+                            width: "200%",
+                            height: "200%",
+                            opacity: 0,
+                            cursor: "pointer"
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
 

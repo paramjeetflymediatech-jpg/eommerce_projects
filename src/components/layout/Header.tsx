@@ -105,9 +105,10 @@ export default function Header() {
           </div>
 
           {/* CENTER - LOGO */}
-          <div style={{ textAlign: "center", display: "flex", justifyContent: "center" }}>
-            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
+          <div style={{ textAlign: "center", display: "flex", justifyContent: "center", minWidth: 0 }}>
+            <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", maxWidth: "100%" }}>
               <Image
+                className="logo-img"
                 src="/logo.png"
                 alt="Aion Luxury"
                 width={200}
@@ -115,8 +116,9 @@ export default function Header() {
                 priority
                 style={{ height: "auto", width: "auto", maxHeight: "56px" }}
               />
-              <span style={{ width: "1px", height: "32px", background: "#e0e0e0", display: "inline-block", margin: "0 12px" }} />
+              <span className="logo-divider" style={{ width: "1px", height: "32px", background: "#e0e0e0", display: "inline-block", margin: "0 12px" }} />
               <Image
+                className="makeinindia-logo"
                 src="/makeinindiaa1.png"
                 alt="Make in India"
                 width={100}
@@ -354,7 +356,7 @@ export default function Header() {
       </div>
 
       {/* STYLES */}
-      <style jsx>{`
+      <style>{`
         .header-container {
           display: grid;
           grid-template-columns: 80px 1fr 80px;
@@ -364,17 +366,61 @@ export default function Header() {
           height: 100%;
         }
 
+        /* Default mobile styling (for screens < 768px) */
+        .logo-img {
+          max-height: 20px !important;
+          width: auto !important;
+          flex-shrink: 1 !important;
+        }
+
+        .logo-divider {
+          width: 1px;
+          height: 12px !important;
+          background: #e0e0e0;
+          display: inline-block;
+          margin: 0 4px !important;
+        }
+
+        .makeinindia-logo {
+          width: 36px !important;
+          max-height: 24px !important;
+          height: auto !important;
+          flex-shrink: 1 !important;
+        }
+
         .flag-divider,
         .flag-section {
           display: none !important;
         }
 
+        /* Desktop styling (for screens >= 768px) */
         @media (min-width: 768px) {
+          .logo-img {
+            max-height: 56px !important;
+          }
+
+          .logo-divider {
+            height: 32px !important;
+            margin: 0 12px !important;
+          }
+
+          .makeinindia-logo {
+            width: 100px !important;
+            max-height: 80px !important;
+          }
+
           .flag-divider {
             display: inline-block !important;
+            width: 1px !important;
+            height: 32px !important;
+            background: #e0e0e0 !important;
+            margin: 0 12px !important;
           }
+
           .flag-section {
             display: flex !important;
+            align-items: center !important;
+            gap: 8px !important;
           }
         }
 

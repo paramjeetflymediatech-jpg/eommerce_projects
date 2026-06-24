@@ -3,7 +3,7 @@
  * Maps human-readable color names and keywords to CSS-friendly hex codes.
  */
 
-const colorMap: Record<string, string> = {
+export const colorMap: Record<string, string> = {
   // Common Colors
   black: "#111111",
   white: "#f9f9f9",
@@ -70,12 +70,18 @@ const colorMap: Record<string, string> = {
   pewter: "#8e9294",
 };
 
+export const colorOptions = Object.keys(colorMap).map(name => ({
+  name,
+  hex: colorMap[name]
+}));
+
 /**
  * Normalizes a color name and returns a corresponding hex code.
  * Uses a heuristic approach:
  * 1. Checks for an exact keyword match (e.g., "Ivory").
  * 2. Checks if any keyword is contained in the name (e.g., "Ivory White" contains "Ivory").
- * 3. Returns a slightly off-white default for unknown names instead of pure white.
+ * 3. Checks if the name is a valid hex code without a '#' prefix and automatically adds it.
+ * 4. Returns a slightly off-white default for unknown names instead of pure white.
  */
 export function getColorFromName(name: string): string {
   if (!name) return "#f3f3f3"; // Default if no name provided
@@ -91,6 +97,11 @@ export function getColorFromName(name: string): string {
     if (normalized.includes(keyword)) {
       return colorMap[keyword];
     }
+  }
+
+  // Check if it is a valid hex code without a hash prefix (e.g. "ff00ff" or "f00")
+  if (/^[0-9a-fA-F]{3}$/.test(normalized) || /^[0-9a-fA-F]{6}$/.test(normalized)) {
+    return `#${normalized}`;
   }
 
   // If no match found, fallback to the name itself (maybe it's already a hex or a standard CSS color)
