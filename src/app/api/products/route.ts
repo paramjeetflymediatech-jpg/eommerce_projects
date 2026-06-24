@@ -4,6 +4,7 @@ import { apiResponse, apiError, slugify, getPaginationMeta } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Op } from "sequelize";
+import { parseColor } from "@/lib/colors";
 
 
 export async function GET(req: NextRequest) {
@@ -86,7 +87,7 @@ export async function GET(req: NextRequest) {
             id: `p${p.id}-v${variant.id}`, // composite ID
             originalId: p.id,
             variantId: variant.id,
-            name: variant.color ? `${p.name} — ${variant.color}` : p.name,
+            name: variant.color ? `${p.name} — ${parseColor(variant.color).name}` : p.name,
             color: variant.color,
             price: variant.price || p.price,
             comparePrice: variant.comparePrice || p.comparePrice,

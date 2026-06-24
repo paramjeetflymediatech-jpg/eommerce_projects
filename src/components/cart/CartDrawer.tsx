@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
+import { parseColor } from "@/lib/colors";
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, removeItem, updateQuantity, getTotal, getCount, addItem } = useCartStore();
@@ -91,7 +92,7 @@ export default function CartDrawer() {
                       {item.variant && (
                         <p style={{ fontSize: "0.75rem", color: "#666", marginBottom: 8, letterSpacing: "normal" }}>
                           Size: <span style={{ fontWeight: 600, color: "#000" }}>{item.variant.size}</span>
-                          {item.variant.color && ` / Color: ${item.variant.color}`}
+                          {item.variant.color && ` / Color: ${parseColor(item.variant.color).name}`}
                         </p>
                       )}
                       <p style={{ color: "#000", fontWeight: 700, fontSize: "0.95rem", marginBottom: 12 }}>

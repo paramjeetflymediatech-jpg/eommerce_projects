@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { formatPrice } from "@/lib/utils";
 import Link from "next/link";
 import ReviewModal from "@/components/reviews/ReviewModal";
+import { parseColor } from "@/lib/colors";
 
 const STATUS_STYLE: Record<string, { color: string; background: string }> = {
   PENDING: { color: "#8E8E93", background: "#F1F1F2" },
@@ -114,7 +115,7 @@ export default function AccountOrdersPage() {
                   <div style={{ flex: 1 }}>
                     <p style={styles.itemName}>{item.productName || item.product?.name}</p>
                     <p style={styles.itemVariant}>
-                      {item.variantColor || item.variantSize ? `Variant: ${item.variantColor || ""} ${item.variantSize || ""}` : ""}
+                      {item.variantColor || item.variantSize ? `Variant: ${item.variantColor ? parseColor(item.variantColor).name : ""} ${item.variantSize || ""}` : ""}
                     </p>
                     <p style={styles.itemPricing}>
                       Qty: {item.quantity} × {formatPrice(Number(item.priceAtPurchase))}

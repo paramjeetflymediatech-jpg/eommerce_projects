@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useParams } from "next/navigation";
-import { getColorFromName } from "@/lib/colors";
+import { getColorFromName, parseColor, createColorString } from "@/lib/colors";
 import Link from "next/link";
 import Swal from "sweetalert2";
 
@@ -291,6 +291,7 @@ export default function EditProductPage() {
   };
 
   const activeGroup = form.colorGroups[activeColorIdx];
+  const { name: colorName, value: colorValue } = parseColor(activeGroup?.color || "");
 
   if (status === "loading" || loadingProduct) return <div style={s.center}>Loading...</div>;
   return (
@@ -438,7 +439,7 @@ export default function EditProductPage() {
                     {g.color ? (
                       <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <span style={{ width: 10, height: 10, borderRadius: "50%", background: getColorFromName(g.color), border: "1px solid rgba(0,0,0,0.2)", flexShrink: 0, display: "inline-block" }} />
-                        {g.color}
+                        {parseColor(g.color).name}
                       </span>
                     ) : `Color ${gIdx + 1}`}
                     <span
@@ -453,56 +454,107 @@ export default function EditProductPage() {
               {/* Active Color Panel */}
               {activeGroup && (
                 <div style={s.colorPanel}>
-                  {/* Color Name */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
-                    <div style={s.formField}>
-                      <label style={s.lbl}>Color Name</label>
-                      <input
-                        style={s.inp} value={activeGroup.color}
-                        onChange={e => updateColorGroup(activeColorIdx, { color: e.target.value })}
-                        placeholder="e.g. Midnight Black, Ivory White"
-                      />
-                    </div>
-                    <div style={{ display: "flex", alignItems: "flex-end", gap: 8, paddingBottom: 2 }}>
-                      {["Black", "White", "Red", "Navy", "Beige", "Camel", "Olive", "Gray"].map(c => (
-                        <button
-                          key={c} type="button"
-                          onClick={() => updateColorGroup(activeColorIdx, { color: c })}
-                          title={c}
-                          style={{ width: 20, height: 20, borderRadius: "50%", border: activeGroup.color === c ? "2px solid #000" : "1px solid #ddd", background: getColorFromName(c), cursor: "pointer", flexShrink: 0 }}
-                        />
-                      ))}
-                      <div 
-                        title="Pick Custom Color"
-                        style={{ 
-                          position: "relative", 
-                          width: 20, 
-                          height: 20, 
-                          borderRadius: "50%", 
-                          border: activeGroup.color && activeGroup.color.startsWith("#") ? "2px solid #000" : "1px solid #ddd", 
-                          background: "linear-gradient(45deg, red, orange, yellow, green, blue, purple)", 
-                          cursor: "pointer", 
-                          flexShrink: 0,
-                          overflow: "hidden"
-                        }}
-                      >
+                    {/* Color Name & Value Inputs */}
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+                      <div style={s.formField}>
+                        <label style={s.lbl}>Color Display Name</label>
                         <input
-                          type="color"
-                          value={activeGroup.color && /^#[0-9a-fA-F]{6}$/.test(activeGroup.color) ? activeGroup.color : "#000000"}
-                          onChange={e => updateColorGroup(activeColorIdx, { color: e.target.value })}
-                          style={{
-                            position: "absolute",
-                            top: "-50%",
-                            left: "-50%",
-                            width: "200%",
-                            height: "200%",
-                            opacity: 0,
-                            cursor: "pointer"
+                          style={s.inp}
+                          value={colorName}
+                          onChange={e => {
+                            const newColorStr = createColorString(e.target.value, colorValue);
+                            updateColorGroup(activeColorIdx, { color: newColorStr });
                           }}
+                          placeholder="e.g. Midnight Black, Ivory White"
                         />
                       </div>
+                      <div style={s.formField}>
+                        <label style={s.lbl}>Color Swatch Code (Hex/RGB)</label>
+                        <div style={{ display: "flex", gap: 8 }}>
+                          <input
+                            style={{ ...s.inp, flex: 1 }}
+                            value={colorValue}
+                            onChange={e => {
+                              const newColorStr = createColorString(colorName, e.target.value);
+                              updateColorGroup(activeColorIdx, { color: newColorStr });
+                            }}
+                            placeholder="e.g. #1e3a8a or rgb(30, 58, 138)"
+                          />
+                          <div 
+                            title="Pick Custom Color"
+                            style={{ 
+                              position: "relative", 
+                              width: 42, 
+                              height: 42, 
+                              borderRadius: "4px", 
+                              border: "1px solid #ddd", 
+                              background: colorValue && (colorValue.startsWith("#") || colorValue.startsWith("rgb")) ? colorValue : "linear-gradient(45deg, red, orange, yellow, green, blue, purple)", 
+                              cursor: "pointer", 
+                              flexShrink: 0,
+                              overflow: "hidden"
+                            }}
+                          >
+                            <input
+                              type="color"
+                              value={colorValue && /^#[0-9a-fA-F]{6}$/.test(colorValue) ? colorValue : "#000000"}
+                              onChange={e => {
+                                const newName = !colorName || /^#[0-9a-fA-F]{6}$/.test(colorName) ? e.target.value : colorName;
+                                const newColorStr = createColorString(newName, e.target.value);
+                                updateColorGroup(activeColorIdx, { color: newColorStr });
+                              }}
+                              style={{
+                                position: "absolute",
+                                top: "-50%",
+                                left: "-50%",
+                                width: "200%",
+                                height: "200%",
+                                opacity: 0,
+                                cursor: "pointer"
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+
+                    {/* Preset Swatches Quick Selector */}
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ ...s.lbl, marginBottom: 6 }}>Preset Colors Quick Select</label>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {[
+                          { name: "Black", hex: "#111111" },
+                          { name: "White", hex: "#f9f9f9" },
+                          { name: "Red", hex: "#dc2626" },
+                          { name: "Navy", hex: "#1e3a5f" },
+                          { name: "Beige", hex: "#d4b896" },
+                          { name: "Camel", hex: "#c19a6b" },
+                          { name: "Olive", hex: "#6b7a2a" },
+                          { name: "Gray", hex: "#9ca3af" }
+                        ].map(c => {
+                          const currentParsed = parseColor(activeGroup.color);
+                          const isSelected = currentParsed.name.toLowerCase() === c.name.toLowerCase() && currentParsed.value === c.hex;
+                          return (
+                            <button
+                              key={c.name} type="button"
+                              onClick={() => {
+                                const newColorStr = createColorString(c.name, c.hex);
+                                updateColorGroup(activeColorIdx, { color: newColorStr });
+                              }}
+                              title={`${c.name} (${c.hex})`}
+                              style={{ 
+                                width: 24, 
+                                height: 24, 
+                                borderRadius: "50%", 
+                                border: isSelected ? "2px solid #000" : "1px solid #ddd", 
+                                background: c.hex, 
+                                cursor: "pointer", 
+                                flexShrink: 0 
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
 
                   {/* Per-color Description */}
                   <div style={{ ...s.formField, marginBottom: 16 }}>
@@ -643,7 +695,7 @@ export default function EditProductPage() {
                   {/* Size Rows */}
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                      <label style={s.lbl}>Sizes for {activeGroup.color || "this color"}</label>
+                      <label style={s.lbl}>Sizes for {parseColor(activeGroup.color).name || "this color"}</label>
                       <button type="button"
                         onClick={() => updateColorGroup(activeColorIdx, { variants: [...activeGroup.variants, emptyRow()] })}
                         style={{ fontSize: "0.65rem", padding: "4px 10px", background: "#f5f5f5", border: "1px solid #ddd", cursor: "pointer" }}>

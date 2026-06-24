@@ -76,17 +76,45 @@ export const colorOptions = Object.keys(colorMap).map(name => ({
 }));
 
 /**
- * Normalizes a color name and returns a corresponding hex code.
+ * Parses a composite color string (e.g. "Midnight Blue||#1e3a8a") into name and value.
+ * Falls back to treating the input as both name and value if the delimiter is not found.
+ */
+export function parseColor(colorStr: string): { name: string; value: string } {
+  if (!colorStr) return { name: "", value: "" };
+  const parts = colorStr.split("||");
+  if (parts.length > 1) {
+    return { name: parts[0].trim(), value: parts[1].trim() };
+  }
+  return { name: colorStr.trim(), value: colorStr.trim() };
+}
+
+/**
+ * Creates a composite color string from a separate name and value.
+ */
+export function createColorString(name: string, value: string): string {
+  const cleanName = (name || "").trim();
+  const cleanValue = (value || "").trim();
+  if (!cleanName && !cleanValue) return "";
+  if (!cleanValue) return cleanName;
+  if (!cleanName) return cleanValue;
+  return `${cleanName}||${cleanValue}`;
+}
+
+/**
+ * Normalizes a color name/composite string and returns a corresponding CSS-friendly color code.
  * Uses a heuristic approach:
- * 1. Checks for an exact keyword match (e.g., "Ivory").
- * 2. Checks if any keyword is contained in the name (e.g., "Ivory White" contains "Ivory").
- * 3. Checks if the name is a valid hex code without a '#' prefix and automatically adds it.
- * 4. Returns a slightly off-white default for unknown names instead of pure white.
+ * 1. Checks if a custom hex/rgb value is provided in the composite format.
+ * 2. Checks for an exact keyword match in our color mapping.
+ * 3. Checks if any keyword is contained in the color name.
+ * 4. Normalizes valid hex codes without a '#' prefix.
+ * 5. Returns a default light gray code if no matches are found.
  */
 export function getColorFromName(name: string): string {
   if (!name) return "#f3f3f3"; // Default if no name provided
 
-  const normalized = name.toLowerCase().trim();
+  // Parse composite color string
+  const parsed = parseColor(name);
+  const normalized = parsed.value.toLowerCase().trim();
 
   // Try exact match first
   if (colorMap[normalized]) return colorMap[normalized];
@@ -104,6 +132,6 @@ export function getColorFromName(name: string): string {
     return `#${normalized}`;
   }
 
-  // If no match found, fallback to the name itself (maybe it's already a hex or a standard CSS color)
-  return normalized;
+  // If no match found, fallback to the parsed value itself (could be hex or standard CSS color name)
+  return parsed.value;
 }

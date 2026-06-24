@@ -2,7 +2,7 @@
 import { useState, useMemo } from "react";
 import ProductGallery from "./ProductGallery";
 import AddToCartSection from "./AddToCartSection";
-import { getColorFromName } from "@/lib/colors";
+import { getColorFromName, parseColor } from "@/lib/colors";
 import s from "./product-detail.module.css";
 
 interface Variant {
@@ -125,7 +125,7 @@ export default function ProductDetailContent({
                 <span className={s.variantLabel}>
                   Color:{" "}
                   <span style={{ color: "#000", fontWeight: 700 }}>
-                    {selectedColor ?? "—"}
+                    {selectedColor ? parseColor(selectedColor).name : "—"}
                   </span>
                 </span>
               </div>
@@ -134,8 +134,8 @@ export default function ProductDetailContent({
                   <button
                     key={color}
                     onClick={() => handleColorChange(color)}
-                    title={color}
-                    aria-label={`Select color ${color}`}
+                    title={parseColor(color).name}
+                    aria-label={`Select color ${parseColor(color).name}`}
                     style={{
                       display: "flex",
                       alignItems: "center",
