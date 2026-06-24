@@ -60,9 +60,227 @@ function ZoomableImage({ id, src, alt, priority, onClick }: ZoomableImageProps) 
   );
 }
 
+interface LightboxImageProps {
+  src: string;
+  alt: string;
+  onZoomChange: (zoomed: boolean) => void;
+}
+
+function LightboxImage({ src, alt, onZoomChange }: LightboxImageProps) {
+  const [scale, setScale] = useState(1);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Track dragging/touch states
+  const isDragging = useRef(false);
+  const startPos = useRef({ x: 0, y: 0 });
+  
+  // Pinch track states
+  const initialDistance = useRef(0);
+  const initialScale = useRef(1);
+  
+  // Double tap track
+  const lastTap = useRef(0);
+
+  // Notify parent of zoom state changes
+  useEffect(() => {
+    onZoomChange(scale > 1);
+  }, [scale, onZoomChange]);
+
+  // Reset zoom when image changes
+  useEffect(() => {
+    setScale(1);
+    setPosition({ x: 0, y: 0 });
+  }, [src]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      // Single finger: start pan if zoomed in
+      if (scale > 1) {
+        isDragging.current = true;
+        startPos.current = {
+          x: e.touches[0].clientX - position.x,
+          y: e.touches[0].clientY - position.y
+        };
+      }
+      
+      // Double tap detection
+      const now = Date.now();
+      const DOUBLE_TAP_DELAY = 300;
+      if (now - lastTap.current < DOUBLE_TAP_DELAY) {
+        // Toggle zoom
+        if (scale > 1) {
+          setScale(1);
+          setPosition({ x: 0, y: 0 });
+        } else {
+          setScale(2.5);
+          if (containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect();
+            const tapX = e.touches[0].clientX - rect.left;
+            const tapY = e.touches[0].clientY - rect.top;
+            setPosition({
+              x: (rect.width / 2 - tapX) * 1.5,
+              y: (rect.height / 2 - tapY) * 1.5
+            });
+          }
+        }
+        lastTap.current = 0; // reset
+      } else {
+        lastTap.current = now;
+      }
+    } else if (e.touches.length === 2) {
+      // Pinch zoom start
+      isDragging.current = false;
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      initialDistance.current = dist;
+      initialScale.current = scale;
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1 && isDragging.current && scale > 1) {
+      const clientX = e.touches[0].clientX;
+      const clientY = e.touches[0].clientY;
+      const deltaX = clientX - startPos.current.x;
+      const deltaY = clientY - startPos.current.y;
+      
+      const maxPanX = (scale - 1) * (containerRef.current?.offsetWidth || 0) / 2;
+      const maxPanY = (scale - 1) * (containerRef.current?.offsetHeight || 0) / 2;
+      
+      setPosition({
+        x: Math.min(Math.max(deltaX, -maxPanX), maxPanX),
+        y: Math.min(Math.max(deltaY, -maxPanY), maxPanY)
+      });
+    } else if (e.touches.length === 2) {
+      // Pinch move
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const newScale = Math.min(Math.max((dist / initialDistance.current) * initialScale.current, 1), 4);
+      setScale(newScale);
+      
+      if (newScale === 1) {
+        setPosition({ x: 0, y: 0 });
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    isDragging.current = false;
+    if (scale <= 1) {
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+    }
+  };
+
+  // Mouse support for desktop testing
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (scale > 1) {
+      isDragging.current = true;
+      startPos.current = {
+        x: e.clientX - position.x,
+        y: e.clientY - position.y
+      };
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging.current && scale > 1) {
+      const deltaX = e.clientX - startPos.current.x;
+      const deltaY = e.clientY - startPos.current.y;
+      
+      const maxPanX = (scale - 1) * (containerRef.current?.offsetWidth || 0) / 2;
+      const maxPanY = (scale - 1) * (containerRef.current?.offsetHeight || 0) / 2;
+      
+      setPosition({
+        x: Math.min(Math.max(deltaX, -maxPanX), maxPanX),
+        y: Math.min(Math.max(deltaY, -maxPanY), maxPanY)
+      });
+    }
+  };
+
+  const handleMouseUpOrLeave = () => {
+    isDragging.current = false;
+  };
+
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    if (scale > 1) {
+      setScale(1);
+      setPosition({ x: 0, y: 0 });
+    } else {
+      setScale(2.5);
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const tapX = e.clientX - rect.left;
+        const tapY = e.clientY - rect.top;
+        setPosition({
+          x: (rect.width / 2 - tapX) * 1.5,
+          y: (rect.height / 2 - tapY) * 1.5
+        });
+      }
+    }
+  };
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100%",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: scale > 1 ? "grab" : "zoom-in"
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUpOrLeave}
+      onMouseLeave={handleMouseUpOrLeave}
+      onDoubleClick={handleDoubleClick}
+    >
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
+          transition: isDragging.current ? "none" : "transform 0.2s ease-out",
+          position: "relative"
+        }}
+      >
+        <FallbackImage
+          src={src}
+          alt={alt}
+          fill
+          unoptimized={true}
+          style={{ objectFit: "contain", pointerEvents: "none" }}
+          sizes="100vw"
+        />
+      </div>
+    </div>
+  );
+}
+
 export default function ProductGallery({ images, productName }: ProductGalleryProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isLightboxZoomed, setIsLightboxZoomed] = useState(false);
+
+  // Reset zoom state when lightbox closes
+  useEffect(() => {
+    if (!isLightboxOpen) {
+      setIsLightboxZoomed(false);
+    }
+  }, [isLightboxOpen]);
+
   const scrollRef = useRef<HTMLDivElement>(null);
   const isProgrammaticScroll = useRef(false);
 
@@ -137,17 +355,20 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
     };
   }, [isLightboxOpen]);
 
-  // Touch Swipe Handlers for Lightbox
+  // Touch Swipe Handlers for Lightbox (only active when not zoomed in)
   const handleTouchStart = (e: React.TouchEvent) => {
+    if (isLightboxZoomed) return;
     touchStartX.current = e.targetTouches[0].clientX;
     touchEndX.current = e.targetTouches[0].clientX; // Reset end position
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    if (isLightboxZoomed) return;
     touchEndX.current = e.targetTouches[0].clientX;
   };
 
   const handleTouchEnd = () => {
+    if (isLightboxZoomed) return;
     const diff = touchStartX.current - touchEndX.current;
     const threshold = 50; // minimum distance for swipe
 
@@ -261,17 +482,14 @@ export default function ProductGallery({ images, productName }: ProductGalleryPr
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
-            <div className={s.lightboxImageWrapper}>
-              <FallbackImage 
-                src={images[activeImageIndex]} 
+            <div className={s.lightboxImageWrapper} style={{ width: "100%", height: "100%", outline: "none" }}>
+              <LightboxImage
+                src={images[activeImageIndex]}
                 alt={`${productName} fullscreen`}
-                fill
-                unoptimized={true}
-                style={{ objectFit: "contain" }}
-                sizes="100vw"
+                onZoomChange={setIsLightboxZoomed}
               />
             </div>
-            {images.length > 1 && (
+            {images.length > 1 && !isLightboxZoomed && (
               <>
                 <button className={s.lightboxNav} style={{ left: 40 }} onClick={prevImage}>
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
