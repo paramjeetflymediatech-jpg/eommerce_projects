@@ -145,7 +145,7 @@ export default function Header() {
                   textTransform: "uppercase",
                   whiteSpace: "nowrap"
                 }}>
-                  (Bharat Nirmit)
+                  (भारत निर्मित)
                 </span>
               </div>
             </Link>

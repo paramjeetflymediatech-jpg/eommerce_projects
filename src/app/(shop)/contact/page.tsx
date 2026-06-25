@@ -35,24 +35,24 @@ export default function ContactPage() {
     <div className="container-app section-padding animate-fade">
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <header style={{ marginBottom: 80, textAlign: "center" }}>
-          <h1 style={{ 
-            fontFamily: "var(--font-heading)", 
-            fontSize: "clamp(2.5rem, 8vw, 4.5rem)", 
+          <h1 style={{
+            fontFamily: "var(--font-heading)",
+            fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
             marginBottom: 24,
             fontWeight: 400,
             letterSpacing: "-0.03em"
           }}>
             Get in Touch
           </h1>
-          <div style={{ 
-            height: 1, 
-            width: 60, 
-            background: "var(--accent)", 
-            margin: "0 auto 24px" 
+          <div style={{
+            height: 1,
+            width: 60,
+            background: "var(--accent)",
+            margin: "0 auto 24px"
           }} />
-          <p style={{ 
-            color: "var(--text-secondary)", 
-            fontSize: "1.1rem", 
+          <p style={{
+            color: "var(--text-secondary)",
+            fontSize: "1.1rem",
             fontFamily: "var(--font-body)",
             maxWidth: "600px",
             margin: "0 auto"
@@ -61,19 +61,19 @@ export default function ContactPage() {
           </p>
         </header>
 
-        <div style={{ 
-          display: "grid", 
-          gridTemplateColumns: "1fr 1.2fr", 
-          gap: 80, 
-          alignItems: "start" 
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1.2fr",
+          gap: 80,
+          alignItems: "start"
         }}>
           {/* Info Side */}
           <div style={{ display: "flex", flexDirection: "column", gap: 48 }}>
             <section>
-              <h2 style={{ 
-                fontSize: "0.75rem", 
-                fontWeight: 700, 
-                textTransform: "uppercase", 
+              <h2 style={{
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                textTransform: "uppercase",
                 letterSpacing: "0.2em",
                 color: "var(--text-muted)",
                 marginBottom: 24
@@ -109,17 +109,17 @@ export default function ContactPage() {
                 <div>
                   <h3 style={{ fontSize: "1.2rem", fontWeight: 500, marginBottom: 12, color: "var(--text-primary)" }}>Partners</h3>
                   <p style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: "1rem" }}>
-                    Mani Ram Balvant Rai, Ludhiana<br />
-                    Himalaya Journal Store, Delhi
+                    Mani Ram Balwant Rai, Ludhiana<br />
+                    Himalaya General Store, Delhi
                   </p>
                 </div>
               </div>
             </section>
 
-            <div style={{ 
-              padding: 40, 
-              background: "var(--bg-muted)", 
-              border: "1px solid var(--border-subtle)" 
+            <div style={{
+              padding: 40,
+              background: "var(--bg-muted)",
+              border: "1px solid var(--border-subtle)"
             }}>
               <h3 style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: 12 }}>Corporate Inquiries</h3>
               <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.6 }}>
@@ -129,23 +129,23 @@ export default function ContactPage() {
           </div>
 
           {/* Form Side */}
-          <div style={{ 
-            background: "#fff", 
-            padding: "0 0 0 0" 
+          <div style={{
+            background: "#fff",
+            padding: "0 0 0 0"
           }}>
             {success ? (
               <div className="animate-fade" style={{ textAlign: "center", padding: "60px 0" }}>
-                <div style={{ 
-                  width: 80, 
-                  height: 80, 
-                  background: "var(--accent)", 
-                  color: "#fff", 
-                  borderRadius: "50%", 
-                  display: "flex", 
-                  alignItems: "center", 
-                  justifyContent: "center", 
-                  fontSize: "2rem", 
-                  margin: "0 auto 32px" 
+                <div style={{
+                  width: 80,
+                  height: 80,
+                  background: "var(--accent)",
+                  color: "#fff",
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "2rem",
+                  margin: "0 auto 32px"
                 }}>
                   ✓
                 </div>
@@ -153,8 +153,8 @@ export default function ContactPage() {
                 <p style={{ color: "var(--text-secondary)", marginBottom: 40 }}>
                   Thank you for reaching out. A member of our concierge team will respond to your inquiry shortly.
                 </p>
-                <button 
-                  onClick={() => setSuccess(false)} 
+                <button
+                  onClick={() => setSuccess(false)}
                   className="btn btn-secondary"
                 >
                   Send Another Message
@@ -191,12 +191,12 @@ export default function ContactPage() {
 
                 <div className="field-group">
                   <label style={labelStyle}>Message</label>
-                  <textarea 
-                    name="message" 
-                    required 
-                    rows={6} 
-                    style={{ ...inputStyle, resize: "none" }} 
-                    placeholder="How can we assist you today?" 
+                  <textarea
+                    name="message"
+                    required
+                    rows={6}
+                    style={{ ...inputStyle, resize: "none" }}
+                    placeholder="How can we assist you today?"
                   />
                 </div>
 
@@ -204,13 +204,13 @@ export default function ContactPage() {
                   <p style={{ color: "#EF4444", fontSize: "0.9rem", marginTop: -16 }}>{error}</p>
                 )}
 
-                <button 
-                  type="submit" 
-                  disabled={loading} 
-                  className="btn btn-primary" 
-                  style={{ 
-                    padding: "20px", 
-                    fontSize: "0.9rem", 
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn btn-primary"
+                  style={{
+                    padding: "20px",
+                    fontSize: "0.9rem",
                     letterSpacing: "0.1em",
                     marginTop: 12
                   }}

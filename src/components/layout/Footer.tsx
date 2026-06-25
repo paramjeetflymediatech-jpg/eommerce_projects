@@ -5,7 +5,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer 
+    <footer
       suppressHydrationWarning
       style={{
         background: "#ffffff",
@@ -19,11 +19,11 @@ export default function Footer() {
           <div className="footer-brand-section" style={{ maxWidth: "320px" }}>
             <div style={{ marginBottom: 32 }}>
               <Link href="/" style={{ textDecoration: "none" }}>
-                <Image 
-                  src="/logo.png" 
-                  alt="Aion Luxury" 
-                  width={200} 
-                  height={60} 
+                <Image
+                  src="/logo.png"
+                  alt="Aion Luxury"
+                  width={200}
+                  height={60}
                   style={{ height: "auto", width: "auto", maxHeight: "40px" }}
                 />
               </Link>
@@ -31,7 +31,7 @@ export default function Footer() {
             <p style={{ color: "#777", lineHeight: 1.8, fontSize: "0.9rem", fontWeight: 300, marginBottom: 24 }}>
               Aion Luxury delivers premium everyday wear designed for comfort, durability, and style. Shop high-quality essentials for men, women, and kids, crafted to elevate your daily wardrobe experience.
             </p>
-            
+
             {/* Social Icons - Now here */}
             <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
               <a href="https://www.instagram.com/aionluxury?igsh=eXB1dGh2a3lnM3B6&utm_source=qr" target="_blank" aria-label="Instagram" style={{ color: "#000", opacity: 0.8, transition: "opacity 0.3s" }}>
@@ -56,20 +56,20 @@ export default function Footer() {
             { title: "Concierge", links: [{ label: "Shipping Policy", href: "/shipping-policy" }, { label: "Return & Refund Policy", href: "/returns" }, { label: "Privacy Policy", href: "/privacy" }, { label: "Terms & Conditions", href: "/terms" }, { label: "Track Your Order", href: "/track" }, { label: "FAQs", href: "/faq" }] },
           ].map((col) => (
             <div key={col.title} className="footer-nav-col">
-              <h4 style={{ 
-                fontSize: "0.75rem", 
-                fontWeight: 700, 
-                marginBottom: 24, 
-                color: "#000", 
+              <h4 style={{
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                marginBottom: 24,
+                color: "#000",
                 letterSpacing: "0.1em",
                 textTransform: "uppercase"
               }}>{col.title}</h4>
               <nav style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 {col.links.map((link) => (
-                  <Link key={link.label} href={link.href} style={{ 
-                    color: "#666", 
-                    textDecoration: "none", 
-                    fontSize: "0.85rem", 
+                  <Link key={link.label} href={link.href} style={{
+                    color: "#666",
+                    textDecoration: "none",
+                    fontSize: "0.85rem",
                     fontWeight: 400,
                     transition: "color 0.3s ease"
                   }}>
@@ -82,11 +82,11 @@ export default function Footer() {
 
           {/* Contact & Partners Column */}
           <div className="footer-nav-col" style={{ display: "flex", flexDirection: "column" }}>
-            <h4 style={{ 
-              fontSize: "0.75rem", 
-              fontWeight: 700, 
-              marginBottom: 24, 
-              color: "#000", 
+            <h4 style={{
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              marginBottom: 24,
+              color: "#000",
               letterSpacing: "0.1em",
               textTransform: "uppercase"
             }}>Contact &amp; Partners</h4>
@@ -99,8 +99,8 @@ export default function Footer() {
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "#000", textTransform: "uppercase", letterSpacing: "0.05em" }}>Partners</span>
                 <div style={{ lineHeight: 1.6, color: "#666" }}>
-                  Mani Ram Balvant Rai, Ludhiana<br />
-                  Himalaya Journal Store, Delhi
+                  Mani Ram Balwant Rai, Ludhiana<br />
+                  Himalaya General Store, Delhi
                 </div>
               </div>
             </div>
@@ -113,10 +113,10 @@ export default function Footer() {
           </p>
           <div style={{ fontSize: "0.75rem", fontWeight: 500, letterSpacing: "0.05em", color: "#666" }}>
             Designed and developed by{" "}
-            <a 
-              href="https://flymediatech.com" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="https://flymediatech.com"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{ color: "#000000", textDecoration: "none", textUnderlineOffset: "4px", fontWeight: 700 }}
             >
               Fly Media Technology
@@ -125,7 +125,8 @@ export default function Footer() {
         </div>
       </div>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style dangerouslySetInnerHTML={{
+        __html: `
         .footer-grid {
           display: grid;
           grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
