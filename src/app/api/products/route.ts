@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     const maxPrice = searchParams.get("maxPrice");
 
     const where: any = { isActive: true };
-    
+
     if (minPrice || maxPrice) {
       where.price = {};
       if (minPrice) where.price[Op.gte] = parseFloat(minPrice);
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
       // but for "3 levels" as requested, we handle parents and immediate children here.
       // Let's implement a more robust version:
       const categoryIds = [parseInt(category)];
-      
+
       const getChildIds = async (pId: number) => {
         const children = await Category.findAll({ where: { parentId: pId }, attributes: ["id"], raw: true });
         for (const child of children) {
@@ -69,11 +69,11 @@ export async function GET(req: NextRequest) {
     const expandedItems: any[] = [];
     rows.forEach((product: any) => {
       const p = product.toJSON();
-      
+
       if (p.variants && p.variants.length > 0) {
         // Group variants by color to show each color once
         const colorGroups: Record<string, any> = {};
-        
+
         p.variants.forEach((v: any) => {
           const colorKey = v.color || "default";
           if (!colorGroups[colorKey]) {
@@ -109,9 +109,9 @@ export async function GET(req: NextRequest) {
     const totalExpanded = expandedItems.length;
     const paginatedItems = expandedItems.slice(offset, offset + limit);
 
-    return apiResponse({ 
-      products: paginatedItems, 
-      pagination: getPaginationMeta(totalExpanded, page, limit) 
+    return apiResponse({
+      products: paginatedItems,
+      pagination: getPaginationMeta(totalExpanded, page, limit)
     });
 
   } catch (err: any) {

@@ -209,9 +209,15 @@ function CheckoutContent() {
         window.location.href = data.url;
       } else if (data.success) {
         clearCart();
-        window.location.href = `/checkout/success?orderId=${data.orderId}`;
+        // Use router.push to prevent premature document unload which disrupts zustand local storage persist
+        router.push(`/checkout/success?orderId=${data.orderId}`);
       } else {
-        alert(data.error || "Order creation failed");
+        if (data.invalidProductId) {
+          removeItem(data.invalidProductId, data.invalidVariantId);
+          alert(data.error || "Some items in your cart are no longer available and have been removed.");
+        } else {
+          alert(data.error || "Order creation failed");
+        }
       }
     } catch (err) {
       console.error(err);

@@ -40,12 +40,16 @@ export async function POST(req: NextRequest) {
 
   for (const item of items) {
     const product = await Product.findByPk(item.productId);
-    if (!product) return apiError(`Product ${item.productId} not found`);
+    if (!product) {
+      return new Response(JSON.stringify({ error: `Product ${item.productId} not found. It may have been deleted.`, invalidProductId: item.productId }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
 
     let variant = null;
     if (item.variantId) {
       variant = await ProductVariant.findByPk(item.variantId);
-      if (!variant) return apiError(`Variant ${item.variantId} not found`);
+      if (!variant) {
+        return new Response(JSON.stringify({ error: `Variant ${item.variantId} not found. It may have been deleted.`, invalidProductId: item.productId, invalidVariantId: item.variantId }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+      }
     }
 
     const price = variant?.price ?? product.price;

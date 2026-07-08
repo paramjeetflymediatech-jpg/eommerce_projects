@@ -169,7 +169,7 @@ const styles: Record<string, React.CSSProperties> = {
   itemName: { fontSize: "0.95rem", fontWeight: 700, color: "#000", marginBottom: 6, letterSpacing: "normal" },
   qtyControl: { display: "flex", alignItems: "center", gap: 12, border: "1px solid #eee", padding: "4px 12px" },
   qtyBtn: { background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem", padding: 0 },
-  removeBtn: { background: "none", border: "none", cursor: "pointer", color: "#ccc", fontSize: "0.7rem", fontWeight: 600, padding: 0, marginLeft: "auto", letterSpacing: "normal" },
+  removeBtn: { background: "none", border: "none", cursor: "pointer", color: "#000000ff", fontSize: "0.7rem", fontWeight: 600, padding: 0, marginLeft: "auto", letterSpacing: "normal" },
   suggestedItem: { display: "flex", alignItems: "center", gap: 16, padding: "12px", background: "#fff", border: "1px dashed #eee" },
   addSuggestBtn: { background: "none", border: "1px solid #000", fontSize: "0.7rem", fontWeight: 600, padding: "6px 12px", cursor: "pointer" },
 };
