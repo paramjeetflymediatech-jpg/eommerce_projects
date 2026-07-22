@@ -13,7 +13,7 @@ try {
   console.error(`[UPLOAD] Failed to set permissions for ${UPLOAD_DIR}:`, e);
 }
 
-["products", "categories", "avatars", "reviews"].forEach((dir) => {
+["products", "categories", "avatars", "reviews", "blogs"].forEach((dir) => {
   const fullPath = path.join(UPLOAD_DIR, dir);
   if (!fs.existsSync(fullPath)) {
     fs.mkdirSync(fullPath, { recursive: true, mode: 0o755 });
@@ -38,7 +38,7 @@ export function getPublicPath(fullPath: string): string {
 
 export async function saveFile(
   file: File,
-  folder: "products" | "categories" | "avatars" | "reviews"
+  folder: "products" | "categories" | "avatars" | "reviews" | "blogs"
 ): Promise<string> {
   if (!ALLOWED_TYPES.includes(file.type)) {
     throw new Error("Invalid file type. Only standard images and videos are allowed.");

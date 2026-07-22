@@ -7,10 +7,61 @@ import ProductSlider from "@/components/products/ProductSlider";
 import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 import { formatPrice } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Aion Luxury — The Atelier of Modern Elegance",
-  description: "Explore the Parisian Art de Vivre with Aion Luxury's curated couture and high-end ready-to-wear collections.",
-};
+import { Seo, ensureDB } from "@/lib/models";
+
+export async function generateMetadata(): Promise<Metadata> {
+  let title = "Aion Luxury — The Atelier of Modern Elegance";
+  let description = "Explore the Parisian Art de Vivre with Aion Luxury's curated couture and high-end ready-to-wear collections.";
+  let keywords = "";
+  let robots = "Index, Follow";
+  let canonical = "";
+
+  try {
+    await ensureDB();
+    const seo = await Seo.findOne({ where: { pagePath: "/" } });
+    if (seo) {
+      if (seo.seoTitle) title = seo.seoTitle;
+      if (seo.metaDescription) description = seo.metaDescription;
+      if (seo.keywords) keywords = seo.keywords;
+      if (seo.metaRobots) robots = seo.metaRobots;
+      if (seo.canonicalUrl) canonical = seo.canonicalUrl;
+      
+      const meta: any = {
+        title,
+        description,
+        robots,
+      };
+      
+      if (keywords) meta.keywords = keywords;
+      if (canonical) meta.alternates = { canonical };
+      
+      if (seo.ogTitle || seo.ogDescription || seo.ogImageUrl) {
+        meta.openGraph = {
+          title: seo.ogTitle || title,
+          description: seo.ogDescription || description,
+          images: seo.ogImageUrl ? [{ url: seo.ogImageUrl }] : undefined,
+        };
+      }
+      
+      if (seo.twitterCard) {
+        meta.twitter = {
+          card: seo.twitterCard,
+          title: seo.ogTitle || title,
+          description: seo.ogDescription || description,
+          images: seo.ogImageUrl ? [seo.ogImageUrl] : undefined,
+        };
+      }
+      return meta;
+    }
+  } catch (e) {
+    console.error("Failed to load seo for home page", e);
+  }
+
+  return {
+    title,
+    description,
+  };
+}
 
 async function getFeaturedProducts() {
   try {
@@ -40,8 +91,16 @@ async function getNewArrivals() {
   } catch { return []; }
 }
 
+async function getPageSeo() {
+  try {
+    await ensureDB();
+    const seo = await Seo.findOne({ where: { pagePath: "/" } });
+    return seo?.customSchema || "";
+  } catch { return ""; }
+}
+
 export default async function HomePage() {
-  const [featured, categories, newArrivals] = await Promise.all([getFeaturedProducts(), getCategories(), getNewArrivals()]);
+  const [featured, categories, newArrivals, customSchema] = await Promise.all([getFeaturedProducts(), getCategories(), getNewArrivals(), getPageSeo()]);
 
   return (
     <>

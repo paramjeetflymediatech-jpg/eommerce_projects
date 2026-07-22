@@ -12,6 +12,9 @@ import WishlistItem from "./WishlistItem";
 import Migration from "./Migration";
 import ProductVariant from "./ProductVariant";
 import Coupon from "./Coupon";
+import Blog from "./Blog";
+import Seo from "./Seo";
+import GlobalSeo from "./GlobalSeo";
 
 // ── Associations ─────────────────────────────────────────────────────────────
 
@@ -81,8 +84,8 @@ export const syncDB = async () => {
   syncPromise = (async () => {
     try {
       await sequelize.authenticate();
-      // alter:true safely adds new columns/indexes without dropping existing data
-      await sequelize.sync({ alter: true });
+      // Removing alter:true because of ER_TOO_MANY_KEYS Sequelize bug with unique strings in MySQL
+      await sequelize.sync();
       dbReady = true;
     } catch (error) {
       console.error("❌ DB sync error:", error);
@@ -118,5 +121,8 @@ export {
   Migration,
   ProductVariant,
   Coupon,
+  Blog,
+  Seo,
+  GlobalSeo,
 };
 

@@ -9,10 +9,10 @@ export async function POST(req: NextRequest) {
   if (!session) return apiError("Unauthorized", 401);
 
   const formData = await req.formData();
-  const folder = (formData.get("folder") as "products" | "categories" | "avatars" | "reviews") || "products";
+  const folder = (formData.get("folder") as "products" | "categories" | "avatars" | "reviews" | "blogs") || "products";
   
-  // Only admins can upload to products and categories
-  if (session.user.role !== "ADMIN" && (folder === "products" || folder === "categories")) {
+  // Only admins can upload to products, categories, and blogs
+  if (session.user.role !== "ADMIN" && (folder === "products" || folder === "categories" || folder === "blogs")) {
     return apiError("Unauthorized", 401);
   }
 

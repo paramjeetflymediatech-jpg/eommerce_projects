@@ -52,7 +52,7 @@ export default function Footer() {
           {/* Navigation Columns */}
           {[
             { title: "Collections", links: [{ label: "All Items", href: "/products" }, { label: "New Arrivals", href: "/products" }, { label: "Featured Items", href: "/products" }, { label: "Limited Sale", href: "/products" }] },
-            { title: "The Brand", links: [{ label: "Our Story", href: "/ourstory" }, { label: "Design Philosophy", href: "/ourstory" }, { label: "Craftsmanship", href: "/" }, { label: "Contact Us", href: "/contact" }] },
+            { title: "The Brand", links: [{ label: "Our Story", href: "/ourstory" }, { label: "Design Philosophy", href: "/ourstory" }, { label: "Craftsmanship", href: "/" }, { label: "Blogs", href: "/blogs" }, { label: "Contact Us", href: "/contact" }] },
             { title: "Concierge", links: [{ label: "Shipping Policy", href: "/shipping-policy" }, { label: "Return & Refund Policy", href: "/returns" }, { label: "Privacy Policy", href: "/privacy" }, { label: "Terms & Conditions", href: "/terms" }, { label: "Track Your Order", href: "/track" }, { label: "FAQs", href: "/faq" }] },
           ].map((col) => (
             <div key={col.title} className="footer-nav-col">

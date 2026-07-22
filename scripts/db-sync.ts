@@ -6,6 +6,15 @@
  * Usage:  npm run db:sync
  */
 
+import path from "path";
+
+// Automatically load .env file from the project root for Node 20.6+
+try {
+  process.loadEnvFile(path.resolve(process.cwd(), ".env"));
+} catch (e) {
+  // Ignore if already loaded or file missing
+}
+
 import {
   syncDB,
   sequelize,
@@ -21,6 +30,9 @@ import {
   Address,
   WishlistItem,
   Migration,
+  Blog,
+  Seo,
+  GlobalSeo,
 } from "../src/lib/models/index";
 
 const models = [
@@ -36,6 +48,9 @@ const models = [
   { name: "Addresses",       model: Address },
   { name: "WishlistItems",   model: WishlistItem },
   { name: "Migrations",      model: Migration },
+  { name: "Blogs",           model: Blog },
+  { name: "Seos",            model: Seo },
+  { name: "GlobalSeos",      model: GlobalSeo },
 ];
 
 async function runSync() {
@@ -50,9 +65,9 @@ async function runSync() {
     const cfg = sequelize.config as any;
     console.log(`✅ Connected → ${cfg.database}@${cfg.host}:${cfg.port || 3306}\n`);
 
-    // 2. Sync all models (alter = safe: adds/changes columns, never drops)
-    console.log("🔄 Syncing schema (alter: true — non-destructive)...\n");
-    await sequelize.sync({ alter: true });
+    // 2. Sync all models
+    console.log("🔄 Syncing schema...\n");
+    await sequelize.sync();
 
     // 3. Verify each table exists and show row count
     console.log("📋 Table status:\n");
