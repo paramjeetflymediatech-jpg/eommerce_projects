@@ -18,7 +18,7 @@ export default function AdminUsersPage() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/users?page=${page}&search=${encodeURIComponent(search)}`);
+      const res = await fetch(`/api/admin/users?page=${page}&limit=10&search=${encodeURIComponent(search)}`);
       const data = await res.json();
       if (res.ok) {
         setUsers(data.users || []);
@@ -241,23 +241,25 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      <div style={styles.pagination}>
-        <button
-          onClick={() => setPage(p => Math.max(1, p - 1))}
-          disabled={page === 1}
-          style={styles.pageBtn}
-        >
-          Previous
-        </button>
-        <span style={styles.pageInfo}>Page {page} of {pagination.totalPages}</span>
-        <button
-          onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
-          disabled={page === pagination.totalPages}
-          style={styles.pageBtn}
-        >
-          Next
-        </button>
-      </div>
+      {users.length > 0 && pagination.totalPages > 1 && (
+        <div style={styles.pagination}>
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            style={{ ...styles.pageBtn, opacity: page === 1 ? 0.3 : 1 }}
+          >
+            Previous
+          </button>
+          <span style={styles.pageInfo}>Page {page} of {pagination.totalPages}</span>
+          <button
+            onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
+            disabled={page === pagination.totalPages}
+            style={{ ...styles.pageBtn, opacity: page === pagination.totalPages ? 0.3 : 1 }}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -31,6 +31,7 @@ export async function GET(req: NextRequest) {
       { model: ProductVariant, as: "variants" }
     ],
     order: [["createdAt", "DESC"]],
+    distinct: true,
   });
 
   return apiResponse({

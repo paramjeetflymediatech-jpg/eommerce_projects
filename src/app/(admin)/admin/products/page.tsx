@@ -130,7 +130,7 @@ export default function AdminProductsPage() {
   const loadProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/products?page=${page}&limit=15`);
+      const res = await fetch(`/api/admin/products?page=${page}&limit=10`);
       if (res.ok) { const d = await res.json(); setProducts(d.products || []); setTotalPages(d.pagination?.totalPages || 1); }
     } catch (e) { console.error(e); }
     setLoading(false);
@@ -302,7 +302,11 @@ export default function AdminProductsPage() {
       )}
 
       {loading ? <div style={s.center}>Loading products...</div> : products.length === 0 ? (
-        <div style={s.empty}><p style={{ fontSize: "1.1rem", color: "#888", marginBottom: 16 }}>No products yet.</p><button onClick={openCreate} style={s.addBtn}>Create your first product</button></div>
+        page === 1 ? (
+          <div style={s.empty}><p style={{ fontSize: "1.1rem", color: "#888", marginBottom: 16 }}>No products yet.</p><button onClick={openCreate} style={s.addBtn}>Create your first product</button></div>
+        ) : (
+          <div style={s.empty}><p style={{ fontSize: "1.1rem", color: "#888", marginBottom: 16 }}>No products on this page.</p></div>
+        )
       ) : (
         <>
           <div style={s.tableWrap} className="admin-table-wrap">
@@ -355,7 +359,7 @@ export default function AdminProductsPage() {
         </>
       )}
 
-      {totalPages > 1 && (
+      {(totalPages > 1 || page > 1) && (
         <div style={s.pagination}>
           <button disabled={page <= 1} onClick={() => setPage(p => p - 1)} style={s.pageBtn}>← Prev</button>
           <span style={{ fontSize: "0.85rem", color: "#666" }}>Page {page} of {totalPages}</span>

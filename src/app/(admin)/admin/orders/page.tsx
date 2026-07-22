@@ -30,7 +30,7 @@ export default function AdminOrdersPage() {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/orders?page=${page}&status=${statusFilter}`);
+      const res = await fetch(`/api/admin/orders?page=${page}&limit=10&status=${statusFilter}`);
       const data = await res.json();
       if (res.ok) {
         setOrders(data.orders || []);
@@ -245,23 +245,25 @@ export default function AdminOrdersPage() {
         ))}
       </div>
 
-      <div style={styles.pagination}>
-        <button
-          onClick={() => setPage(p => Math.max(1, p - 1))}
-          disabled={page === 1}
-          style={{ ...styles.pageBtn, opacity: page === 1 ? 0.3 : 1 }}
-        >
-          Previous
-        </button>
-        <span style={styles.pageInfo}>{page} / {pagination.totalPages}</span>
-        <button
-          onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
-          disabled={page === pagination.totalPages}
-          style={{ ...styles.pageBtn, opacity: page === pagination.totalPages ? 0.3 : 1 }}
-        >
-          Next
-        </button>
-      </div>
+      {orders.length > 0 && pagination.totalPages > 1 && (
+        <div style={styles.pagination}>
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            style={{ ...styles.pageBtn, opacity: page === 1 ? 0.3 : 1 }}
+          >
+            Previous
+          </button>
+          <span style={styles.pageInfo}>{page} / {pagination.totalPages}</span>
+          <button
+            onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))}
+            disabled={page === pagination.totalPages}
+            style={{ ...styles.pageBtn, opacity: page === pagination.totalPages ? 0.3 : 1 }}
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {/* VIEW MODAL */}
       {viewingOrder && (

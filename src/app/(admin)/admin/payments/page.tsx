@@ -22,7 +22,7 @@ export default function AdminPaymentsPage() {
   const fetchPayments = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/payments?page=${page}&paymentMethod=${methodFilter}`);
+      const res = await fetch(`/api/admin/payments?page=${page}&limit=10&paymentMethod=${methodFilter}`);
       const data = await res.json();
       if (res.ok) {
         setPayments(data.payments || []);
@@ -132,23 +132,25 @@ export default function AdminPaymentsPage() {
         </table>
       </div>
 
-      <div style={styles.pagination}>
-        <button 
-          onClick={() => setPage(p => Math.max(1, p - 1))} 
-          disabled={page === 1}
-          style={{ ...styles.pageBtn, opacity: page === 1 ? 0.3 : 1 }}
-        >
-          Previous
-        </button>
-        <span style={styles.pageInfo}>{page} / {pagination.totalPages}</span>
-        <button 
-          onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))} 
-          disabled={page === pagination.totalPages}
-          style={{ ...styles.pageBtn, opacity: page === pagination.totalPages ? 0.3 : 1 }}
-        >
-          Next
-        </button>
-      </div>
+      {payments.length > 0 && pagination.totalPages > 1 && (
+        <div style={styles.pagination}>
+          <button 
+            onClick={() => setPage(p => Math.max(1, p - 1))} 
+            disabled={page === 1}
+            style={{ ...styles.pageBtn, opacity: page === 1 ? 0.3 : 1 }}
+          >
+            Previous
+          </button>
+          <span style={styles.pageInfo}>{page} / {pagination.totalPages}</span>
+          <button 
+            onClick={() => setPage(p => Math.min(pagination.totalPages, p + 1))} 
+            disabled={page === pagination.totalPages}
+            style={{ ...styles.pageBtn, opacity: page === pagination.totalPages ? 0.3 : 1 }}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

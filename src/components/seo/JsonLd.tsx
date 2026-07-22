@@ -52,16 +52,45 @@ export function ProductJsonLd({ product }: ProductJsonLdProps) {
   );
 }
 
-export function OrganizationJsonLd() {
+export function OrganizationJsonLd({ globalSeo }: { globalSeo?: any }) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  const schema = {
+  
+  let socialLinks: string[] = [];
+  try {
+    if (globalSeo?.socialProfileUrls) {
+      socialLinks = JSON.parse(globalSeo.socialProfileUrls);
+    }
+  } catch (e) {}
+
+  const schema: any = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Aion Luxury",
+    name: globalSeo?.businessName || "Aion Luxury",
     url: appUrl,
-    logo: `${appUrl}/logo.png`,
-    sameAs: [],
+    logo: globalSeo?.logoUrl || `${appUrl}/logo.png`,
+    sameAs: socialLinks,
   };
+
+  if (globalSeo?.phoneNumber || globalSeo?.emailAddress) {
+    schema.contactPoint = {
+      "@type": "ContactPoint",
+      telephone: globalSeo?.phoneNumber,
+      email: globalSeo?.emailAddress,
+      contactType: "customer service"
+    };
+  }
+
+  if (globalSeo?.streetAddress || globalSeo?.city) {
+    schema.address = {
+      "@type": "PostalAddress",
+      streetAddress: globalSeo?.streetAddress,
+      addressLocality: globalSeo?.city,
+      addressRegion: globalSeo?.state,
+      postalCode: globalSeo?.postalCode,
+      addressCountry: globalSeo?.countryCode
+    };
+  }
+
   return (
     <script
       type="application/ld+json"

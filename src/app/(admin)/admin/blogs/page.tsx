@@ -20,6 +20,7 @@ export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState({ text: "", type: "" });
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/admin/login");
@@ -64,6 +65,11 @@ export default function AdminBlogsPage() {
     }
   };
 
+  // Pagination logic
+  const ITEMS_PER_PAGE = 10;
+  const totalPages = Math.ceil(blogs.length / ITEMS_PER_PAGE);
+  const currentBlogs = blogs.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   if (status === "loading") return <div style={s.center}>Loading...</div>;
 
   return (
@@ -99,7 +105,7 @@ export default function AdminBlogsPage() {
               </tr>
             </thead>
             <tbody>
-              {blogs.map(b => (
+              {currentBlogs.map(b => (
                 <tr key={b.id} style={s.tr}>
                   <td style={s.td}>
                     {b.image ? <img src={b.image} alt={b.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: "4px" }} /> : "—"}
@@ -120,6 +126,28 @@ export default function AdminBlogsPage() {
               ))}
             </tbody>
           </table>
+          
+          {totalPages > 1 && (
+            <div style={s.pagination}>
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                style={{ ...s.pageBtn, opacity: currentPage === 1 ? 0.5 : 1 }}
+              >
+                Previous
+              </button>
+              <span style={{ fontSize: "0.9rem", color: "#666" }}>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                style={{ ...s.pageBtn, opacity: currentPage === totalPages ? 0.5 : 1 }}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -140,4 +168,6 @@ const s: Record<string, React.CSSProperties> = {
   td: { padding: "14px 20px", verticalAlign: "middle" },
   editBtn: { background: "#f1f5f9", color: "#334155", border: "1px solid #cbd5e1", padding: "6px 16px", marginRight: "8px", cursor: "pointer", borderRadius: "4px", fontWeight: 600 },
   deleteBtn: { background: "#fef2f2", color: "#ef4444", border: "1px solid #fecaca", padding: "6px 16px", cursor: "pointer", borderRadius: "4px", fontWeight: 600 },
+  pagination: { padding: "16px 20px", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#f8fafc" },
+  pageBtn: { padding: "8px 16px", background: "#fff", border: "1px solid #cbd5e1", borderRadius: "4px", cursor: "pointer", fontWeight: 600, color: "#334155" }
 };

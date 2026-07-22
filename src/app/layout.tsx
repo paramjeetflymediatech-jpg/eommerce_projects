@@ -178,7 +178,7 @@ export default async function RootLayout({
             dangerouslySetInnerHTML={{ __html: pageSchema }}
           />
         )}
-        <OrganizationJsonLd />
+        <OrganizationJsonLd globalSeo={globalSeo} />
         
         {gaId && (
           <>

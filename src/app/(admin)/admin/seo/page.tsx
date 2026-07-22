@@ -27,6 +27,7 @@ export default function AdminSeoPage() {
   const [seos, setSeos] = useState<Seo[]>([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState({ text: "", type: "" });
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/admin/login");
@@ -79,6 +80,11 @@ export default function AdminSeoPage() {
     }
   };
 
+  // Pagination logic
+  const ITEMS_PER_PAGE = 10;
+  const totalPages = Math.ceil(seos.length / ITEMS_PER_PAGE);
+  const currentSeos = seos.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
   if (status === "loading") return <div style={s.center}>Loading...</div>;
 
   return (
@@ -116,7 +122,7 @@ export default function AdminSeoPage() {
               </tr>
             </thead>
             <tbody>
-              {seos.map(seo => (
+              {currentSeos.map(seo => (
                 <tr key={seo.id} style={s.tr}>
                   <td style={s.td}><strong>{seo.pagePath}</strong></td>
                   <td style={s.td}>{seo.seoTitle || "—"}</td>
@@ -129,6 +135,28 @@ export default function AdminSeoPage() {
               ))}
             </tbody>
           </table>
+          
+          {totalPages > 1 && (
+            <div style={s.pagination}>
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                style={{ ...s.pageBtn, opacity: currentPage === 1 ? 0.5 : 1 }}
+              >
+                Previous
+              </button>
+              <span style={{ fontSize: "0.9rem", color: "#666" }}>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                style={{ ...s.pageBtn, opacity: currentPage === totalPages ? 0.5 : 1 }}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -150,4 +178,6 @@ const s: Record<string, React.CSSProperties> = {
   td: { padding: "12px", verticalAlign: "top" },
   editBtn: { background: "#f0f0f0", border: "none", padding: "6px 12px", marginRight: "8px", cursor: "pointer", borderRadius: "4px" },
   deleteBtn: { background: "#fee2e2", color: "#dc2626", border: "none", padding: "6px 12px", cursor: "pointer", borderRadius: "4px" },
+  pagination: { padding: "16px 20px", borderTop: "1px solid #eee", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fafafa" },
+  pageBtn: { padding: "8px 16px", background: "#fff", border: "1px solid #ddd", borderRadius: "4px", cursor: "pointer", fontWeight: 600, color: "#333", fontSize: "0.85rem" }
 };
