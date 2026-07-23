@@ -31,9 +31,9 @@ export async function PUT(
     }
     const body = await request.json();
     
-    if (body.pagePath && body.pagePath !== seo.pagePath) {
+    if (body.pagePath) {
       const existing = await Seo.findOne({ where: { pagePath: body.pagePath } });
-      if (existing) {
+      if (existing && existing.id !== seo.id) {
         return NextResponse.json({ error: "SEO settings for this path already exist" }, { status: 400 });
       }
     }

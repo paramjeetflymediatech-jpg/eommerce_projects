@@ -55,7 +55,7 @@ export default function Footer() {
             { title: "The Brand", links: [{ label: "Our Story", href: "/ourstory" }, 
               { label: "Design Philosophy", href: "/ourstory" }, 
               { label: "Craftsmanship", href: "/" }, 
-              { label: "Blogs", href: "/blogs" }, 
+              // { label: "Blogs", href: "/blogs" }, 
               { label: "Contact Us", href: "/contact" }] },
             { title: "Concierge", links: [{ label: "Shipping Policy", href: "/shipping-policy" }, { label: "Return & Refund Policy", href: "/returns" }, { label: "Privacy Policy", href: "/privacy" }, { label: "Terms & Conditions", href: "/terms" }, { label: "Track Your Order", href: "/track" }, { label: "FAQs", href: "/faq" }] },
           ].map((col) => (
