@@ -1,9 +1,10 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function EditSeoPage({ params }: { params: { id: string } }) {
+export default function EditSeoPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const { data: session, status } = useSession();
   const router = useRouter();
   
@@ -31,7 +32,7 @@ export default function EditSeoPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     if (status === "authenticated") {
-      fetch(`/api/admin/seo/${params.id}`)
+      fetch(`/api/admin/seo/${id}`)
         .then(res => res.json())
         .then(data => {
           if (!data.error) {
@@ -58,7 +59,7 @@ export default function EditSeoPage({ params }: { params: { id: string } }) {
           setLoading(false);
         });
     }
-  }, [status, params.id]);
+  }, [status, id]);
 
   const handleSave = async () => {
     if (!form.pagePath) {
@@ -69,7 +70,7 @@ export default function EditSeoPage({ params }: { params: { id: string } }) {
     setMsg({ text: "", type: "" });
 
     try {
-      const res = await fetch(`/api/admin/seo/${params.id}`, {
+      const res = await fetch(`/api/admin/seo/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
